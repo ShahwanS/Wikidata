@@ -1,6 +1,7 @@
 # myAwesomeTest
 
-
+### Current members
+[Dausend](https://gitlab.uni-marburg.de/dausend4), [Nakashima](https://gitlab.uni-marburg.de/nakashim)
 
 ## Getting started
 
