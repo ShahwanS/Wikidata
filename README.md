@@ -3,7 +3,7 @@
 ### Current members
 [Dausend](https://gitlab.uni-marburg.de/dausend4), [Nakashima](https://gitlab.uni-marburg.de/nakashim)
 
-## universität marburg
+## Universität marburg
 [Philipps-Universität Marburg](https://de.wikipedia.org/wiki/Philipps-Universit%C3%A4t_Marburg)
 
 ## Getting started
