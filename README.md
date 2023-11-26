@@ -3,6 +3,9 @@
 ### Current members
 [Dausend](https://gitlab.uni-marburg.de/dausend4), [Nakashima](https://gitlab.uni-marburg.de/nakashim)
 
+## universität marburg
+[Philips-Universität Marburg](https://de.wikipedia.org/wiki/Philipps-Universit%C3%A4t_Marburg)
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
