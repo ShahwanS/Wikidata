@@ -5,7 +5,7 @@
 - [Nakashima](https://gitlab.uni-marburg.de/nakashim)
 - [Vogt](url)
 
-## Universität marburg
+## Universität Marburg
 [Philipps-Universität Marburg](https://de.wikipedia.org/wiki/Philipps-Universit%C3%A4t_Marburg)
 
 ## Getting started
