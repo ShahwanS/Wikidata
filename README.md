@@ -1,4 +1,4 @@
-# myAwesomeTest
+# foPra
 
 ### Current members
 - [Dausend](https://gitlab.uni-marburg.de/dausend4) 
