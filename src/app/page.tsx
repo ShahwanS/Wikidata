@@ -7,11 +7,11 @@ import RichTextField from "./components/RichTextField";
 
 export default function Home() {
   const [fields, setFields] = useState<FieldProps[]>([
-    { name: "Official name", type: "text" },
-    { name: "Date of official opening", type: "date" },
-    { name: "Image", type: "file" },
-    { name: "Country", type: "text" },
-    { name: "Website", type: "url" },
+    { name: "Offizieller Name", type: "text" },
+    { name: "Datum der offiziellen Eröffnung", type: "date" },
+    { name: "Bild", type: "file" },
+    { name: "Land", type: "text" },
+    { name: "Webseite", type: "url" },
   ]);
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -21,9 +21,15 @@ export default function Home() {
   };
 
   const addRichTextField = () => {
-    // Assuming the RichTextField has a similar interface
-    const richTextField: FieldProps = { name: "Rich Text", type: "richtext" };
+    const richTextField: FieldProps = {
+      name: "Reichhaltiger Text",
+      type: "richtext",
+    };
     setFields([...fields, richTextField]);
+  };
+
+  const removeField = (index: number) => {
+    setFields(fields.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -35,7 +41,7 @@ export default function Home() {
     <div className="min-h-screen bg-wikipediaGray flex justify-center items-center">
       <div className="max-w-7xl mx-auto">
         <header className="text-3xl font-semibold text-center mb-4">
-          Wikidata Form
+          Wikidata Formular
         </header>
         <form
           onSubmit={handleSubmit}
@@ -47,13 +53,22 @@ export default function Home() {
                 if (field.type === "richtext") {
                   return (
                     <div key={index} className="col-span-2">
-                      <Field name="Enter Section title" type={field.type} />
+                      <Field
+                        name="Abschnittstitel eingeben"
+                        type={field.type}
+                        onDelete={() => removeField(index)}
+                      />
                       <RichTextField name={field.name} />;
                     </div>
                   );
                 } else {
                   return (
-                    <Field key={index} name={field.name} type={field.type} />
+                    <Field
+                      key={index}
+                      name={field.name}
+                      type={field.type}
+                      onDelete={() => removeField(index)}
+                    />
                   );
                 }
               })}
@@ -65,21 +80,21 @@ export default function Home() {
                   onClick={() => setShowPopup(true)}
                   className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
                 >
-                  Add More Fields
+                  Weitere Felder hinzufügen
                 </button>
                 <button
                   type="button"
                   onClick={addRichTextField}
                   className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300"
                 >
-                  Add Section
+                  Abschnitt hinzufügen
                 </button>
               </div>
               <button
                 type="submit"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
               >
-                Submit
+                Einreichen
               </button>
             </div>
           </div>

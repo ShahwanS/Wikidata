@@ -12,7 +12,14 @@ interface Category {
 }
 
 interface Properties {
-  [key: string]: string[];
+  [category: string]: {
+    [subCategory: string]: SubCategory;
+  };
+}
+
+interface SubCategory {
+  description: string;
+  properties: string[];
 }
 
 const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
@@ -21,136 +28,177 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
   const categories: Record<string, Category> = {
-    Architecture: {
-      title: "Architecture",
+    Architektur: {
+      title: "Architektur",
       description:
-        "Architectural style, width, length, number of elevators, etc.",
+        "Architektonischer Stil, Breite, Länge, Anzahl der Aufzüge, usw.",
     },
-    Ordering: {
-      title: "Ordering",
+    Klassifizierung: {
+      title: "Klassifizierung",
       description:
-        "Properties like 'has part(s)', 'connects with', 'Commons category', etc.",
+        "Eigenschaften wie 'hat Teil(e)', 'verbindet mit', 'Commons-Kategorie', usw.",
     },
-    Geographic: {
-      title: "Geographic",
+    Geographisch: {
+      title: "Geographisch",
       description:
-        "Properties related to location such as 'located on street', 'country', etc.",
+        "Eigenschaften im Zusammenhang mit dem Standort, wie 'befindet sich auf der Straße', 'Land', usw.",
     },
-    HeadData: {
-      title: "Head Data",
-      description: "Inception, structure replaces, named after, etc.",
+    Kopfdaten: {
+      title: "Kopfdaten",
+      description: "Gründung, ersetzt Struktur, benannt nach, usw.",
     },
-    Corporation: {
-      title: "Corporation",
+    Unternehmen: {
+      title: "Unternehmen",
       description:
-        "Information about maintenance, occupants, main building contractor, etc.",
+        "Informationen über Wartung, Bewohner, Hauptgebäudeunternehmer, usw.",
     },
-
-    Media: {
-      title: "Media",
-      description: "Media related properties such as images.",
+    Medien: {
+      title: "Medien",
+      description: "Medienbezogene Eigenschaften wie Bilder.",
     },
   };
 
   const properties: Properties = {
-    Architecture: [
-      "Architectural Style",
-      "Width",
-      "Length",
-      "Number of Elevators",
-      "Number of Rooms",
-      "floors below ground",
-      "floors above ground",
-      "inspired by",
-      "area",
-      "height",
-      "wheelchair accesbility",
-      "made from material",
-    ],
-    Ordering: [
-      "Has Part(s)",
-      "Connects With",
-      "Commons Category",
-      "instance of",
-      "appears in the heritage register",
-      "part of",
-      "heritage designation",
-    ],
-    Geographic: [
-      "Located On Street",
-      "location",
-      "located in time zone",
-      "street address",
-      "postal code",
-      "coordinate location",
-    ],
-    HeadData: [
-      "Inception",
-      "Structure Replaces",
-      "Named After",
-      "nickname",
-      "state of conservation",
-      "has use",
-      "significant event",
-      "short name",
-      "founded by",
-      "conmmisioned by",
-      "architect",
-    ],
-    Corporation: [
-      "Maintained By",
-      "Occupant",
-      "Main Building Contractor",
-      "operator",
-      "main contractor",
-    ],
-    Media: ["Image of Backside"],
+    Architektur: {
+      Dimensionen: {
+        description:
+          "Eigenschaften im Zusammenhang mit den physischen Abmessungen der Struktur, wie Breite, Länge und Höhe.",
+        properties: ["Breite", "Länge", "Höhe", "Fläche"],
+      },
+      Gebäudedetails: {
+        description:
+          "Details zu den Merkmalen und Komponenten des Gebäudes, wie Räume und Aufzüge.",
+        properties: [
+          "Anzahl der Aufzüge",
+          "Anzahl der Räume",
+          "Etagen unter Grund",
+          "Etagen über Grund",
+        ],
+      },
+      MaterialUndZugänglichkeit: {
+        description:
+          "Informationen über verwendete Materialien und Zugänglichkeitsmerkmale.",
+        properties: ["Rollstuhlgängigkeit", "Aus Material Gefertigt"],
+      },
+      Design: {
+        description:
+          "Aspekte des architektonischen Designs, einschließlich Stil und Inspirationen.",
+        properties: ["Architektonischer Stil", "Inspiriert Von"],
+      },
+    },
+    Klassifizierung: {
+      Einordnung: {
+        description:
+          "Eigenschaften im Zusammenhang mit Klassifizierung und Ordnung, wie Teil einer Serie oder Erbe-Status.",
+        properties: [
+          "Hat Teile",
+          "Verbindet Mit",
+          "Commons Kategorie",
+          "Instanz Von",
+          "Erscheint im Kulturerberegister",
+          "Teil Von",
+          "Kulturerbe-Bezeichnung",
+        ],
+      },
+    },
+    Geographisch: {
+      Standortdetails: {
+        description:
+          "Geographische und Standorteigenschaften der Struktur, einschließlich Straße und Postleitzahl.",
+        properties: [
+          "Befindet Sich Auf Straße",
+          "Standort",
+          "Befindet Sich in Zeitzone",
+          "Straßenadresse",
+          "Postleitzahl",
+          "Koordinatenlage",
+        ],
+      },
+    },
+    Kopfdaten: {
+      HistorischeUndFunktionaleDaten: {
+        description:
+          "Historische Daten und funktionale Informationen über die Struktur.",
+        properties: [
+          "Gründung",
+          "Ersetzt Struktur",
+          "Benannt Nach",
+          "Spitzname",
+          "Zustand der Erhaltung",
+          "Hat Verwendung",
+          "Bedeutsames Ereignis",
+          "Kurzname",
+          "Gegründet Von",
+          "In Auftrag Gegeben Von",
+          "Architekt",
+        ],
+      },
+    },
+    Unternehmen: {
+      Unternehmensdetails: {
+        description:
+          "Details im Zusammenhang mit dem Unternehmen, einschließlich Wartung und Auftragnehmern.",
+        properties: [
+          "Gewartet Von",
+          "Bewohner",
+          "Hauptgebäudeunternehmer",
+          "Betreibender",
+          "Hauptauftragnehmer",
+        ],
+      },
+    },
+    Medien: {
+      Bilder: {
+        description: "Medienbezogene Eigenschaften, wie Bilder der Struktur.",
+        properties: ["Bild der Rückseite"],
+      },
+    },
   };
 
   const propertyInputTypes: Record<string, string> = {
-    "Architectural Style": "text",
-    Width: "number",
-    Length: "number",
-    "Number of Elevators": "number",
-    "Number of Rooms": "number",
-    "floors below ground": "number",
-    "floors above ground": "number",
-    "inspired by": "text",
-    area: "number",
-    height: "number",
-    "wheelchair accessibility": "text",
-    "made from material": "text",
-    "Has Part(s)": "text",
-    "Connects With": "text",
-    "Commons Category": "text",
-    "instance of": "text",
-    "appears in the heritage register": "text",
-    "part of": "text",
-    "heritage designation": "text",
-    "Located On Street": "text",
-    location: "text",
-    "located in time zone": "text",
-    "street address": "text",
-    "postal code": "text",
-    "coordinate location": "text",
-    Inception: "date",
-    "Structure Replaces": "text",
-    "Named After": "text",
-    nickname: "text",
-    "state of conservation": "text",
-    "has use": "text",
-    "significant event": "text",
-    "short name": "text",
-    "founded by": "text",
-    "commissioned by": "text",
-    architect: "text",
-    "Maintained By": "text",
-    Occupant: "text",
-    "Main Building Contractor": "text",
-    operator: "text",
-    "main contractor": "text",
-    "Image of Backside": "file",
-    Title: "text",
+    "Architektonischer Stil": "text",
+    Breite: "number",
+    Länge: "number",
+    "Anzahl der Aufzüge": "number",
+    "Anzahl der Räume": "number",
+    "Etagen unter Grund": "number",
+    "Etagen über Grund": "number",
+    "Inspiriert Von": "text",
+    Fläche: "number",
+    Höhe: "number",
+    Rollstuhlgängigkeit: "text",
+    "Aus Material Gefertigt": "text",
+    "Hat Teile": "text",
+    "Verbindet Mit": "text",
+    "Commons Kategorie": "text",
+    "Instanz Von": "text",
+    "Erscheint im Kulturerberegister": "text",
+    "Teil Von": "text",
+    "Kulturerbe-Bezeichnung": "text",
+    "Befindet Sich Auf Straße": "text",
+    Standort: "text",
+    "Befindet Sich in Zeitzone": "text",
+    Straßenadresse: "text",
+    Postleitzahl: "text",
+    Koordinatenlage: "text",
+    Gründung: "date",
+    "Ersetzt Struktur": "text",
+    "Benannt Nach": "text",
+    Spitzname: "text",
+    "Zustand der Erhaltung": "text",
+    "Hat Verwendung": "text",
+    "Bedeutsames Ereignis": "text",
+    Kurzname: "text",
+    "Gegründet Von": "text",
+    "In Auftrag Gegeben Von": "text",
+    Architekt: "text",
+    "Gewartet Von": "text",
+    Bewohner: "text",
+    Hauptgebäudeunternehmer: "text",
+    Betreibender: "text",
+    Hauptauftragnehmer: "text",
+    "Bild der Rückseite": "file",
+    Titel: "text",
   };
 
   const getInputTypeForProperty = (property: string): string => {
@@ -163,15 +211,6 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     setStep(2);
   };
 
-  // add or remove property from selected properties
-  const handlePropertySelect = (property: string) => {
-    if (selectedProperties.includes(property)) {
-      setSelectedProperties(selectedProperties.filter((p) => p !== property));
-    } else {
-      setSelectedProperties([...selectedProperties, property]);
-    }
-  };
-
   // Create fields based on selected properties
   const handleSubmit = () => {
     const fields = selectedProperties.map((property) => ({
@@ -180,6 +219,31 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     }));
     onAddFields(fields);
     onClose();
+  };
+
+  const handleSubCategorySelect = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const subCategory = event.target.value;
+    let updatedProperties = [...selectedProperties];
+
+    // Ensure selectedCategory is not null before proceeding
+    if (selectedCategory && properties[selectedCategory]) {
+      if (event.target.checked) {
+        // Add all properties from the sub-category
+        updatedProperties.push(
+          ...properties[selectedCategory][subCategory].properties
+        );
+      } else {
+        // Remove all properties from the sub-category
+        updatedProperties = updatedProperties.filter(
+          (p) =>
+            !properties[selectedCategory][subCategory].properties.includes(p)
+        );
+      }
+
+      setSelectedProperties(updatedProperties);
+    }
   };
 
   return (
@@ -221,38 +285,47 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
         {step === 2 && selectedCategory && (
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Select Properties
+              Select Sub-category in {selectedCategory}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {properties[selectedCategory]?.map((property) => (
-                <div key={property} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={selectedProperties.includes(property)}
-                    onChange={() => handlePropertySelect(property)}
-                    className="form-checkbox h-5 w-5 text-gray-600 rounded-md border-gray-300 focus:ring-gray-500 mr-2"
-                  />
-                  <span className="text-gray-700">{property}</span>
-                </div>
-              ))}
+              {Object.entries(properties[selectedCategory]).map(
+                ([subCategory, info]) => (
+                  <label
+                    key={subCategory}
+                    className="block p-4 border rounded-lg shadow-sm transition duration-300 hover:border-gray-800 hover:shadow-md"
+                  >
+                    <input
+                      type="checkbox"
+                      value={subCategory}
+                      onChange={handleSubCategorySelect}
+                      className="form-checkbox h-5 w-5 text-gray-600 rounded-md border-gray-300 focus:ring-gray-500 mr-2"
+                    />
+                    <span className="text-gray-700 font-bold">
+                      {subCategory}
+                    </span>
+                    <p className="text-gray-600">{info.description}</p>
+                  </label>
+                )
+              )}
             </div>
-            <button
-              onClick={handleSubmit}
-              className="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6"
-            >
-              Add Fields
-            </button>
+            <div className="flex justify-between">
+              <button
+                onClick={handleSubmit}
+                className=" bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6  w-[250px]"
+              >
+                Felder hinzufügen{" "}
+              </button>
+              <button
+                onClick={onClose}
+                className=" w-[250px] bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6"
+              >
+                Schließen
+              </button>
+            </div>
           </div>
         )}
         {/* Close Button */}
-        <div className="mt-6">
-          <button
-            onClick={onClose}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300"
-          >
-            Close
-          </button>
-        </div>
+        <div className="mt-6"></div>
       </div>
     </div>
   );
