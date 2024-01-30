@@ -8,9 +8,8 @@ import RichTextField from "./components/RichTextField";
 export default function Home() {
   const [fields, setFields] = useState<FieldProps[]>([
     { name: "Offizieller Name", type: "text" },
-    { name: "Datum der offiziellen Eröffnung", type: "date" },
+    { name: "Datum der offiziellen Eröffnung", type: "text" },
     { name: "Bild", type: "file" },
-    { name: "Land", type: "text" },
     { name: "Webseite", type: "url" },
   ]);
 
@@ -58,7 +57,7 @@ export default function Home() {
                         type={field.type}
                         onDelete={() => removeField(index)}
                       />
-                      <RichTextField name={field.name} />;
+                      <RichTextField name={field.name} />
                     </div>
                   );
                 } else {
