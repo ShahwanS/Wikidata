@@ -7,10 +7,14 @@ import RichTextField from "./components/RichTextField";
 
 export default function Home() {
   const [fields, setFields] = useState<FieldProps[]>([
-    { name: "Offizieller Name", type: "text" },
-    { name: "Datum der offiziellen Eröffnung", type: "text" },
+    { name: "Offizieller Name", type: "text", placeholder: "Name" },
+    {
+      name: "Datum der offiziellen Eröffnung",
+      type: "text",
+      placeholder: "Datum : MM/YY oder Jahr",
+    },
     { name: "Bild", type: "file" },
-    { name: "Webseite", type: "url" },
+    { name: "Webseite", type: "url", placeholder: "https://example.com" },
   ]);
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -37,9 +41,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-wikipediaGray flex justify-center items-center">
-      <div className="max-w-7xl mx-auto">
-        <header className="text-3xl font-semibold text-center mb-4">
+    <div className="min-h-screen bg-wikipediaGray flex justify-center items-center ">
+      <div className="max-w-5xl mx-auto">
+        <header className="text-3xl font-semibold text-center mb-4  w-[64rem]">
           Wikidata Formular
         </header>
         <form
@@ -55,6 +59,7 @@ export default function Home() {
                       <Field
                         name="Abschnittstitel eingeben"
                         type={field.type}
+                        placeholder={field.placeholder}
                         onDelete={() => removeField(index)}
                       />
                       <RichTextField name={field.name} />
@@ -66,6 +71,7 @@ export default function Home() {
                       key={index}
                       name={field.name}
                       type={field.type}
+                      placeholder={field.placeholder}
                       onDelete={() => removeField(index)}
                     />
                   );

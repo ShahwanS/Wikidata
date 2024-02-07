@@ -201,8 +201,58 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     Titel: "text",
   };
 
+  const propertyInputPlaceholder: Record<string, string> = {
+    Title: "Titel eingeben",
+    "Architektonischer Stil": "Architektonischer Stil eingeben",
+    Breite: "Breite eingeben",
+    Länge: "Länge eingeben",
+    "Anzahl der Aufzüge": "Anzahl der Aufzüge eingeben",
+    "Anzahl der Räume": "Anzahl der Räume eingeben",
+    "Etagen unter Grund": "Etagen unter Grund eingeben",
+    "Etagen über Grund": "Etagen über Grund eingeben",
+    "Inspiriert Von": "Inspiriert Von eingeben",
+    Fläche: "Fläche eingeben",
+    Höhe: "Höhe eingeben",
+    Rollstuhlzugänglichkeit: "Rollstuhlzugänglichkeit eingeben",
+    "Aus Material Gefertigt": "Aus Material Gefertigt eingeben",
+    "Hat Teile": "Hat Teile eingeben",
+    "Verbindet Mit": "Verbindet Mit eingeben",
+    "Commons Kategorie": "Commons Kategorie eingeben",
+    "Instanz Von": "Instanz Von eingeben",
+    "Erscheint im Kulturerberegister":
+      "Erscheint im Kulturerberegister eingeben",
+    "Teil Von": "Teil Von eingeben",
+    "Kulturerbe-Bezeichnung": "Kulturerbe-Bezeichnung eingeben",
+    "Befindet Sich Auf Straße": "Befindet Sich Auf Straße eingeben",
+    Standort: "z.B. Berlin eingeben",
+    "Befindet Sich in Zeitzone": "Befindet Sich in Zeitzone eingeben",
+    Straßenadresse: "Straßenadresse eingeben",
+    Postleitzahl: "Postleitzahl eingeben",
+    Koordinatenlage: "Koordinatenlage eingeben",
+    Gründung: "Gründung eingeben",
+    "Ersetzt Struktur": "Ersetzt Struktur eingeben",
+    "Benannt Nach": "Benannt Nach eingeben",
+    Spitzname: "Spitzname eingeben",
+    "Zustand der Erhaltung": "Zustand der Erhaltung eingeben",
+    "Hat Verwendung": "Hat Verwendung eingeben",
+    "Bedeutsames Ereignis": "Bedeutsames Ereignis eingeben",
+    Kurzname: "Kurzname eingeben",
+    "Gegründet Von": "Gegründet Von eingeben",
+    "In Auftrag Gegeben Von": "In Auftrag Gegeben Von eingeben",
+    Architekt: "Architekt eingeben",
+    "Gewartet Von": "Gewartet Von eingeben",
+    Bewohner: "Bewohner eingeben",
+    Hauptgebäudeunternehmer: "Hauptgebäudeunternehmer eingeben",
+    Betreibender: "Betreibender eingeben",
+    Hauptauftragnehmer: "Hauptauftragnehmer eingeben",
+  };
+
   const getInputTypeForProperty = (property: string): string => {
     return propertyInputTypes[property] || "text";
+  };
+
+  const getInputPlaceholderForProperty = (property: string): string => {
+    return propertyInputPlaceholder[property] || "";
   };
 
   //loading Properties based on Category
@@ -216,6 +266,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     const fields = selectedProperties.map((property) => ({
       name: property,
       type: getInputTypeForProperty(property),
+      placeholder: getInputPlaceholderForProperty(property),
     }));
     onAddFields(fields);
     onClose();
