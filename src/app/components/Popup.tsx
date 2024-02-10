@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { FieldProps } from "./Field";
-import { categories, properties, propertyInputPlaceholder, propertyInputTypes } from "../propgliederung";
+import {
+  categories,
+  properties,
+  propertyInputPlaceholder,
+  propertyInputTypes,
+} from "../propgliederung";
 
 interface PopupProps {
   onAddFields: (fields: FieldProps[]) => void;
@@ -28,7 +33,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
-  /** 
+  /**
    * Codeteile jetzt in propgliederung.ts
    */
 

@@ -20,7 +20,12 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
   const addFields = (newFields: FieldProps[]) => {
-    setFields([...fields, ...newFields]);
+    const uniqueFields = newFields.filter((newField) => {
+      return !fields.some(
+        (field) => field.name === newField.name && field.type === newField.type
+      );
+    });
+    setFields([...fields, ...uniqueFields]);
   };
 
   const addRichTextField = () => {
@@ -38,6 +43,8 @@ export default function Home() {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // saving the form data
+    const formData = new FormData(event.target as HTMLFormElement);
+    const fieldsData = Object.fromEntries(formData.entries());
   };
 
   return (
