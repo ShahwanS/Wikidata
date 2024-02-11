@@ -323,6 +323,7 @@ type Properties = {
     };
   };
 };
+
 export const properties: Properties = {};
 propgliederung.forEach((cat) => {
   properties[cat.title] = {};

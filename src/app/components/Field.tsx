@@ -14,7 +14,9 @@ const Field: React.FC<FieldProps> = ({ name, type, onDelete, placeholder }) => {
     "w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md";
 
   const addfield = () => {
-    setFields([...fields, `Field ${fields.length + 1}`]);
+    if (type !== "number") {
+      setFields([...fields, `Field ${fields.length + 1}`]);
+    } else return;
   };
 
   return (
@@ -31,21 +33,35 @@ const Field: React.FC<FieldProps> = ({ name, type, onDelete, placeholder }) => {
           >
             <MdDeleteOutline size="20px" />
           </button>
-          <button
-            onClick={addfield}
-            className="ml-2 text-green-800 hover:opacity-40"
-          >
-            <CiCirclePlus size="20px" />
-          </button>
+          {type !== "number" && type !== "checkbox" && (
+            <button
+              onClick={addfield}
+              className="ml-2 text-green-800 hover:opacity-40"
+            >
+              <CiCirclePlus size="20px" />
+            </button>
+          )}
         </div>
       </div>
       {type === "file" ? (
         //special button customization
-        <input
-          type="file"
-          name={name}
-          className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
-        />
+        <>
+          <input
+            type="file"
+            name={name}
+            className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
+          />
+          <div>
+            {fields.map((field, index) => (
+              <input
+                key={index}
+                className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
+                type="file"
+                name={`${name}${index}`}
+              />
+            ))}
+          </div>
+        </>
       ) : (
         <>
           <div>
@@ -61,9 +77,9 @@ const Field: React.FC<FieldProps> = ({ name, type, onDelete, placeholder }) => {
               <input
                 key={index}
                 className={`${baseInputClasses} bg-white mt-2`}
-                placeholder={`Additional property ${index + 1}`}
+                placeholder={`${name} ${index + 1}`}
                 type={type}
-                name={`${name}_${index}`}
+                name={`${name}${index}`}
               />
             ))}
           </div>

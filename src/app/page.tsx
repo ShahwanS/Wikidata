@@ -4,17 +4,26 @@ import React, { useState } from "react";
 import Field, { FieldProps } from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
   const [fields, setFields] = useState<FieldProps[]>([
-    { name: "Offizieller Name", type: "text", placeholder: "Name" },
+    {
+      name: "Offizieller Name",
+      type: "text",
+      placeholder: "Name",
+    },
     {
       name: "Datum der offiziellen Eröffnung",
       type: "text",
       placeholder: "Datum : MM/YY oder Jahr",
     },
     { name: "Bild", type: "file" },
-    { name: "Webseite", type: "url", placeholder: "https://example.com" },
+    {
+      name: "Webseite",
+      type: "url",
+      placeholder: "https://example.com",
+    },
   ]);
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -36,8 +45,9 @@ export default function Home() {
     setFields([...fields, richTextField]);
   };
 
-  const removeField = (index: number) => {
-    setFields(fields.filter((_, i) => i !== index));
+  const removeField = (fieldssss: FieldProps) => {
+    const updatedFields = fields.filter((field) => field !== fieldssss);
+    setFields(updatedFields);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -45,6 +55,7 @@ export default function Home() {
     // saving the form data
     const formData = new FormData(event.target as HTMLFormElement);
     const fieldsData = Object.fromEntries(formData.entries());
+    console.log(fieldsData);
   };
 
   return (
@@ -67,7 +78,7 @@ export default function Home() {
                         name="Abschnittstitel eingeben"
                         type={field.type}
                         placeholder={field.placeholder}
-                        onDelete={() => removeField(index)}
+                        onDelete={() => removeField(field)}
                       />
                       <RichTextField name={field.name} />
                     </div>
@@ -79,7 +90,7 @@ export default function Home() {
                       name={field.name}
                       type={field.type}
                       placeholder={field.placeholder}
-                      onDelete={() => removeField(index)}
+                      onDelete={() => removeField(field)}
                     />
                   );
                 }

@@ -12,22 +12,6 @@ interface PopupProps {
   onClose: () => void;
 }
 
-interface Category {
-  title: string;
-  description: string;
-}
-
-interface Properties {
-  [category: string]: {
-    [subCategory: string]: SubCategory;
-  };
-}
-
-interface SubCategory {
-  description: string;
-  properties: string[];
-}
-
 const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
