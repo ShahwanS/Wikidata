@@ -345,6 +345,15 @@ propgliederung.forEach((cat) => {
   });
 });
 
+export const categoryNameForProperty: Record<string, string> = {};
+propgliederung.forEach((cat) => {
+  cat.subcategories.forEach((subcat) => {
+    subcat.properties.forEach((prop) => {
+      categoryNameForProperty[prop.name] = cat.title;
+    });
+  });
+});
+
 /**
  * TODO: gute Placeholder entwickeln und in propgliederung einfügen
  */

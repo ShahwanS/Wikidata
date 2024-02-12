@@ -31,7 +31,8 @@ export default function Home() {
   const addFields = (newFields: FieldProps[]) => {
     const uniqueFields = newFields.filter((newField) => {
       return !fields.some(
-        (field) => field.name === newField.name && field.type === newField.type
+        (field) =>
+          field.name === newField.name && newField.type === newField.type
       );
     });
     setFields([...fields, ...uniqueFields]);
@@ -55,7 +56,13 @@ export default function Home() {
     // saving the form data
     const formData = new FormData(event.target as HTMLFormElement);
     const fieldsData = Object.fromEntries(formData.entries());
-    console.log(fieldsData);
+    // Assuming the field names are unique and the category information is stored in the fields state
+    Object.keys(fieldsData).forEach((fieldName) => {
+      const field = fields.find((field) => field.name === fieldName);
+      if (field) {
+        console.log(`Name: ${field.name}, Category: ${field.category} | `);
+      }
+    });
   };
 
   return (
@@ -78,6 +85,7 @@ export default function Home() {
                         name="Abschnittstitel eingeben"
                         type={field.type}
                         placeholder={field.placeholder}
+                        category={field.category}
                         onDelete={() => removeField(field)}
                       />
                       <RichTextField name={field.name} />
@@ -89,6 +97,7 @@ export default function Home() {
                       key={index}
                       name={field.name}
                       type={field.type}
+                      category={field.category}
                       placeholder={field.placeholder}
                       onDelete={() => removeField(field)}
                     />

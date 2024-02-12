@@ -5,6 +5,7 @@ import {
   properties,
   propertyInputPlaceholder,
   propertyInputTypes,
+  categoryNameForProperty,
 } from "../propgliederung";
 
 interface PopupProps {
@@ -29,6 +30,10 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     return propertyInputPlaceholder[property] || "";
   };
 
+  const getCategoryNameForProperty = (property: string): string => {
+    return categoryNameForProperty[property] || "";
+  };
+
   //loading Properties based on Category
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
@@ -41,6 +46,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
       name: property,
       type: getInputTypeForProperty(property),
       placeholder: getInputPlaceholderForProperty(property),
+      category: getCategoryNameForProperty(property),
     }));
     onAddFields(fields);
     onClose();

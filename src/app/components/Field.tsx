@@ -5,10 +5,17 @@ export interface FieldProps {
   name: string;
   type: string;
   placeholder?: string;
+  category?: string;
   onDelete?: () => void;
 }
 
-const Field: React.FC<FieldProps> = ({ name, type, onDelete, placeholder }) => {
+const Field: React.FC<FieldProps> = ({
+  name,
+  type,
+  onDelete,
+  placeholder,
+  category,
+}) => {
   const [fields, setFields] = useState<String[]>([]);
   const baseInputClasses =
     "w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md";
