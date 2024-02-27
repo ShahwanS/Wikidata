@@ -6,22 +6,22 @@ import {
   propertyInputPlaceholder,
   propertyInputTypes,
   categoryNameForProperty,
+  valueNameForProperty,
 } from "../propgliederung";
 
 interface PopupProps {
-  onAddFields: (fields: FieldProps[]) => void;
-  onClose: () => void;
+  onAddFields: (fields: FieldProps[]) => void; // Callback function to add fields
+  onClose: () => void; // Callback function to close the popup
 }
 
 const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
-  const [step, setStep] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
+  const [step, setStep] = useState(1); // Current step in the popup
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Selected category
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]); // Selected properties
 
   /**
-   * Codeteile jetzt in propgliederung.ts
+   * Helper functions to get input type, placeholder, and category name for a property
    */
-
   const getInputTypeForProperty = (property: string): string => {
     return propertyInputTypes[property] || "text";
   };
@@ -34,24 +34,30 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     return categoryNameForProperty[property] || "";
   };
 
-  //loading Properties based on Category
+  const getValueNameForProperty = (property: string): string => {
+    return valueNameForProperty[property] || "";
+  };
+
+  // Callback function when a category is selected
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     setStep(2);
   };
 
-  // Create fields based on selected properties
+  // Create fields based on selected properties and add them using the onAddFields callback
   const handleSubmit = () => {
     const fields = selectedProperties.map((property) => ({
       name: property,
       type: getInputTypeForProperty(property),
       placeholder: getInputPlaceholderForProperty(property),
       category: getCategoryNameForProperty(property),
+      value: getValueNameForProperty(property),
     }));
     onAddFields(fields);
     onClose();
   };
 
+  // Callback function when a sub-category is selected
   const handleSubCategorySelect = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -109,6 +115,13 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
                 </div>
               ))}
             </div>
+
+            <button
+              onClick={onClose}
+              className="absolute bottom-14 right-10 w-[250px] bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6"
+            >
+              Schließen
+            </button>
           </div>
         )}
 
@@ -161,4 +174,5 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     </div>
   );
 };
+
 export default Popup;

@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
+
 export interface FieldProps {
-  name: string;
-  type: string;
-  placeholder?: string;
-  category?: string;
-  onDelete?: () => void;
+  name: string; // Name of the field
+  type: string; // Type of the field
+  placeholder?: string; // Placeholder text for the field
+  category?: string; // Category of the field
+  onDelete?: () => void; // Function to handle delete action
+  value?: string; // Value of the field
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Field: React.FC<FieldProps> = ({
@@ -14,44 +17,71 @@ const Field: React.FC<FieldProps> = ({
   type,
   onDelete,
   placeholder,
-  category,
+  onChange,
+  value,
 }) => {
-  const [fields, setFields] = useState<String[]>([]);
+  const [fields, setFields] = useState<String[]>([]); // Array to store dynamically added fields
+  const [inputValue, setInputValue] = useState(value || ""); // Initialize inputValue with the provided value or an empty string
+
+  // Update the local state when the value prop changes
+  useEffect(() => {
+    setInputValue(value || "");
+  }, [value]);
+
   const baseInputClasses =
     "w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md";
 
   const addfield = () => {
     if (type !== "number") {
-      setFields([...fields, `Field ${fields.length + 1}`]);
+      setFields([...fields, `Field ${fields.length + 1}`]); // Add a new field to the fields array
     } else return;
+  };
+
+  const removeSubfield = () => {
+    if (fields.length > 0) {
+      const updatedFields = fields.slice(0, -1);
+      setFields(updatedFields);
+    } else {
+      onDelete && onDelete();
+    }
   };
 
   return (
     <div className="mb-6">
       <div className="flex justify-between">
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {name}
+          {name} {/* Display the name of the field */}
         </label>
         <div>
-          <button
-            onClick={onDelete}
-            className="ml-2 text-red-500 hover:text-red-700"
-            aria-label={`Delete ${name}`}
-          >
-            <MdDeleteOutline size="20px" />
-          </button>
-          {type !== "number" && type !== "checkbox" && (
-            <button
-              onClick={addfield}
-              className="ml-2 text-green-800 hover:opacity-40"
-            >
-              <CiCirclePlus size="20px" />
-            </button>
-          )}
+          {type !== "number" &&
+            name !== "Offizieller Name" &&
+            name !== "Datum der offiziellen Eröffnung" &&
+            name !== "Webseite" &&
+            name !== "Bild" && (
+              <button
+                onClick={removeSubfield}
+                className="ml-2 text-red-500 hover:text-red-700"
+                aria-label={`Delete ${name}`}
+              >
+                <MdDeleteOutline size="20px" />
+              </button>
+            )}
+          {type !== "number" &&
+            name !== "Offizieller Name" &&
+            name !== "Datum der offiziellen Eröffnung" &&
+            name !== "Webseite" &&
+            name !== "Bild" && (
+              <button
+                onClick={addfield}
+                className="ml-2 text-green-800 hover:opacity-40"
+              >
+                <CiCirclePlus size="20px" />
+              </button>
+            )}
         </div>
       </div>
       {type === "file" ? (
-        //special button customization
+        // Render file input fields
         <>
           <input
             type="file"
@@ -70,6 +100,7 @@ const Field: React.FC<FieldProps> = ({
           </div>
         </>
       ) : (
+        // Render regular input fields
         <>
           <div>
             <input
@@ -77,6 +108,11 @@ const Field: React.FC<FieldProps> = ({
               placeholder={placeholder}
               type={type}
               name={name}
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                onChange && onChange(e);
+              }}
             />
           </div>
           <div>
@@ -95,4 +131,5 @@ const Field: React.FC<FieldProps> = ({
     </div>
   );
 };
+
 export default Field;

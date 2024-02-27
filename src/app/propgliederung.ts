@@ -5,10 +5,8 @@ export interface Property {
   placeholder?: string;
   maxvalues?: number; // maximale Anzahl an Werten, z.B es gibt nur max. ein Eröffnungsdatum
   required?: boolean; // Es muss angegeben werden, um welches Gebäude es geht.
-  fixed?: boolean; // Eigenschaft ist festgelegt, z.B. die Gebäude befinden sich immer in Deutschland.
+  value?: string; // Vorausgefüllter Wert
   wikidataprop?: string;
-  // selected?: boolean; // ob der Nutzer Angaben zu dieser property machen möchte
-  // setSelected?: (setvalue: boolean) => void;
 }
 
 export interface SubCategory {
@@ -38,7 +36,7 @@ export const propgliederung: Category[] = [
         name: "Dimensionen",
         description: "Gebäudemaße: Breite, Länge und Höhe.",
         properties: [
-          { name: "Höhe", type: "number", wikidataprop: "P2048" },
+          { name: "Höhe (Dimensionen)", type: "number", wikidataprop: "P2048" },
           { name: "Länge", type: "number", wikidataprop: "P2043" },
           { name: "Breite", type: "number", wikidataprop: "P2049" },
         ],
@@ -68,7 +66,7 @@ export const propgliederung: Category[] = [
             name: "Anzahl an Fahrstühlen",
             type: "number",
             wikidataprop: "P1301",
-          }, // nur wenn es mehrere Stockwerke gibt
+          },
         ],
       },
       {
@@ -124,8 +122,8 @@ export const propgliederung: Category[] = [
     description: "Stil, Inspiration, Architekt",
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: "Architektur",
+        description: " Architekturstil, Inspiriert von, Architekt",
         properties: [
           { name: "Architekturstil", type: "text", wikidataprop: "P149" },
           { name: "Inspiriert von", type: "text", wikidataprop: "P941" },
@@ -140,8 +138,8 @@ export const propgliederung: Category[] = [
       "Angaben zu Material, Baumethode, Bauunternehmen, Kosten u.a. ",
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: " Bauwesen",
+        description: " Baumaterial, Baumethode, Bauunternehmen, Kosten",
         properties: [
           { name: "Baumaterial", type: "text", wikidataprop: "P186" },
           { name: "Baumethode", type: "text", wikidataprop: "P2079" },
@@ -163,7 +161,7 @@ export const propgliederung: Category[] = [
     description: "Standort, Ausrichtung, Nachbarn",
     subcategories: [
       {
-        name: "",
+        name: "Standort",
         description: "Nachbarschaft, Koordinaten, Blickrichtung",
         properties: [
           { name: "Angrenzende Gebäude", type: "text", wikidataprop: "P3032" },
@@ -173,13 +171,18 @@ export const propgliederung: Category[] = [
             wikidataprop: "P2789",
           },
           { name: "Koordinaten", type: "text", wikidataprop: "P625" },
-          /*{
+          {
             name: "Zeitzone",
             type: "text",
-            fixed: true,
+            value: "MEZ",
             wikidataprop: "P6237",
-          },*/ //immer MEZ
-          //{ name: "Land", type: "text", fixed: true, wikidataprop: "P17" }, // immer Deutschland
+          },
+          {
+            name: "Land",
+            type: "text",
+            value: "Deutschland",
+            wikidataprop: "P17",
+          },
           { name: "Blickrichtung", type: "text", wikidataprop: "P7787" },
         ],
       },
@@ -189,7 +192,7 @@ export const propgliederung: Category[] = [
         properties: [
           { name: "Straße", type: "text", wikidataprop: "P669" }, //wenn Straße als eigenständiges Item vorhanden
           { name: "Komplette Adresse", type: "text", wikidataprop: "P6375" }, // wenn Straße nicht als eigenständiges Item
-          //{ name: "Postleitzahl", type: "text", wikidataprop: "P281" },
+          { name: "Postleitzahl", type: "text", wikidataprop: "P281" },
         ],
       },
     ],
@@ -199,8 +202,9 @@ export const propgliederung: Category[] = [
     description: "Bahjahr, Begründer, Eröffnung, Schließung, Abriss u.a.",
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: " Historische Daten",
+        description:
+          " Baujahr, Eröffnungsdatum, Schließungsdatum, Abrissdatum, Schlüsselereignis, Schlüsselperson, Auftraggeber, Begründer, Vorgängerbauwerk, Nachfolgebauwerk",
         properties: [
           { name: "Baujahr", type: "text", wikidataprop: "P571" },
           { name: "Eröffnungsdatum", type: "text", wikidataprop: "P1619" },
@@ -221,8 +225,9 @@ export const propgliederung: Category[] = [
     description: "Wer nutzt das Gebäude für was? Zustand des Gebäudes",
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: "Nutzung und Zustand",
+        description:
+          " Nutzungszustand, Erhaltungszustand, Nutzer, Verwendungszweck, Betreiber, Unterhalten durch, Eigentümer, Konfessionszugehörigkeit",
         properties: [
           { name: "Nutzungszustand", type: "text", wikidataprop: "P5817" },
           { name: "Erhaltungszustand", type: "text", wikidataprop: "P5816" },
@@ -245,12 +250,12 @@ export const propgliederung: Category[] = [
     description: "Angaben zur Klassifizierung, Schutzkategorie, Denkmalliste",
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: "Klassifizierung",
+        description: "Schutzkategorie, Denkmalliste, Ist Instanz von",
         properties: [
           {
             name: "Ist Instanz von",
-            fixed: true,
+            value: "Gebäude",
             type: "text",
             wikidataprop: "P31",
           }, // immer Gebäude
@@ -354,12 +359,22 @@ propgliederung.forEach((cat) => {
   });
 });
 
+//write a method that gets the value name for a property, not the title of the property but the default input value
+export const valueNameForProperty: Record<string, string> = {};
+propgliederung.forEach((cat) => {
+  cat.subcategories.forEach((subcat) => {
+    subcat.properties.forEach((prop) => {
+      if (prop.value) valueNameForProperty[prop.name] = prop.value;
+    });
+  });
+});
+
 /**
  * TODO: gute Placeholder entwickeln und in propgliederung einfügen
  */
 export const propertyInputPlaceholder: Record<string, string> = {
   Title: "Titel eingeben",
-  "Architekturstil": "Architektonischen Stil eingeben",
+  Architekturstil: "Architektonischen Stil eingeben",
   Breite: "Breite in Metern eingeben",
   Länge: "Länge in Metern eingeben",
   "Anzahl der Aufzüge": "Anzahl der Aufzüge eingeben",
@@ -371,42 +386,42 @@ export const propertyInputPlaceholder: Record<string, string> = {
   Grundfläche: "Grundfläche in Quadratmetern eingeben",
   Höhe: "Höhe eingeben",
   Rollstuhlzugänglichkeit: "Ja/Nein eingeben",
-  "Enthält" : "z.B. wichtige Räume oder ähnliches",
-  "Baumaterial": "Wesentlichste Baumaterialien",
-  "Baumethode" : "Baumethode eingeben",
-  "Bauunternehmen" : "Bauunternehmen eingeben",
-  "Immobilienentwickler": "Immobilienentwickler eingeben",
-  "Statiker / Ingenieur" : "Ingeniuer eingeben",
+  Enthält: "z.B. wichtige Räume oder ähnliches",
+  Baumaterial: "Wesentlichste Baumaterialien",
+  Baumethode: "Baumethode eingeben",
+  Bauunternehmen: "Bauunternehmen eingeben",
+  Immobilienentwickler: "Immobilienentwickler eingeben",
+  "Statiker / Ingenieur": "Ingeniuer eingeben",
   "Hat Teile": "weitere Gebäudeteile eingeben",
-  "Angrenzende Gebäude" : "physisch verbunden mit",
+  "Angrenzende Gebäude": "physisch verbunden mit",
   "Verbindet Mit": "z.B. einem größeren Gebäudekomplex?",
   "Commons-Kategorie": "Commons Kategorie eingeben",
   "Ist Instanz von": "Instanz Von eingeben",
   "Erscheint im Kulturerberegister": "Ja/Nein eingeben",
   "Ist Teil von": "z.B. ein größerer Gebäudekomplex?",
   "Kulturerbe-Bezeichnung": "Kulturerbe-Bezeichnung eingeben",
-  "Straße": "Befindet Sich Auf Straße eingeben",
+  Straße: "Befindet Sich Auf Straße eingeben",
   //Standort: "z.B. Berlin eingeben",
   //"Befindet Sich in Zeitzone": "Befindet Sich in Zeitzone eingeben",
   "Komplette Adresse": "Straße und Hausnummer eingeben",
   //Postleitzahl: "Postleitzahl eingeben",
-  "Koordinaten": "Längen- / Breitengrad eingeben",
-  "Blickrichtung" : "Blickrichtung eingeben",
+  Koordinaten: "Längen- / Breitengrad eingeben",
+  Blickrichtung: "Blickrichtung eingeben",
   Gründung: "Gründungsjahr eingeben",
-  "Offizieller Name" : "Offiziellen Namen eingeben",
+  "Offizieller Name": "Offiziellen Namen eingeben",
   "Ersetzt Struktur": "Ersetzt Struktur eingeben",
-  "Namensgeber" : "Namensgeber eingeben",
+  Namensgeber: "Namensgeber eingeben",
   "Benannt nach": "Benannt nach eingeben",
-  "Baujahr" : "Datum : MM/YY oder Jahr",
-  "Eröffnungsdatum" : "Datum : MM/YY oder Jahr",
-  "Schließungsdatum" : "Datum : MM/YY oder Jahr",
-  "Abrissdatum" : "Datum : MM/YY oder Jahr",
+  Baujahr: "Datum : MM/YY oder Jahr",
+  Eröffnungsdatum: "Datum : MM/YY oder Jahr",
+  Schließungsdatum: "Datum : MM/YY oder Jahr",
+  Abrissdatum: "Datum : MM/YY oder Jahr",
   Spitzname: "Spitzname eingeben",
-  "Nutzer" : "Nutzer eingeben",
-  "Nutzungszustand" : "sehr schlecht/schlecht/normal/gut/sehr gut", //  
-  "Erhaltungszustand": "sehr schlecht/schlecht/normal/gut/sehr gut", // 
+  Nutzer: "Nutzer eingeben",
+  Nutzungszustand: "sehr schlecht/schlecht/normal/gut/sehr gut", //
+  Erhaltungszustand: "sehr schlecht/schlecht/normal/gut/sehr gut", //
   //"Hat Verwendung": "Hat Verwendung eingeben",
-  "Verwendungszweck" : "Verwendungszweck eingeben",
+  Verwendungszweck: "Verwendungszweck eingeben",
   "Bedeutsames Ereignis": "Bedeutsames Ereignis eingeben",
   Kurzname: "Kurzname eingeben",
   "Gegründet Von": "Names des/der Gründer eingeben",
@@ -415,18 +430,19 @@ export const propertyInputPlaceholder: Record<string, string> = {
   "Gewartet Von": "Name der Wartungsfirma eingeben",
   Bewohner: "Anzahl der Bewohnern eingeben",
   Hauptgebäudeunternehmer: "Hauptgebäudeunternehmer eingeben",
-  "Betreiber": "Betreibender eingeben",
+  Betreiber: "Betreibender eingeben",
   Hauptauftragnehmer: "Hauptauftragnehmer eingeben",
-  "Schlüsselereignis" : "Wichtiges historisches Ereignis (z.B. Religionsgespräche)",
-  "Schlüsselperson" : "z.B. Landgraf Philipp",
-  "Auftraggeber" : "Auftraggeber eingeben",
-  "Begründer" : "Begründer eingeben",
-  "Vorgängerbauwerk" : "Vorgängerwerk eingeben",
-  "Nachfolgebauwerk" : "Nachfolgebauwerk eingeben",
-  "Unterhalten durch" : "Wer unterhält das Gebäude?",
-  "Eigentümer" : "Eigenrümer des Gebäudes eingeben",
-  "Konfessionszugehörigkeit" : "Falls Zugehörigkeit gegeben",
-  "Schutzkategorie" : "Schutzkategorie eingeben",
-  "Steht in der Denkmalliste" : "Denkmaliste eingeben",
-  "Offizielle Website" : "URL eingeben"
+  Schlüsselereignis:
+    "Wichtiges historisches Ereignis (z.B. Religionsgespräche)",
+  Schlüsselperson: "z.B. Landgraf Philipp",
+  Auftraggeber: "Auftraggeber eingeben",
+  Begründer: "Begründer eingeben",
+  Vorgängerbauwerk: "Vorgängerwerk eingeben",
+  Nachfolgebauwerk: "Nachfolgebauwerk eingeben",
+  "Unterhalten durch": "Wer unterhält das Gebäude?",
+  Eigentümer: "Eigenrümer des Gebäudes eingeben",
+  Konfessionszugehörigkeit: "Falls Zugehörigkeit gegeben",
+  Schutzkategorie: "Schutzkategorie eingeben",
+  "Steht in der Denkmalliste": "Denkmaliste eingeben",
+  "Offizielle Website": "URL eingeben",
 };

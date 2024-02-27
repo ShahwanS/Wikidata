@@ -1,13 +1,14 @@
 "use client";
-
 import React, { useState } from "react";
 import Field, { FieldProps } from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
-import { v4 as uuidv4 } from "uuid";
 
+// Define the Home component
 export default function Home() {
+  // Define state variables
   const [fields, setFields] = useState<FieldProps[]>([
+    // Initial fields
     {
       name: "Offizieller Name",
       type: "text",
@@ -24,104 +25,164 @@ export default function Home() {
       type: "url",
       placeholder: "https://example.com",
     },
+    // {
+    //   name: "Land",
+    //   type: "text",
+    //   placeholder: "Land",
+    //   category: "Land oder Zeitzone",
+    //   value: "Deutschland",
+    // },
+    // {
+    //   name: "Zeitzone",
+    //   type: "text",
+    //   placeholder: "Zeitzone",
+    //   category: "Land oder Zeitzone",
+    //   value: "CET",
+    // },
   ]);
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
+  // Function to add new fields
   const addFields = (newFields: FieldProps[]) => {
     const uniqueFields = newFields.filter((newField) => {
       return !fields.some(
-        (field) =>
-          field.name === newField.name && newField.type === newField.type
+        (field) => field.name === newField.name && field.type === newField.type
       );
     });
     setFields([...fields, ...uniqueFields]);
   };
 
+  // Function to add a rich text field
   const addRichTextField = () => {
     const richTextField: FieldProps = {
-      name: "Reichhaltiger Text",
+      name: "Rich Text",
       type: "richtext",
     };
     setFields([...fields, richTextField]);
   };
-
+  // Function to remove a field
   const removeField = (fieldssss: FieldProps) => {
     const updatedFields = fields.filter((field) => field !== fieldssss);
     setFields(updatedFields);
   };
 
+  // Function to handle form submission
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // saving the form data
+    // Saving the form data
     const formData = new FormData(event.target as HTMLFormElement);
     const fieldsData = Object.fromEntries(formData.entries());
-    // Assuming the field names are unique and the category information is stored in the fields state
-    Object.keys(fieldsData).forEach((fieldName) => {
-      const field = fields.find((field) => field.name === fieldName);
-      if (field) {
-        console.log(`Name: ${field.name}, Category: ${field.category} | `);
-      }
-    });
+    console.log(fieldsData);
   };
 
+  // Interface to group fields by category
+  interface GroupedFields {
+    [category: string]: FieldProps[];
+  }
+
+  // Group fields by their category for rendering
+  const fieldsByCategory = fields.reduce<GroupedFields>((acc, field) => {
+    const category = field.category || ""; // Assign to 'Other' if category is undefined
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(field);
+    return acc;
+  }, {});
+
+  // Render the component
   return (
-    <div className="min-h-screen bg-wikipediaGray flex justify-center items-center ">
+    <div className="min-h-screen bg-wikipediaGray flex justify-center items-center">
       <div className="max-w-5xl mx-auto">
-        <header className="text-3xl font-semibold text-center mb-4  w-[64rem]">
+        <header className="text-3xl font-semibold text-center mb-4">
           Wikidata Formular
         </header>
         <form
           onSubmit={handleSubmit}
-          className="flex-grow flex flex-col justify-center "
+          className="bg-white p-6 rounded shadow-md"
         >
-          <div className="max-w-7xl mx-auto bg-white p-6 rounded shadow-md">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-              {fields.map((field, index) => {
-                if (field.type === "richtext") {
-                  return (
-                    <div key={index} className="col-span-2">
+          {Object.entries(fieldsByCategory).map(([category, fields], index) => (
+            <div key={index}>
+              <h2 className="flex justify-center items-center text-xl font-bold mb-10 mt-4">
+                {category}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                {fields.map((field, fieldIndex) => {
+                  if (field.type === "richtext") {
+                    return (
+                      <div key={index} className="col-span-2">
+                        <Field
+                          name="Abschnittstitel eingeben"
+                          type={field.type}
+                          placeholder={field.placeholder}
+                          onDelete={() => removeField(field)}
+                        />
+                        <RichTextField name={field.name} />
+                      </div>
+                    );
+                  } else {
+                    return (
                       <Field
-                        name="Abschnittstitel eingeben"
+                        key={index}
+                        name={field.name}
                         type={field.type}
+                        value={field.value}
                         placeholder={field.placeholder}
-                        category={field.category}
                         onDelete={() => removeField(field)}
                       />
-                      <RichTextField name={field.name} />
-                    </div>
-                  );
-                } else {
-                  return (
-                    <Field
-                      key={index}
-                      name={field.name}
-                      type={field.type}
-                      category={field.category}
-                      placeholder={field.placeholder}
-                      onDelete={() => removeField(field)}
-                    />
-                  );
-                }
-              })}
-            </div>
-            <div className="flex justify-between mt-4">
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setShowPopup(true)}
-                  className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
-                >
-                  Weitere Felder hinzufügen
-                </button>
-                <button
-                  type="button"
-                  onClick={addRichTextField}
-                  className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300"
-                >
-                  Abschnitt hinzufügen
-                </button>
+                    );
+                  }
+                })}
               </div>
+            </div>
+          ))}
+
+          <div className="flex-col items-center justify-between mt-4 space-y-10">
+            <div className="flex justify-between items-center">
+              <button
+                type="button"
+                onClick={() => setShowPopup(true)}
+                className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
+              >
+                Weitere Felder hinzufügen
+              </button>
+              <button
+                type="button"
+                onClick={addRichTextField}
+                className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300"
+              >
+                Freitext hinzufügen
+              </button>
+            </div>
+            <div className="flex justify-between items-center">
+              <button
+                type="reset"
+                //on click reset take all the current fields that we have right now and recreate them with an empty value
+                onClick={() => {
+                  setFields([
+                    {
+                      name: "Offizieller Name",
+                      type: "text",
+                      placeholder: "Name",
+                    },
+                    {
+                      name: "Datum der offiziellen Eröffnung",
+                      type: "text",
+                      placeholder: "Datum : MM/YY oder Jahr",
+                    },
+                    { name: "Bild", type: "file" },
+                    {
+                      name: "Webseite",
+                      type: "url",
+                      placeholder: "https://example.com",
+                    },
+                  ]);
+                }}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+              >
+                alle Felder zurücksetzen
+              </button>
               <button
                 type="submit"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
@@ -131,10 +192,10 @@ export default function Home() {
             </div>
           </div>
         </form>
+        {showPopup && (
+          <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} />
+        )}
       </div>
-      {showPopup && (
-        <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} />
-      )}
     </div>
   );
 }
