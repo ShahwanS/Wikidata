@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Field, { FieldProps } from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
+import { convert2Markup} from "./convertToMarkup";
 
 // Define the Home component
 export default function Home() {
@@ -47,7 +48,7 @@ export default function Home() {
   const addFields = (newFields: FieldProps[]) => {
     const uniqueFields = newFields.filter((newField) => {
       return !fields.some(
-        (field) => field.name === newField.name && field.type === newField.type
+        (field: { name: string; type: string; }) => field.name === newField.name && field.type === newField.type
       );
     });
     setFields([...fields, ...uniqueFields]);
@@ -63,7 +64,7 @@ export default function Home() {
   };
   // Function to remove a field
   const removeField = (fieldssss: FieldProps) => {
-    const updatedFields = fields.filter((field) => field !== fieldssss);
+    const updatedFields = fields.filter((field: FieldProps) => field !== fieldssss);
     setFields(updatedFields);
   };
 
@@ -73,7 +74,10 @@ export default function Home() {
     // Saving the form data
     const formData = new FormData(event.target as HTMLFormElement);
     const fieldsData = Object.fromEntries(formData.entries());
+    //console.log(formData);
     console.log(fieldsData);
+    //convertToMarkup(fieldsData);
+    convert2Markup(fieldsData);
   };
 
   // Interface to group fields by category
@@ -82,7 +86,7 @@ export default function Home() {
   }
 
   // Group fields by their category for rendering
-  const fieldsByCategory = fields.reduce<GroupedFields>((acc, field) => {
+  const fieldsByCategory = fields.reduce<GroupedFields>((acc: { [x: string]: any[]; }, field: { category: string; }) => {
     const category = field.category || ""; // Assign to 'Other' if category is undefined
     if (!acc[category]) {
       acc[category] = [];

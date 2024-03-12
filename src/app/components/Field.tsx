@@ -6,6 +6,7 @@ export interface FieldProps {
   name: string; // Name of the field
   type: string; // Type of the field
   placeholder?: string; // Placeholder text for the field
+  wikidataprop: string;
   category?: string; // Category of the field
   onDelete?: () => void; // Function to handle delete action
   value?: string; // Value of the field
@@ -17,6 +18,7 @@ const Field: React.FC<FieldProps> = ({
   type,
   onDelete,
   placeholder,
+  wikidataprop,
   onChange,
   value,
 }) => {
