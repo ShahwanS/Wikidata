@@ -5,47 +5,63 @@ import { propgliederung } from "./propgliederung";
 
 export const convert2Markup = (data : any) => {
 
-   
-   //const test = dataToMap(data).get("Gebäudemaße und -eigenschaften")
-    dataToMap(data)
+    const dataAsMap = dataToMap(data)
+    const dataAsJson = convertDataToJson(dataAsMap)
+    const dataAsMd = json2md(dataAsJson)
+    console.log(dataAsMd)
  
-    console.log(json2md([
-        { h1: "a"}
-      , { blockquote: "A JSON to Markdown converter." }
-      , { img: [
-            { title: "Some image", source: "https://example.com/some-image.png" }
-          , { title: "Another image", source: "https://example.com/some-image1.png" }
-          , { title: "Yet another image", source: "https://example.com/some-image2.png" }
-          ]
-        }
-      , { h2: "Features" }
-      , { ol: [
-            "Easy to use"
-          , "You can programmatically generate Markdown content"
-          , "..."
-          ]
-        }
-      , { h2: "How to contribute" }
-      , { ol: [
-            "Fork the project"
-          , "Create your branch"
-          , "Raise a pull request"
-          ]
-        }
-      , { h2: "Code blocks" }
-      , { p: "Below you can see a code block example." }
-      , { "code": {
-            language: "js"
-          , content: [
-              "function sum (a, b) {"
-            , "   return a + b"
-            , "}"
-            , "sum(1, 2)"
-            ]
-          }
-        }
-    ]))
 }
+
+
+
+const convertDataToJson = (dataAsMap) => {
+    const jsonOutput = [];
+
+    // Pick up officail name as title 
+    const TITLE = (getTitle(dataAsMap.get("Namensangaben")))
+    jsonOutput.push({h1: TITLE})
+    dataAsMap.forEach((dataList, category) => {
+
+      // print category as subtitle (as ##category)
+      jsonOutput.push({ h2: category });
+
+      // Iterate over data list
+      dataList.forEach(([dataName, inputData, wikiprop]) => {
+
+        
+          // Handle different types of data
+          if (wikiprop === "P18") {
+              // Image data
+              jsonOutput.push({
+                  img: [
+                      { title: "Image", source: inputData }
+                  ]
+              });
+          } else if (wikiprop === "P856") {
+              // URL data
+              jsonOutput.push({
+                  p: `[Link Text](${inputData})`
+              });
+          } else {
+              jsonOutput.push({
+              ol : [
+              `${dataName}: ${inputData}`,
+                `wikiProperty : ${wikiprop}`
+              ]
+              })
+          }
+          
+      });
+        
+    });
+
+    //console.log(jsonOutput)
+    
+
+    return jsonOutput;
+};
+
+
 
 /**
  * convert data to map
@@ -95,6 +111,20 @@ function allCategoryAndWikiprop() {
     });
     console.log(CATEGORYANDPROPERTYMAP);
     return CATEGORYANDPROPERTYMAP;
+}
+
+/**
+ * 
+ * @param dataList A list from the categorie
+ * @param targetDataName 
+ */
+function getTitle(dataList: any[]) {
+  for (let i = 0; i < dataList.length; i++) {
+    const data = dataList[i];
+    if (data[0] === 'Offizieller Name') {
+      return data[1];
+    }
+  }
 }
 
 
