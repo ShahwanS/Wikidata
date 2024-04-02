@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Field, { FieldProps } from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
-import { convert2Markup} from "./convertToMarkup";
+import { convert2Markup } from "./convertToMarkup";
 
 // Define the Home component
 export default function Home() {
@@ -48,7 +48,8 @@ export default function Home() {
   const addFields = (newFields: FieldProps[]) => {
     const uniqueFields = newFields.filter((newField) => {
       return !fields.some(
-        (field: { name: string; type: string; }) => field.name === newField.name && field.type === newField.type
+        (field: { name: string; type: string }) =>
+          field.name === newField.name && field.type === newField.type
       );
     });
     setFields([...fields, ...uniqueFields]);
@@ -64,7 +65,9 @@ export default function Home() {
   };
   // Function to remove a field
   const removeField = (fieldssss: FieldProps) => {
-    const updatedFields = fields.filter((field: FieldProps) => field !== fieldssss);
+    const updatedFields = fields.filter(
+      (field: FieldProps) => field !== fieldssss
+    );
     setFields(updatedFields);
   };
 
@@ -74,10 +77,19 @@ export default function Home() {
     // Saving the form data
     const formData = new FormData(event.target as HTMLFormElement);
     const fieldsData = Object.fromEntries(formData.entries());
-    //console.log(formData);
-    console.log(fieldsData);
-    //convertToMarkup(fieldsData);
-    convert2Markup(fieldsData);
+
+    const markupOutput = convert2Markup(fieldsData);
+    // Ensure that convert2Markup returns a string value
+    if (markupOutput !== undefined) {
+      const blob = new Blob([markupOutput], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "output.md";
+      a.click();
+    } else {
+      alert("Bitte füllen Sie alle Felder aus");
+    }
   };
 
   // Interface to group fields by category
@@ -86,14 +98,17 @@ export default function Home() {
   }
 
   // Group fields by their category for rendering
-  const fieldsByCategory = fields.reduce<GroupedFields>((acc: { [x: string]: any[]; }, field: { category: string; }) => {
-    const category = field.category || ""; // Assign to 'Other' if category is undefined
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(field);
-    return acc;
-  }, {});
+  const fieldsByCategory = fields.reduce<GroupedFields>(
+    (acc: GroupedFields, field: FieldProps) => {
+      const category = field.category || ""; // Assign to 'Other' if category is undefined
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(field);
+      return acc;
+    },
+    {}
+  );
 
   // Render the component
   return (
@@ -191,7 +206,7 @@ export default function Home() {
                 type="submit"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
               >
-                Einreichen
+                Speichern
               </button>
             </div>
           </div>

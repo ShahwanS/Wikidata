@@ -38,10 +38,6 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     return valueNameForProperty[property] || "";
   };
 
-  const getWikiPropForProperty = (property : string) : string => {
-    return wikiPropForProperty[property] || "";
-  };
-
   // Callback function when a category is selected
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
