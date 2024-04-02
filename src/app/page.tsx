@@ -26,21 +26,10 @@ export default function Home() {
       type: "url",
       placeholder: "https://example.com",
     },
-    // {
-    //   name: "Land",
-    //   type: "text",
-    //   placeholder: "Land",
-    //   category: "Land oder Zeitzone",
-    //   value: "Deutschland",
-    // },
-    // {
-    //   name: "Zeitzone",
-    //   type: "text",
-    //   placeholder: "Zeitzone",
-    //   category: "Land oder Zeitzone",
-    //   value: "CET",
-    // },
   ]);
+  const [richTextState, setRichTextState] = useState<{ [key: string]: string }>(
+    {}
+  );
 
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
@@ -53,6 +42,13 @@ export default function Home() {
       );
     });
     setFields([...fields, ...uniqueFields]);
+  };
+
+  const updateRichTextContent = (fieldName: string, content: string) => {
+    setRichTextState((prevState) => ({
+      ...prevState,
+      [fieldName]: content,
+    }));
   };
 
   // Function to add a rich text field
@@ -74,19 +70,27 @@ export default function Home() {
   // Function to handle form submission
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Saving the form data
-    const formData = new FormData(event.target as HTMLFormElement);
-    const fieldsData = Object.fromEntries(formData.entries());
 
+    // Initialize formData with existing form fields
+    const formData = new FormData(event.target as HTMLFormElement);
+    let fieldsData = Object.fromEntries(formData.entries());
+
+    // Directly add rich text content from state to fieldsData
+    Object.keys(richTextState).forEach((fieldName) => {
+      fieldsData[fieldName] = richTextState[fieldName];
+    });
+
+    console.log("Fields Data:", fieldsData);
     const markupOutput = convert2Markup(fieldsData);
-    // Ensure that convert2Markup returns a string value
+
     if (markupOutput !== undefined) {
-      const blob = new Blob([markupOutput], { type: "text/markdown" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "output.md";
-      a.click();
+      console.log(markupOutput);
+      // const blob = new Blob([markupOutput], { type: "text/markdown" });
+      // const url = URL.createObjectURL(blob);
+      // const a = document.createElement("a");
+      // a.href = url;
+      // a.download = "output.md";
+      // a.click();
     } else {
       alert("Bitte füllen Sie alle Felder aus");
     }
@@ -130,20 +134,18 @@ export default function Home() {
                 {fields.map((field, fieldIndex) => {
                   if (field.type === "richtext") {
                     return (
-                      <div key={index} className="col-span-2">
-                        <Field
-                          name="Abschnittstitel eingeben"
-                          type={field.type}
-                          placeholder={field.placeholder}
-                          onDelete={() => removeField(field)}
+                      <div key={fieldIndex} className="col-span-2">
+                        <RichTextField
+                          name={field.name}
+                          wikiDataProp="richtext"
+                          updateContent={updateRichTextContent}
                         />
-                        <RichTextField name={field.name} />
                       </div>
                     );
                   } else {
                     return (
                       <Field
-                        key={index}
+                        key={field.wikidataprop}
                         name={field.name}
                         type={field.type}
                         value={field.value}

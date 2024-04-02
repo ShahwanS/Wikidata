@@ -46,7 +46,8 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
 
   // Create fields based on selected properties and add them using the onAddFields callback
   const handleSubmit = () => {
-    const fields = selectedProperties.map((property) => ({
+    const fields = selectedProperties.map((property, index) => ({
+      id: index,
       name: property,
       type: getInputTypeForProperty(property),
       placeholder: getInputPlaceholderForProperty(property),

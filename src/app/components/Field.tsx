@@ -57,6 +57,7 @@ const Field: React.FC<FieldProps> = ({
         <div>
           {type !== "number" &&
             name !== "Offizieller Name" &&
+            name !== "Abschnittstitel" &&
             name !== "Datum der offiziellen Eröffnung" &&
             name !== "Webseite" &&
             name !== "Bild" && (
@@ -70,6 +71,7 @@ const Field: React.FC<FieldProps> = ({
             )}
           {type !== "number" &&
             name !== "Offizieller Name" &&
+            name !== "Abschnittstitel" &&
             name !== "Datum der offiziellen Eröffnung" &&
             name !== "Webseite" &&
             name !== "Bild" && (
@@ -93,7 +95,7 @@ const Field: React.FC<FieldProps> = ({
           <div>
             {fields.map((field, index) => (
               <input
-                key={index}
+                key={wikidataprop}
                 className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
                 type="file"
                 name={`${name}${index}`}
@@ -120,7 +122,7 @@ const Field: React.FC<FieldProps> = ({
           <div>
             {fields.map((field, index) => (
               <input
-                key={index}
+                key={wikidataprop}
                 className={`${baseInputClasses} bg-white mt-2`}
                 placeholder={`${name} ${index + 1}`}
                 type={type}
