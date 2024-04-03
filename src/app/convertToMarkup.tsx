@@ -1,9 +1,11 @@
 import json2md from "json2md";
 import { propgliederung } from "./propgliederung";
 
-function simpleHtmlToMarkdown(html: string) {
 
-  // Translate HTML-Tags to Mardown-Tags
+/**
+ * Simple function to translate html-tags to markdown-tags
+ */
+function simpleHtmlToMarkdown(html: string) {
   let markdown = html
     .replace(/<b>(.*?)<\/b>/g, "**$1**") // Bald texts
     .replace(/<i>(.*?)<\/i>/g, "_$1_") // Italic texts
@@ -20,8 +22,13 @@ function simpleHtmlToMarkdown(html: string) {
   return markdown.trim(); // Trim the final string to remove any leading/trailing whitespace
 }
 
+/**
+ * Simple method to convert data from website to markdown-content
+ * @param data 
+ * @returns makdown-data
+ */
 export const convert2Markup = (data: any) => {
-  const dataAsMap = dataToMap(data); // First mapping
+  const dataAsMap = dataToMap(data); // First mapping properties to categories
   const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
   const dataAsMd = json2md(dataAsJson); // Finally json to markdown
   return dataAsMd;
@@ -35,7 +42,7 @@ export const convert2Markup = (data: any) => {
 const convertDataToJson = (dataAsMap: Map<any, any>) => {
   const jsonOutput = [];
 
-  // Pick up officail name as title
+  // Pick up official name as title
   const title = getTitle(dataAsMap.get("Namensangaben"));
   jsonOutput.push({ h1: title });
   dataAsMap.forEach((dataList, category) => {
@@ -79,6 +86,11 @@ const convertDataToJson = (dataAsMap: Map<any, any>) => {
   return jsonOutput;
 };
 
+/**
+ * Special Method to combine wikiData-props with corresponding categories
+ * @param data 
+ * @returns properties mapped to categories
+ */
 const dataToMap = (data: any) => {
   const resultMap = new Map();
   const CATEGORYANDPROPERTYMAP = allCategoryAndWikiprop();
@@ -138,7 +150,7 @@ function allCategoryAndWikiprop() {
 }
 
 /**
- *
+ * 
  * @param dataList A list from the categorie
  * @param targetDataName
  */
@@ -154,6 +166,5 @@ function getTitle(dataList: any[]): string {
       return data[1];
     }
   }
-
   return "Default Title"; // Return a default title if "Offizieller Name" is not found
 }
