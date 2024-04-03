@@ -2,26 +2,28 @@ import json2md from "json2md";
 import { propgliederung } from "./propgliederung";
 
 function simpleHtmlToMarkdown(html: string) {
+
+  // Translate HTML-Tags to Mardown-Tags
   let markdown = html
-    .replace(/<b>(.*?)<\/b>/g, "**$1**")
-    .replace(/<i>(.*?)<\/i>/g, "_$1_")
-    .replace(/<ul>(.*?)<\/ul>/gs, (match, p1) => {
+    .replace(/<b>(.*?)<\/b>/g, "**$1**") // Bald texts
+    .replace(/<i>(.*?)<\/i>/g, "_$1_") // Italic texts
+    .replace(/<ul>(.*?)<\/ul>/gs, (match, p1) => { // Unordered lists
       return p1.replace(/<li>(.*?)<\/li>/g, "- $1").trim();
     })
-    .replace(/<ol>(.*?)<\/ol>/gs, (match, p1) => {
+    .replace(/<ol>(.*?)<\/ol>/gs, (match, p1) => { // ordered lists
       let counter = 1;
       return p1.replace(/<li>(.*?)<\/li>/g, () => `${counter++}. $1`).trim();
     })
-    .replace(/<a href="(.*?)">(.*?)<\/a>/g, "[$2]($1)")
+    .replace(/<a href="(.*?)">(.*?)<\/a>/g, "[$2]($1)") // Links
     .replace(/<p>(.*?)<\/p>/g, "$1\n") // Convert paragraphs to text followed by a newline
     .replace(/<br\s*\/?>/g, "\n"); // Convert <br> tags to newlines
   return markdown.trim(); // Trim the final string to remove any leading/trailing whitespace
 }
 
 export const convert2Markup = (data: any) => {
-  const dataAsMap = dataToMap(data);
-  const dataAsJson = convertDataToJson(dataAsMap);
-  const dataAsMd = json2md(dataAsJson);
+  const dataAsMap = dataToMap(data); // First mapping
+  const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
+  const dataAsMd = json2md(dataAsJson); // Finally json to markdown
   return dataAsMd;
 };
 
