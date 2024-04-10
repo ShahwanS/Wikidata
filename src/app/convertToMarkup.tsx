@@ -1,7 +1,5 @@
 import json2md from "json2md";
 import { propgliederung } from "./propgliederung";
-
-
 /**
  * Simple function to translate html-tags to markdown-tags
  */
@@ -9,22 +7,31 @@ function simpleHtmlToMarkdown(html: string) {
   let markdown = html
     .replace(/<b>(.*?)<\/b>/g, "**$1**") // Bald texts
     .replace(/<i>(.*?)<\/i>/g, "_$1_") // Italic texts
-    .replace(/<ul>(.*?)<\/ul>/gs, (match, p1) => { // Unordered lists
-      return p1.replace(/<li>(.*?)<\/li>/g, "- $1").trim();
+    .replace(/<ul>(.*?)<\/ul>/gs, (match, p1) => {
+      // Unordered lists
+      return p1.replace(/<li>(.*?)<\/li>/g, "- $1\n").trim();
     })
-    .replace(/<ol>(.*?)<\/ol>/gs, (match, p1) => { // ordered lists
+    .replace(/<ol>(.*?)<\/ol>/gs, (match, p1) => {
+      // Ordered lists
       let counter = 1;
-      return p1.replace(/<li>(.*?)<\/li>/g, () => `${counter++}. $1`).trim();
+      return p1
+        .replace(
+          /<li>(.*?)<\/li>/g,
+          (match: any) =>
+            `${counter++}. ${match.replace(/<li>(.*?)<\/li>/, "$1")}\n`
+        )
+        .trim();
     })
     .replace(/<a href="(.*?)">(.*?)<\/a>/g, "[$2]($1)") // Links
     .replace(/<p>(.*?)<\/p>/g, "$1\n") // Convert paragraphs to text followed by a newline
-    .replace(/<br\s*\/?>/g, "\n"); // Convert <br> tags to newlines
+    .replace(/<br\s*\/?>/g, "\n") // Convert <br> tags to newlines
+    .replace(/<b><i>(.*?)<\/i><\/b>/g, "**_$1_**");
   return markdown.trim(); // Trim the final string to remove any leading/trailing whitespace
 }
 
 /**
  * Simple method to convert data from website to markdown-content
- * @param data 
+ * @param data
  * @returns makdown-data
  */
 export const convert2Markup = (data: any) => {
@@ -42,53 +49,62 @@ export const convert2Markup = (data: any) => {
 const convertDataToJson = (dataAsMap: Map<any, any>) => {
   const jsonOutput = [];
 
-  // Pick up official name as title
+  // Adding the title from "Namensangaben"
   const title = getTitle(dataAsMap.get("Namensangaben"));
   jsonOutput.push({ h1: title });
+
   dataAsMap.forEach((dataList, category) => {
-    // print category as subtitle (as ##category)
-    jsonOutput.push({ h2: category });
-    // Iterate over data list
-    dataList.forEach(
-      ([dataName, inputData, wikiprop]: [string, string, string]) => {
-        // Handle different types of data
-        if (wikiprop === "P18") {
-          // Image data
-          jsonOutput.push({
-            img: [{ title: "Image", source: inputData }],
-          });
-        } else if (wikiprop === "P856") {
-          // URL data
-          jsonOutput.push({
-            p: `[Link Text](${inputData})`,
-          });
-        } else if (wikiprop === "richtext") {
-          const markdown = simpleHtmlToMarkdown(inputData);
-          if (dataName === "Abschnittstitel") {
-            jsonOutput.push({
-              h1: [`${dataName}: ${markdown}`, `wikiProperty : ${wikiprop}`],
-            });
-          }
-          jsonOutput.push({
-            p: [`${dataName}: ${markdown}`, `wikiProperty : ${wikiprop}`],
-          });
-        } else {
-          jsonOutput.push({
-            ol: [`${dataName}: ${inputData}`, `wikiProperty : ${wikiprop}`],
-          });
+    let hasValidData = false; // Flag to check if the category has valid data
+
+    // Preprocess data list to filter out invalid data (e.g., empty images)
+    const processedDataList = dataList.filter(
+      ([dataName, inputData, wikiprop]: [string, any, string]) => {
+        if (wikiprop === "P18" || wikiprop === "P7417") {
+          return inputData instanceof File ? inputData.name : inputData;
         }
+        return true; // Keep all non-image data by default
       }
     );
-  });
 
-  //console.log(jsonOutput)
+    // Check if processedDataList has valid data
+    hasValidData = processedDataList.length > 0;
+
+    if (hasValidData) {
+      jsonOutput.push({ h2: category }); // Add the category if it has valid data
+
+      processedDataList.forEach(
+        ([dataName, inputData, wikiprop]: [string, any, string]) => {
+          if (
+            (wikiprop === "P18" || wikiprop === "P7417") &&
+            inputData instanceof File
+          ) {
+            const imagePath = `./images/${inputData.name}`;
+            jsonOutput.push({
+              p: `### ${wikiprop}\t${dataName}\n![Image](${imagePath})`,
+            });
+          } else if (wikiprop === "P856") {
+            jsonOutput.push({
+              p: `### ${wikiprop}\t${dataName}\n[Link](${inputData})`,
+            });
+          } else if (wikiprop === "richtext") {
+            const markdown = simpleHtmlToMarkdown(inputData);
+            jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n${markdown}` });
+          } else {
+            jsonOutput.push({
+              p: `### ${wikiprop}\t${dataName}\n${inputData}`,
+            });
+          }
+        }
+      );
+    }
+  });
 
   return jsonOutput;
 };
 
 /**
  * Special Method to combine wikiData-props with corresponding categories
- * @param data 
+ * @param data
  * @returns properties mapped to categories
  */
 const dataToMap = (data: any) => {
@@ -150,7 +166,7 @@ function allCategoryAndWikiprop() {
 }
 
 /**
- * 
+ *
  * @param dataList A list from the categorie
  * @param targetDataName
  */

@@ -4,7 +4,7 @@ import Field, { FieldProps } from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
 import { convert2Markup } from "./convertToMarkup";
-
+import { revalidatePath } from "next/cache";
 // Define the Home component
 export default function Home() {
   // Define state variables
@@ -23,7 +23,7 @@ export default function Home() {
     { name: "Bild", type: "file" },
     {
       name: "Webseite",
-      type: "url",
+      type: "text",
       placeholder: "https://example.com",
     },
   ]);
@@ -84,13 +84,13 @@ export default function Home() {
     const markupOutput = convert2Markup(fieldsData);
 
     if (markupOutput !== undefined) {
-      console.log(markupOutput);
-      // const blob = new Blob([markupOutput], { type: "text/markdown" });
-      // const url = URL.createObjectURL(blob);
-      // const a = document.createElement("a");
-      // a.href = url;
-      // a.download = "output.md";
-      // a.click();
+      const blob = new Blob([markupOutput], { type: "text/markdown" });
+      const title = fieldsData["Offizieller Name"];
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Wikidata_` + title + `.md`;
+      a.click();
     } else {
       alert("Bitte füllen Sie alle Felder aus");
     }
@@ -113,6 +113,19 @@ export default function Home() {
     },
     {}
   );
+
+  const handleReset = (event: any) => {
+    const confirmReset = window.confirm(
+      "Möchten Sie wirklich alle Felder zurücksetzen?"
+    );
+    if (!confirmReset) {
+      // If the user clicks "Cancel", prevent the form from resetting
+      event.preventDefault();
+    } else {
+      // Reset the whole page to initial state deleting all old info
+      window.location.reload();
+    }
+  };
 
   // Render the component
   return (
@@ -178,28 +191,8 @@ export default function Home() {
             </div>
             <div className="flex justify-between items-center">
               <button
-                type="reset"
-                //on click reset take all the current fields that we have right now and recreate them with an empty value
-                onClick={() => {
-                  setFields([
-                    {
-                      name: "Offizieller Name",
-                      type: "text",
-                      placeholder: "Name",
-                    },
-                    {
-                      name: "Datum der offiziellen Eröffnung",
-                      type: "text",
-                      placeholder: "Datum : MM/YY oder Jahr",
-                    },
-                    { name: "Bild", type: "file" },
-                    {
-                      name: "Webseite",
-                      type: "url",
-                      placeholder: "https://example.com",
-                    },
-                  ]);
-                }}
+                type="button"
+                onClick={handleReset}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300"
               >
                 alle Felder zurücksetzen

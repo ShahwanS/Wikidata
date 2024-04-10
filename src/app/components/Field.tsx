@@ -11,6 +11,7 @@ export interface FieldProps {
   onDelete?: () => void; // Function to handle delete action
   value?: string; // Value of the field
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  options?: Array<{ label: string; value: string }>;
 }
 
 const Field: React.FC<FieldProps> = ({
@@ -21,6 +22,7 @@ const Field: React.FC<FieldProps> = ({
   wikidataprop,
   onChange,
   value,
+  options,
 }) => {
   const [fields, setFields] = useState<String[]>([]); // Array to store dynamically added fields
   const [inputValue, setInputValue] = useState(value || ""); // Initialize inputValue with the provided value or an empty string
@@ -52,7 +54,7 @@ const Field: React.FC<FieldProps> = ({
     <div className="mb-6">
       <div className="flex justify-between">
         <label className="block mb-2 text-sm font-medium text-gray-700">
-          {name} {/* Display the name of the field */}
+          {name}
         </label>
         <div>
           {type !== "number" &&
@@ -62,6 +64,7 @@ const Field: React.FC<FieldProps> = ({
             name !== "Webseite" &&
             name !== "Bild" && (
               <button
+                type="button"
                 onClick={removeSubfield}
                 className="ml-2 text-red-500 hover:text-red-700"
                 aria-label={`Delete ${name}`}
@@ -76,6 +79,7 @@ const Field: React.FC<FieldProps> = ({
             name !== "Webseite" &&
             name !== "Bild" && (
               <button
+                type="button"
                 onClick={addfield}
                 className="ml-2 text-green-800 hover:opacity-40"
               >
@@ -117,6 +121,7 @@ const Field: React.FC<FieldProps> = ({
                 setInputValue(e.target.value);
                 onChange && onChange(e);
               }}
+              {...(type === "number" ? { min: "0" } : {})}
             />
           </div>
           <div>
@@ -127,6 +132,11 @@ const Field: React.FC<FieldProps> = ({
                 placeholder={`${name} ${index + 1}`}
                 type={type}
                 name={`${name}${index}`}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  onChange && onChange(e);
+                }}
+                {...(type === "number" ? { min: "0" } : {})}
               />
             ))}
           </div>
