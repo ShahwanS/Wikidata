@@ -38,7 +38,6 @@ export const convert2Markup = (data: any) => {
   const dataAsMap = dataToMap(data); // First mapping properties to categories
   const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
   const dataAsMd = json2md(dataAsJson); // Finally json to markdown
-  console.log(dataAsMd)
   return dataAsMd;
 };
 
@@ -75,15 +74,13 @@ const convertDataToJson = (dataAsMap: Map<any, any>) => {
 
       processedDataList.forEach(
         ([dataName, inputData, wikiprop]: [string, any, string]) => {
-          if (checkImageFile(inputData,wikiprop)) {
-            const imageIsUploaded = inputData.name !== ""
-            if(imageIsUploaded){
+          if (isImage(inputData,wikiprop)) {
+            const hasImage = inputData.name !== ""
+            if(hasImage){
                 const imagePath = `./images/${inputData.name}`;
-              {
                 jsonOutput.push({
                   p: `### ${wikiprop}\t${dataName}\n![Image](${imagePath})`,
                 });
-              }
             }
             else{
               // do nothing
@@ -198,10 +195,14 @@ function getTitle(dataList: any[]): string {
  * @param wikiprop Wikipediaproperty
  * @returns boolen
  */
-
-function checkImageFile(inputData: any, wikiprop: String ): boolean {
+function isImage(inputData: any, wikiprop: String ): boolean {
   const IMAGEWIKIPROPS = ["P18","P7417","P9721","P8592","P5775","P3311"];
   const isImageFile = inputData instanceof File;
   const wikipropExists = IMAGEWIKIPROPS.includes(wikiprop);
   return isImageFile && wikipropExists;
+}
+
+
+function pushJsonOutput(wikiprop: String, dataName: String, inputData: any, kindOfData: String) : String {
+      
 }
