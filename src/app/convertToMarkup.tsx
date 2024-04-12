@@ -38,6 +38,7 @@ export const convert2Markup = (data: any) => {
   const dataAsMap = dataToMap(data); // First mapping properties to categories
   const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
   const dataAsMd = json2md(dataAsJson); // Finally json to markdown
+  console.log(dataAsMd)
   return dataAsMd;
 };
 
@@ -74,14 +75,20 @@ const convertDataToJson = (dataAsMap: Map<any, any>) => {
 
       processedDataList.forEach(
         ([dataName, inputData, wikiprop]: [string, any, string]) => {
-          if (
-            (wikiprop === "P18" || wikiprop === "P7417") &&
-            inputData instanceof File
-          ) {
-            const imagePath = `./images/${inputData.name}`;
-            jsonOutput.push({
-              p: `### ${wikiprop}\t${dataName}\n![Image](${imagePath})`,
-            });
+          if (checkImageFile(inputData,wikiprop)) {
+            const imageIsUploaded = inputData.name !== ""
+            if(imageIsUploaded){
+                const imagePath = `./images/${inputData.name}`;
+              {
+                jsonOutput.push({
+                  p: `### ${wikiprop}\t${dataName}\n![Image](${imagePath})`,
+                });
+              }
+            }
+            else{
+              // do nothing
+            }
+      
           } else if (wikiprop === "P856") {
             jsonOutput.push({
               p: `### ${wikiprop}\t${dataName}\n[Link](${inputData})`,
@@ -183,4 +190,18 @@ function getTitle(dataList: any[]): string {
     }
   }
   return "Default Title"; // Return a default title if "Offizieller Name" is not found
+}
+
+/**
+ * check, whether inputData is image
+ * @param inputData any
+ * @param wikiprop Wikipediaproperty
+ * @returns boolen
+ */
+
+function checkImageFile(inputData: any, wikiprop: String ): boolean {
+  const IMAGEWIKIPROPS = ["P18","P7417","P9721","P8592","P5775","P3311"];
+  const isImageFile = inputData instanceof File;
+  const wikipropExists = IMAGEWIKIPROPS.includes(wikiprop);
+  return isImageFile && wikipropExists;
 }
