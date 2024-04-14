@@ -91,7 +91,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
         {step === 1 && (
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Select a Category
+              Kategory auswählen
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
               {Object.values(categories).map((category) => (
@@ -111,7 +111,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
                     onClick={() => handleCategorySelect(category.title)}
                     className="px-4 py-2 w-full text-white bg-gray-800 hover:bg-gray-900 rounded-md transition duration-300 self-end"
                   >
-                    Select
+                    Wählen
                   </button>
                 </div>
               ))}
@@ -130,7 +130,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
         {step === 2 && selectedCategory && (
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Select Sub-category in {selectedCategory}
+              Wähle Unterkategorie in {selectedCategory}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(properties[selectedCategory]).map(
