@@ -25,7 +25,7 @@ function simpleHtmlToMarkdown(html: string) {
     .replace(/<a href="(.*?)">(.*?)<\/a>/g, "[$2]($1)") // Links
     .replace(/<p>(.*?)<\/p>/g, "$1\n") // Convert paragraphs to text followed by a newline
     .replace(/<br\s*\/?>/g, "\n") // Convert <br> tags to newlines
-    .replace(/<b><i>(.*?)<\/i><\/b>/g, "**_$1_**");
+    .replace(/<b><i>(.*?)<\/i><\/b>/g, "**_$1_**")
   return markdown.trim(); // Trim the final string to remove any leading/trailing whitespace
 }
 
@@ -35,6 +35,7 @@ function simpleHtmlToMarkdown(html: string) {
  * @returns makdown-data
  */
 export const convert2Markup = (data: any) => {
+  //console.log("Sended Data : " + data)
   const dataAsMap = dataToMap(data); // First mapping properties to categories
   const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
   const dataAsMd = json2md(dataAsJson); // Finally json to markdown
@@ -74,7 +75,8 @@ const convertDataToJson = (dataAsMap: Map<any, any>) => {
 
       processedDataList.forEach(
         ([dataName, inputData, wikiprop]: [string, any, string]) => {
-          if (isImage(inputData,wikiprop)) {
+          //console.log("Data Length : " + inputData)
+          if (isImage(inputData,wikiprop)) { // Check if data is image
             const hasImage = inputData.name !== ""
             if(hasImage){
                 const imagePath = `./images/${inputData.name}`;
@@ -82,17 +84,18 @@ const convertDataToJson = (dataAsMap: Map<any, any>) => {
                   p: `### ${wikiprop}\t${dataName}\n![Image](${imagePath})`,
                 });
             }
-            else{
-              // do nothing
+            else{ 
+              // There aren't ontput if inputData is empty
             }
-      
           } else if (wikiprop === "P856") {
             jsonOutput.push({
               p: `### ${wikiprop}\t${dataName}\n[Link](${inputData})`,
             });
           } else if (wikiprop === "richtext") {
             const markdown = simpleHtmlToMarkdown(inputData);
-            jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n${markdown}` });
+            //jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n${markdown}` });
+            jsonOutput.push({ p: `### ${'FreiText'}\t${dataName}\n${markdown}` });
+            console.log(inputData.name)
           } else {
             jsonOutput.push({
               p: `### ${wikiprop}\t${dataName}\n${inputData}`,
@@ -114,8 +117,9 @@ const convertDataToJson = (dataAsMap: Map<any, any>) => {
 const dataToMap = (data: any) => {
   const resultMap = new Map();
   const CATEGORYANDPROPERTYMAP = allCategoryAndWikiprop();
-  for (const dataName in data) {
+  for (let dataName in data) {
     const inputData = data[dataName]; // Get name from page.tsx/fieldsdata
+    dataName = removeTrailingNumber(dataName) // Remove trailing number of dataName(spitzName1 -> spitzName)
     const containsData = inputData !== ""; // this property contains data
     if (containsData) {
       // Handle rich text fields differently
@@ -134,15 +138,15 @@ const dataToMap = (data: any) => {
         }
       } else {
         // Normal field processing
-        const categoryAndWikiprop = CATEGORYANDPROPERTYMAP.get(dataName);
+        const categoryAndWikiprop = CATEGORYANDPROPERTYMAP.get(dataName );
         if (categoryAndWikiprop) {
           const category = categoryAndWikiprop[0];
           const wikiprop = categoryAndWikiprop[1];
           const categoryExistsInMap = resultMap.has(category);
           if (categoryExistsInMap) {
-            resultMap.get(category).push([dataName, inputData, wikiprop]);
+            resultMap.get(category).push([dataName , inputData, wikiprop]);
           } else {
-            resultMap.set(category, [[dataName, inputData, wikiprop]]);
+            resultMap.set(category, [[dataName , inputData, wikiprop]]);
           }
         }
       }
@@ -203,6 +207,16 @@ function isImage(inputData: any, wikiprop: String ): boolean {
 }
 
 
-function pushJsonOutput(wikiprop: String, dataName: String, inputData: any, kindOfData: String) : String {
-      
+
+/**
+ * This method is for data, which comes from "Weitere Felder", 
+ * because dataName of this data contains trailing digits
+ * Removes trailing numbers from a given string.
+ * If no trailing numbers are present, the input string is returned unchanged.
+ * @param input The input string from which to remove trailing numbers.
+ * @returns The input string with trailing numbers removed.
+ */
+function removeTrailingNumber(input: any): string {
+  const strInput = typeof input === 'string' ? input : input.toString();  // convert to string
+  return strInput.replace(/\d+$/, '');   // Remove trailing digits
 }
