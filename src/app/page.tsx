@@ -158,7 +158,7 @@ export default function Home() {
                   } else {
                     return (
                       <Field
-                        key={field.wikidataprop}
+                        key={category+field.name}
                         name={field.name}
                         type={field.type}
                         value={field.value}
