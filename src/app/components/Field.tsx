@@ -32,29 +32,24 @@ const Field: React.FC<FieldProps> = ({
   value,
   options,
 }) => {
-  const [fields, setFields] = useState<string[]>([]); // Array to store dynamically added fields
+  const [inputFields, setInputFields] = useState<string[]>([value || ""]); // Array to store dynamically added fields
   const [inputValue, setInputValue] = useState(value || ""); // Initialize inputValue with the provided value or an empty string
-
-  // Update the local state when the value prop changes
-  useEffect(() => {
-    setInputValue(value || "");
-  }, [value]);
-
+  //TODO
+  
   // CSS styling starting point
   const baseInputClasses =
     "w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md";
   
   /** Adds an additional Input field to the Property component */
-  const addField = () => {
-    setFields([...fields, `Field ${fields.length + 1}`]); // Add a new field to the fields array
+  const addInputField = () => {
+    setInputFields([...inputFields,""]);
   };
 
   /** Removes the last input field from the Property component */
-  const removeSubfield = () => {
+  const removeInputField = () => {
     // If there are additional fields, delete the last one from the array; otherwise, delete the entire property component.
-    if (fields.length > 0) {
-      const updatedFields = fields.slice(0, -1);
-      setFields(updatedFields);
+    if (inputFields.length > 1) {
+      setInputFields(inputFields.slice(0,-1));
     } else {
       onDelete && onDelete();
     }
@@ -77,7 +72,7 @@ const Field: React.FC<FieldProps> = ({
             name !== "Bild" && (
               <button
                 type="button"
-                onClick={removeSubfield}
+                onClick={removeInputField}
                 className="ml-2 text-red-500 hover:text-red-700"
                 aria-label={`Delete ${name}`}
               >
@@ -94,7 +89,7 @@ const Field: React.FC<FieldProps> = ({
             name !== "Bild" && (
               <button
                 type="button"
-                onClick={addField}
+                onClick={addInputField}
                 className="ml-2 text-green-800 hover:opacity-40"
               >
                 <CiCirclePlus size="20px" />
@@ -107,55 +102,33 @@ const Field: React.FC<FieldProps> = ({
       {type === "file" ? (
         // Render file input fields
         <>
+        {inputFields.map((d, index)=>(
           <input
-            type="file"
-            name={name}
-            className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
-          />
-          <div>
-            {fields.map((field, index) => (
-              <input
-                key={wikidataprop}
-                className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
-                type="file"
-                name={`${name}${index}`}
-              />
-            ))}
-          </div>
+          key={name+"in"+index}
+          className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
+          placeholder={placeholder}
+          type={type}
+          name={name+index}
+          defaultValue={d.toString()}
+          onChange={(e)=>{const updatedData=inputFields; updatedData[index]= e.target.value; console.log(updatedData); setInputFields(updatedData)}}
+        />
+        ))}
         </>
       ) : (
         // Render regular input fields
         <>
-          <div>
-            <input
-              className={`${baseInputClasses} bg-white`}
-              placeholder={placeholder}
-              type={type}
-              name={name}
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-                onChange && onChange(e);
-              }}
-              {...(type === "number" ? { min: "0" } : {})}
-            />
-          </div>
-          <div>
-            {fields.map((field, index) => (
-              <input
-                key={wikidataprop}
-                className={`${baseInputClasses} bg-white mt-2`}
-                placeholder={`${name} ${index + 1}`}
-                type={type}
-                name={`${name}${index}`}
-                onChange={(e) => {
-                  setInputValue(e.target.value);
-                  onChange && onChange(e);
-                }}
-                {...(type === "number" ? { min: "0" } : {})}
-              />
-            ))}
-          </div>
+        {inputFields.map((d, index)=>(
+          <input
+          key={name+"in"+index}
+          className={`${baseInputClasses} bg-white`}
+          placeholder={placeholder}
+          type={type}
+          name={name+index}
+          defaultValue={d.toString()}
+          onChange={(e)=>{const updatedData=inputFields; updatedData[index]= e.target.value; console.log(updatedData); setInputFields(updatedData)}}
+          {...(type === "number" ? { min: "0" } : {})}
+        />
+        ))}
         </>
       )}
     </div>
