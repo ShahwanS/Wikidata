@@ -9,42 +9,69 @@ import {
   valueNameForProperty,
 } from "../propgliederung";
 
+/** Functions needed by th Popups */
 interface PopupProps {
+  /** Method to add properties to the page @param fields Array of properties that will be added to the page */
   onAddFields: (fields: FieldProps[]) => void; // Callback function to add fields
+  /** Method to close th Popup */
   onClose: () => void; // Callback function to close the popup
 }
 
+/**
+ * Reactcomponent that renders the Popup window for Category and subcategory selection
+ * @param param0 object which contains the needed function for a popup
+ */
 const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const [step, setStep] = useState(1); // Current step in the popup
+  /**    */
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Selected category
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]); // Selected properties
 
+  /*************Helper functions***************/
   /**
-   * Helper functions to get input type, placeholder, and category name for a property
+   * Helper function to get input type of a property
+   * @param property the property name of the property
+   * @returns Type of the given property
    */
   const getInputTypeForProperty = (property: string): string => {
     return propertyInputTypes[property] || "text";
   };
-
+  /**
+   * Helper function to get placeholder of a property
+   * @param property the property name of the property
+   * @returns placeholder of the given property
+   */
   const getInputPlaceholderForProperty = (property: string): string => {
     return propertyInputPlaceholder[property] || "";
   };
-
+  /**
+   * Helper function to get the category name of a property
+   * @param property the property name of the property
+   * @returns category name of the given property
+   */
   const getCategoryNameForProperty = (property: string): string => {
     return categoryNameForProperty[property] || "";
   };
-
+  /**
+   * Helper function to get the default value of a property
+   * @param property the property name of the property
+   * @returns default value of the given property
+   */
   const getValueNameForProperty = (property: string): string => {
     return valueNameForProperty[property] || "";
   };
+  /****************************************/
 
-  // Callback function when a category is selected
+  /**
+   * Callback function when a category is selected
+   * @param category category name of the selected category
+   */
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     setStep(2);
   };
-
-  // Create fields based on selected properties and add them using the onAddFields callback
+ 
+  /** Create Property fields based on selected properties and add them using the onAddFields callback */
   const handleSubmit = () => {
     const fields = selectedProperties.map((property, index) => ({
       id: index,
@@ -58,10 +85,12 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     onClose();
   };
 
-  // Callback function when a sub-category is selected
-  const handleSubCategorySelect = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  /**
+   * Callback function when a sub-category is selected or unselected:
+   * Adds or removes the names of the properties to array of propertynames that will be added to the page
+   * @param event the event that happens when category is selected
+   */
+  const handleSubCategorySelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const subCategory = event.target.value;
     let updatedProperties = [...selectedProperties];
 
@@ -91,7 +120,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
         {step === 1 && (
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Kategory auswählen
+              Kategorie auswählen
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
               {Object.values(categories).map((category) => (
