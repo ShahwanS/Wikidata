@@ -1,14 +1,15 @@
+/** Defines the structure of a property */
 export interface Property {
   name: string;
   type: string; // Typ der Eigenschaft, z.B. "string", "number", "boolean", "file", "url"
   description?: string;
-  placeholder?: string;
+  placeholder?: string; // Platzhalter, kann ein Hinweis enthalten, wie das Propertyfeld ausgefüllt werden soll
   maxvalues?: number; // maximale Anzahl an Werten, z.B es gibt nur max. ein Eröffnungsdatum
-  required?: boolean; // Es muss angegeben werden, um welches Gebäude es geht.
+  required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht.
   value?: string; // Vorausgefüllter Wert
-  wikidataprop?: string;
+  wikidataprop?: string; // Associated wikidataproperty-number, if exists; some properties do not have one
 }
-
+/** Structure how a subcategorie could be described */
 export interface SubCategory {
   name: string;
   description: string;
@@ -17,6 +18,7 @@ export interface SubCategory {
   // setSelected?: (setvalue: boolean) => void;
 }
 
+/** Structure how a categorie could be described */
 export interface Category {
   title: string;
   description: string;
@@ -25,7 +27,9 @@ export interface Category {
   // setSelected?: (setvalue: boolean) => void;
 }
 
-/** Porperties-Gliederung */
+/** Porperties-Gliederung 
+ *  (orientiert sich an der Pdf-Datei)
+*/
 export const propgliederung: Category[] = [
   {
     title: "Gebäudemaße und -eigenschaften",
@@ -321,6 +325,7 @@ propgliederung.forEach((cat) => {
   categories[cat.title] = cat;
 });
 
+/**  Defines index signature to get properties by giving the name of a category and subcategory*/
 type Properties = {
   [category: string]: {
     [subCategory: string]: {
@@ -331,7 +336,9 @@ type Properties = {
   };
 };
 
+/**  Provides index signature to get properties by giving the name of a category and subcategory*/
 export const properties: Properties = {};
+// generate it from the propgliederung
 propgliederung.forEach((cat) => {
   properties[cat.title] = {};
   cat.subcategories.forEach((subcat) => {
@@ -343,7 +350,9 @@ propgliederung.forEach((cat) => {
   });
 });
 
+/** Record for Porperties and their input types */
 export const propertyInputTypes: Record<string, string> = {};
+//generate it from the propgliedeung
 propgliederung.forEach((cat) => {
   cat.subcategories.forEach((subcat) => {
     subcat.properties.forEach((prop) => {
@@ -352,7 +361,9 @@ propgliederung.forEach((cat) => {
   });
 });
 
+/** Record for Porperties and their category name */
 export const categoryNameForProperty: Record<string, string> = {};
+//generate it from the propgliedeung
 propgliederung.forEach((cat) => {
   cat.subcategories.forEach((subcat) => {
     subcat.properties.forEach((prop) => {
@@ -361,8 +372,9 @@ propgliederung.forEach((cat) => {
   });
 });
 
-//write a method that gets the value name for a property, not the title of the property but the default input value
+/** Record for properties and their the default input value */
 export const valueNameForProperty: Record<string, string> = {};
+//generate it from the propgliedeung
 propgliederung.forEach((cat) => {
   cat.subcategories.forEach((subcat) => {
     subcat.properties.forEach((prop) => {
