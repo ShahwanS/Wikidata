@@ -33,8 +33,6 @@ const Field: React.FC<FieldProps> = ({
   options,
 }) => {
   const [inputFields, setInputFields] = useState<string[]>([value || ""]); // Array to store dynamically added fields
-  const [inputValue, setInputValue] = useState(value || ""); // Initialize inputValue with the provided value or an empty string
-  //TODO
   
   // CSS styling starting point
   const baseInputClasses =
@@ -103,15 +101,35 @@ const Field: React.FC<FieldProps> = ({
         // Render file input fields
         <>
         {inputFields.map((d, index)=>(
+          <>
           <input
-          key={name+"in"+index}
-          className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
-          placeholder={placeholder}
-          type={type}
-          name={name+index}
-          defaultValue={d.toString()}
-          onChange={(e)=>{const updatedData=inputFields; updatedData[index]= e.target.value; console.log(updatedData); setInputFields(updatedData)}}
-        />
+            key={name+"in"+index}
+            className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
+            placeholder={placeholder}
+            type={type}
+            name={name+index}
+            defaultValue={d.toString()}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const updatedData = [...inputFields];
+                  updatedData[index] = reader.result ? reader.result.toString() : ""; 
+                  setInputFields(updatedData);             
+                };
+                reader.readAsDataURL(file); // Read the file as data URL
+              }
+            }}              
+          />
+          {/* Review of the selected image */}
+          {d && (
+            <img 
+              src={d} 
+              alt="" 
+              style={{ maxWidth: '70%', height: 'auto', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto'}}/>
+          )}  
+          </>
         ))}
         </>
       ) : (
