@@ -15,6 +15,7 @@ export interface FieldProps {
   value?: string; // Value of the field
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   options?: Array<{ label: string; value: string }>;
+  choices?: string[]; // if the property have predefined values: list of all possible values
 }
 
 /**
@@ -31,6 +32,7 @@ const Field: React.FC<FieldProps> = ({
   onChange,
   value,
   options,
+  choices
 }) => {
   const [inputFields, setInputFields] = useState<string[]>([value || ""]); // Array to store dynamically added fields
   
@@ -132,7 +134,21 @@ const Field: React.FC<FieldProps> = ({
           </>
         ))}
         </>
-      ) : (
+      ) 
+      : type === "radio" ? (
+        inputFields.map((d, index)=>(
+          <div>
+            {choices?.map((choice, i)=>(
+              <>
+                <input type="radio" key={name+d+index+choice+i} id={choice} name={"Rollstuhl geeignet"+index} value={choice}/>
+                <label htmlFor={choice}>{"  "+choice}</label><br />
+              </>
+            ))}
+          </div>
+          )
+        )
+      )
+      : (
         // Render regular input fields
         <>
         {inputFields.map((d, index)=>(

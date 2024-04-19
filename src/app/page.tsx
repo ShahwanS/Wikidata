@@ -164,6 +164,7 @@ export default function Home() {
                         value={field.value}
                         placeholder={field.placeholder}
                         onDelete={() => removeField(field)}
+                        choices={field.choices}
                       />
                     );
                   }

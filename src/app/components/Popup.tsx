@@ -7,6 +7,7 @@ import {
   propertyInputTypes,
   categoryNameForProperty,
   valueNameForProperty,
+  choicesForProperty,
 } from "../propgliederung";
 
 /** Functions needed by th Popups */
@@ -80,6 +81,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
       placeholder: getInputPlaceholderForProperty(property),
       category: getCategoryNameForProperty(property),
       value: getValueNameForProperty(property),
+      choices: choicesForProperty[property]
     }));
     onAddFields(fields);
     onClose();

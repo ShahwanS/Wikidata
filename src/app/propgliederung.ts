@@ -8,6 +8,7 @@ export interface Property {
   required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht.
   value?: string; // Vorausgefüllter Wert
   wikidataprop?: string; // Associated wikidataproperty-number, if exists; some properties do not have one
+  choices?: string[]; // if the property have predefined values: list of all possible values
 }
 /** Structure how a subcategorie could be described */
 export interface SubCategory {
@@ -98,8 +99,17 @@ export const propgliederung: Category[] = [
         properties: [
           {
             name: "Rollstuhl geeignet",
-            type: "checkbox",
+            type: "radio",
             wikidataprop: "P2846",
+            /**describes disabled accessibility of location or event:
+             * accessibility for wheelchair users |
+             * easy access |
+             * step-free access |
+             * ADA |
+             * wheelchair accessibility |
+             * accessibility for people with visual disabilities
+            */
+            choices: ["Sehr gut zugänglich mit Rollstuhl", "teilweise zugänglich mit Rollstuhl", "nicht zugänglich mit Rollstuhl"]
           },
         ],
       },
@@ -383,7 +393,18 @@ propgliederung.forEach((cat) => {
   });
 });
 
-//export const wikiPropForProperty: Record<String
+/** Record for properties and their the default input value */
+export const choicesForProperty: Record<string, string[]> = {};
+//generate it from the propgliederung
+propgliederung.forEach((cat) => {
+  cat.subcategories.forEach((subcat) => {
+    subcat.properties.forEach((prop) => {
+      if (prop.choices) choicesForProperty[prop.name] = prop.choices;
+    });
+  });
+});
+
+
 
 /**
  * TODO: gute Placeholder entwickeln und in propgliederung einfügen
