@@ -4,8 +4,9 @@ export interface Property {
   type: string; // Typ der Eigenschaft, z.B. "string", "number", "boolean", "file", "url"
   description?: string;
   placeholder?: string; // Platzhalter, kann ein Hinweis enthalten, wie das Propertyfeld ausgefüllt werden soll
+  unique?: boolean; // true, wenn eine Property nur genau einen Wert haben kann, Bsp: Anzahl Fahrstühle: ein Gebäude kann nicht gleichzeitig 2 und 4 Fahrstühle haben, wenn nichts angegeben: null, also false
   maxvalues?: number; // maximale Anzahl an Werten, z.B es gibt nur max. ein Eröffnungsdatum
-  required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht.
+  required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht. wenn nichts angegeben: null, also false
   value?: string; // Vorausgefüllter Wert
   wikidataprop?: string; // Associated wikidataproperty-number, if exists; some properties do not have one
   choices?: string[]; // if the property have predefined values: list of all possible values
@@ -41,16 +42,16 @@ export const propgliederung: Category[] = [
         name: "Dimensionen",
         description: "Gebäudemaße: Breite, Länge und Höhe.",
         properties: [
-          { name: "Höhe (Dimensionen)", type: "number", wikidataprop: "P2048" },
-          { name: "Länge", type: "number", wikidataprop: "P2043" },
-          { name: "Breite", type: "number", wikidataprop: "P2049" },
+          { name: "Höhe (Dimensionen)", type: "number", wikidataprop: "P2048", unique: true },
+          { name: "Länge", type: "number", wikidataprop: "P2043", unique: true },
+          { name: "Breite", type: "number", wikidataprop: "P2049", unique: true },
         ],
       },
       {
         name: "Flächenangaben",
         description: "Angaben zur Fläche",
         properties: [
-          { name: "Grundfläche", type: "number", wikidataprop: "P2046" },
+          { name: "Grundfläche", type: "number", wikidataprop: "P2046", unique: true },
         ],
       },
       {
@@ -60,17 +61,17 @@ export const propgliederung: Category[] = [
           {
             name: "Oberirdische Stockwerke",
             type: "number",
-            wikidataprop: "P1101",
+            wikidataprop: "P1101", unique: true
           },
           {
             name: "Unterirdische Stockwerke",
             type: "number",
-            wikidataprop: "P1139",
+            wikidataprop: "P1139", unique: true
           },
           {
             name: "Anzahl an Fahrstühlen",
             type: "number",
-            wikidataprop: "P1301",
+            wikidataprop: "P1301", unique: true
           },
         ],
       },
@@ -78,7 +79,7 @@ export const propgliederung: Category[] = [
         name: "Räume, Zugehörigkeit",
         description: "Anzahl Räume; bedeutende Räume; ist Teil von",
         properties: [
-          { name: "Anzahl Räume", type: "number", wikidataprop: "P8733" },
+          { name: "Anzahl Räume", type: "number", wikidataprop: "P8733", unique: true },
           {
             name: "Ist Teil von",
             type: "text",
@@ -109,7 +110,8 @@ export const propgliederung: Category[] = [
              * wheelchair accessibility |
              * accessibility for people with visual disabilities
             */
-            choices: ["Sehr gut zugänglich mit Rollstuhl", "teilweise zugänglich mit Rollstuhl", "nicht zugänglich mit Rollstuhl"]
+            choices: ["Sehr gut zugänglich mit Rollstuhl", "teilweise zugänglich mit Rollstuhl", "nicht zugänglich mit Rollstuhl"],
+            unique: true
           },
         ],
       },
@@ -123,7 +125,7 @@ export const propgliederung: Category[] = [
         name: "Namen",
         description: "offizieller Name, Kurzname, Spitzname, Namensgeber",
         properties: [
-          { name: "Offizieller Name", type: "text", wikidataprop: "P1448" },
+          { name: "Offizieller Name", type: "text", wikidataprop: "P1448", unique: true },
           { name: "Kurzname", type: "text", wikidataprop: "P1813" },
           { name: "Spitzname", type: "text", wikidataprop: "P1449" },
           { name: "Namensgeber", type: "text", wikidataprop: "P138" },
@@ -164,7 +166,7 @@ export const propgliederung: Category[] = [
             name: "Baukosten",
             type: "number",
             description: "in EUR",
-            wikidataprop: "P2130",
+            wikidataprop: "P2130", unique: true
           },
         ],
       },
@@ -184,29 +186,29 @@ export const propgliederung: Category[] = [
             type: "text",
             wikidataprop: "P2789",
           },
-          { name: "Koordinaten", type: "text", wikidataprop: "P625" },
+          { name: "Koordinaten", type: "text", wikidataprop: "P625", unique: true },
           {
             name: "Zeitzone",
             type: "text",
             value: "MEZ",
-            wikidataprop: "P6237",
+            wikidataprop: "P6237", unique: true
           },
           {
             name: "Land",
             type: "text",
             value: "Deutschland",
-            wikidataprop: "P17",
+            wikidataprop: "P17", unique: true
           },
-          { name: "Blickrichtung", type: "text", wikidataprop: "P7787" },
+          { name: "Blickrichtung", type: "text", wikidataprop: "P7787", unique: true },
         ],
       },
       {
         name: "Adresse",
         description: "Adressangaben zu dem Gebäude",
         properties: [
-          { name: "Straße", type: "text", wikidataprop: "P669" }, //wenn Straße als eigenständiges Item vorhanden
-          { name: "Komplette Adresse", type: "text", wikidataprop: "P6375" }, // wenn Straße nicht als eigenständiges Item
-          { name: "Postleitzahl", type: "text", wikidataprop: "P281" },
+          { name: "Straße", type: "text", wikidataprop: "P669", unique: true }, //wenn Straße als eigenständiges Item vorhanden
+          { name: "Komplette Adresse", type: "text", wikidataprop: "P6375", unique: true }, // wenn Straße nicht als eigenständiges Item
+          { name: "Postleitzahl", type: "text", wikidataprop: "P281", unique: true },
         ],
       },
     ],
@@ -220,14 +222,14 @@ export const propgliederung: Category[] = [
         description:
           " Baujahr, Eröffnungsdatum, Schließungsdatum, Abrissdatum, Schlüsselereignis, Schlüsselperson, Auftraggeber, Begründer, Vorgängerbauwerk, Nachfolgebauwerk",
         properties: [
-          { name: "Baujahr", type: "text", wikidataprop: "P571" },
+          { name: "Baujahr", type: "text", wikidataprop: "P571", unique: true },
           {
             name: "Datum der offiziellen Eröffnung",
             type: "text",
-            wikidataprop: "P1619",
+            wikidataprop: "P1619", unique: true
           },
-          { name: "Schließungsdatum", type: "text", wikidataprop: "P3999" },
-          { name: "Abrissdatum", type: "text", wikidataprop: "P576" },
+          { name: "Schließungsdatum", type: "text", wikidataprop: "P3999", unique: true },
+          { name: "Abrissdatum", type: "text", wikidataprop: "P576", unique: true },
           { name: "Schlüsselereignis", type: "text", wikidataprop: "P793" },
           { name: "Schlüsselperson", type: "text", wikidataprop: "P3342" },
           { name: "Auftraggeber", type: "text", wikidataprop: "P88" },
@@ -247,8 +249,8 @@ export const propgliederung: Category[] = [
         description:
           " Nutzungszustand, Erhaltungszustand, Nutzer, Verwendungszweck, Betreiber, Unterhalten durch, Eigentümer, Konfessionszugehörigkeit",
         properties: [
-          { name: "Nutzungszustand", type: "text", wikidataprop: "P5817" },
-          { name: "Erhaltungszustand", type: "text", wikidataprop: "P5816" },
+          { name: "Nutzungszustand", type: "text", wikidataprop: "P5817", unique: true },
+          { name: "Erhaltungszustand", type: "text", wikidataprop: "P5816", unique: true },
           { name: "Nutzer", type: "text", wikidataprop: "P466" },
           { name: "Verwendungszweck", type: "text", wikidataprop: "P366" },
           { name: "Betreiber", type: "text", wikidataprop: "P137" },
@@ -400,6 +402,20 @@ propgliederung.forEach((cat) => {
   cat.subcategories.forEach((subcat) => {
     subcat.properties.forEach((prop) => {
       if (prop.choices) choicesForProperty[prop.name] = prop.choices;
+    });
+  });
+});
+
+/** Record for properties and their uniquevalue */
+export const uniqueForProperty: Record<string, boolean> = {};
+/** Record for properties and their uniquevalue */
+export const requiredForProperty: Record<string, boolean> = {};
+//generate it from the propgliederung
+propgliederung.forEach((cat) => {
+  cat.subcategories.forEach((subcat) => {
+    subcat.properties.forEach((prop) => {
+      if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
+      if (prop.required) requiredForProperty[prop.name] = prop.required;
     });
   });
 });

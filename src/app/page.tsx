@@ -14,11 +14,14 @@ export default function Home() {
       name: "Offizieller Name",
       type: "text",
       placeholder: "Name",
+      unique: true,
+      required: true
     },
     {
       name: "Datum der offiziellen Eröffnung",
       type: "text",
       placeholder: "Datum : MM/YY oder Jahr",
+      unique: true
     },
     { name: "Bild", type: "file" },
     {
@@ -165,6 +168,8 @@ export default function Home() {
                         placeholder={field.placeholder}
                         onDelete={() => removeField(field)}
                         choices={field.choices}
+                        unique={field.unique}
+                        required={field.required}
                       />
                     );
                   }

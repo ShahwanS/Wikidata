@@ -8,6 +8,8 @@ import {
   categoryNameForProperty,
   valueNameForProperty,
   choicesForProperty,
+  uniqueForProperty,
+  requiredForProperty,
 } from "../propgliederung";
 
 /** Functions needed by th Popups */
@@ -82,7 +84,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
         placeholder: getInputPlaceholderForProperty(property),
         category: getCategoryNameForProperty(property),
         value: getValueNameForProperty(property),
-        choices: choicesForProperty[property]
+        choices: choicesForProperty[property],
+        unique: uniqueForProperty[property],
+        required: requiredForProperty[property]
       }));
       // add properties to the page
       onAddFields(fields);
@@ -104,7 +108,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
       placeholder: getInputPlaceholderForProperty(property),
       category: getCategoryNameForProperty(property),
       value: getValueNameForProperty(property),
-      choices: choicesForProperty[property]
+      choices: choicesForProperty[property],
+      unique: uniqueForProperty[property],
+      required: requiredForProperty[property]
     }));
     onAddFields(fields);
     onClose();

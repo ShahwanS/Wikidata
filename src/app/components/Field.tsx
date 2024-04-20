@@ -16,6 +16,8 @@ export interface FieldProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   options?: Array<{ label: string; value: string }>;
   choices?: string[]; // if the property have predefined values: list of all possible values
+  unique?: boolean; // true, wenn eine Property nur genau einen Wert haben kann, Bsp: Anzahl Fahrstühle: ein Gebäude kann nicht gleichzeitig 2 und 4 Fahrstühle haben
+  required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht.
 }
 
 /**
@@ -32,7 +34,9 @@ const Field: React.FC<FieldProps> = ({
   onChange,
   value,
   options,
-  choices
+  choices,
+  unique,
+  required
 }) => {
   const [inputFields, setInputFields] = useState<string[]>([value || ""]); // Array to store dynamically added fields
   
@@ -63,13 +67,8 @@ const Field: React.FC<FieldProps> = ({
           {name}
         </label>
         <div>
-          {/* Trash bin icon to delete the last input field or the entire property component */}
-          {type !== "number" &&
-            name !== "Offizieller Name" &&
-            name !== "Abschnittstitel" &&
-            name !== "Datum der offiziellen Eröffnung" &&
-            name !== "Webseite" &&
-            name !== "Bild" && (
+          {/* Trash bin icon to delete the last input field or the entire property component; only if the property is not mandatory */}
+          {!required && (
               <button
                 type="button"
                 onClick={removeInputField}
@@ -80,13 +79,8 @@ const Field: React.FC<FieldProps> = ({
               </button>
             )}
 
-          {/* Plus icon to add additional input fields */}
-          {type !== "number" &&
-            name !== "Offizieller Name" &&
-            name !== "Abschnittstitel" &&
-            name !== "Datum der offiziellen Eröffnung" &&
-            name !== "Webseite" &&
-            name !== "Bild" && (
+          {/* Plus icon to add additional input fields; only, if the property is not unique */}
+          {!unique && (
               <button
                 type="button"
                 onClick={addInputField}
