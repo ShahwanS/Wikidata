@@ -1,5 +1,5 @@
 /** Defines the structure of a property */
-export interface Property {
+export type Property = {
   name: string;
   type: string; // Typ der Eigenschaft, z.B. "string", "number", "boolean", "file", "url"
   description?: string;
@@ -10,9 +10,10 @@ export interface Property {
   value?: string; // Vorausgefüllter Wert
   wikidataprop?: string; // Associated wikidataproperty-number, if exists; some properties do not have one
   choices?: string[]; // if the property have predefined values: list of all possible values
+  category?: string; // Category of the Property
 }
 /** Structure how a subcategorie could be described */
-export interface SubCategory {
+export type SubCategory = {
   name: string;
   description: string;
   properties: Property[];
@@ -21,7 +22,7 @@ export interface SubCategory {
 }
 
 /** Structure how a categorie could be described */
-export interface Category {
+export type Category = {
   title: string;
   description: string;
   subcategories: SubCategory[];
@@ -332,10 +333,6 @@ propgliederung.forEach((cat) => {
 /**
  * Der folgende Code dient dazu, dass das Popupfenster funktioniert.
  */
-export const categories: Record<string, Category> = {};
-propgliederung.forEach((cat) => {
-  categories[cat.title] = cat;
-});
 
 /**  Defines index signature to get properties by giving the name of a category and subcategory*/
 type Properties = {
@@ -348,10 +345,28 @@ type Properties = {
   };
 };
 
+export const categories: Record<string, Category> = {};
+propgliederung.forEach((cat) => {
+});
 /**  Provides index signature to get properties by giving the name of a category and subcategory*/
 export const properties: Properties = {};
-// generate it from the propgliederung
+/** Record for Porperties and their input types */
+export const propertyInputTypes: Record<string, string> = {};
+/** Record for Porperties and their category name */
+export const categoryNameForProperty: Record<string, string> = {};
+/** Record for properties and their the default input value */
+export const valueNameForProperty: Record<string, string> = {};
+/** Record for properties and their the default input value */
+export const choicesForProperty: Record<string, string[]> = {};
+/** Record for properties and their uniquevalue */
+export const uniqueForProperty: Record<string, boolean> = {};
+/** Record for properties and their uniquevalue */
+export const requiredForProperty: Record<string, boolean> = {};
+/** Record for property names and their property objects */
+export const PropertyByName: Record<string, Property> = {};
+//generate it from the propgliederung
 propgliederung.forEach((cat) => {
+  categories[cat.title] = cat;
   properties[cat.title] = {};
   cat.subcategories.forEach((subcat) => {
     properties[cat.title][subcat.name] = {
@@ -359,67 +374,64 @@ propgliederung.forEach((cat) => {
       properties: subcat.properties.map((prop) => prop.name),
       description: subcat.description,
     };
-  });
-});
-
-/** Record for Porperties and their input types */
-export const propertyInputTypes: Record<string, string> = {};
-//generate it from the propgliedeung
-propgliederung.forEach((cat) => {
-  cat.subcategories.forEach((subcat) => {
     subcat.properties.forEach((prop) => {
       propertyInputTypes[prop.name] = prop.type;
-    });
-  });
-});
-
-/** Record for Porperties and their category name */
-export const categoryNameForProperty: Record<string, string> = {};
-//generate it from the propgliedeung
-propgliederung.forEach((cat) => {
-  cat.subcategories.forEach((subcat) => {
-    subcat.properties.forEach((prop) => {
+      if (prop.name) PropertyByName[prop.name] = prop;
+      prop.category = cat.title;
+      if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
+      if (prop.required) requiredForProperty[prop.name] = prop.required;
+      if (prop.choices) choicesForProperty[prop.name] = prop.choices;
+      if (prop.value) valueNameForProperty[prop.name] = prop.value;
       categoryNameForProperty[prop.name] = cat.title;
     });
   });
 });
-
-/** Record for properties and their the default input value */
-export const valueNameForProperty: Record<string, string> = {};
-//generate it from the propgliedeung
-propgliederung.forEach((cat) => {
-  cat.subcategories.forEach((subcat) => {
-    subcat.properties.forEach((prop) => {
-      if (prop.value) valueNameForProperty[prop.name] = prop.value;
-    });
-  });
-});
-
-/** Record for properties and their the default input value */
-export const choicesForProperty: Record<string, string[]> = {};
-//generate it from the propgliederung
-propgliederung.forEach((cat) => {
-  cat.subcategories.forEach((subcat) => {
-    subcat.properties.forEach((prop) => {
-      if (prop.choices) choicesForProperty[prop.name] = prop.choices;
-    });
-  });
-});
-
-/** Record for properties and their uniquevalue */
-export const uniqueForProperty: Record<string, boolean> = {};
-/** Record for properties and their uniquevalue */
-export const requiredForProperty: Record<string, boolean> = {};
-//generate it from the propgliederung
-propgliederung.forEach((cat) => {
-  cat.subcategories.forEach((subcat) => {
-    subcat.properties.forEach((prop) => {
-      if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
-      if (prop.required) requiredForProperty[prop.name] = prop.required;
-    });
-  });
-});
-
+/**
+ * Given the name of a property, the function delivers the property object
+ * @param propertyName Name of the property
+ * @returns Property object from the propgliederung, if not exist: a default object with type text
+ */
+export function getPropertyByName(propertyName: string) :Property {
+  const property = PropertyByName[propertyName];
+  if (!property) {
+    return {name: propertyName, type: "text"};
+  }
+  return property;
+}
+/*************Helper functions***************/
+/**
+ * Helper function to get input type of a property
+ * @param property the property name of the property
+ * @returns Type of the given property
+ */
+const getInputTypeForProperty = (property: string): string => {
+  return propertyInputTypes[property] || "text";
+};
+/**
+ * Helper function to get placeholder of a property
+ * @param property the property name of the property
+ * @returns placeholder of the given property
+ */
+const getInputPlaceholderForProperty = (property: string): string => {
+  return propertyInputPlaceholder[property] || "";
+};
+/**
+ * Helper function to get the category name of a property
+ * @param property the property name of the property
+ * @returns category name of the given property
+ */
+const getCategoryNameForProperty = (property: string): string => {
+  return categoryNameForProperty[property] || "";
+};
+/**
+ * Helper function to get the default value of a property
+ * @param property the property name of the property
+ * @returns default value of the given property
+ */
+const getValueNameForProperty = (property: string): string => {
+  return valueNameForProperty[property] || "";
+};
+/****************************************/
 
 
 /**

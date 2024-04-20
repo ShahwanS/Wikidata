@@ -45,9 +45,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
   return (
     <div className="my-10">
       <Field
-        name="Abschnittstitel"
-        type="text"
-        placeholder="Abschnittstitel eingeben"
+        property={{name: "Abschnittstitel", type: "text", placeholder: "Abschnittstitel eingeben"}}
       />
       <ReactQuill
         theme="snow"

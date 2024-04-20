@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
+import { Property } from "../propgliederung";
 
 /**
- * Defines the structure of a property to generate a React component for a property.
+ * Things that are needed to generate a React component for a property.
  */
 export interface FieldProps {
-  name: string; // Name of the field
-  type: string; // Type of the field
-  placeholder?: string; // Placeholder text for the field
-  wikidataprop?: string; // Associated Wikidata property number
-  category?: string; // Category of the field
+  property: Property;
   onDelete?: () => void; // Function to handle delete action
-  value?: string; // Value of the field
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   options?: Array<{ label: string; value: string }>;
-  choices?: string[]; // if the property have predefined values: list of all possible values
-  unique?: boolean; // true, wenn eine Property nur genau einen Wert haben kann, Bsp: Anzahl Fahrstühle: ein Gebäude kann nicht gleichzeitig 2 und 4 Fahrstühle haben
-  required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht.
 }
 
 /**
@@ -25,19 +18,10 @@ export interface FieldProps {
  * @param FieldProps Property welche durch die Komponente dargestellt werden soll 
  * @returns 
  */
-const Field: React.FC<FieldProps> = ({
-  name,
-  type,
-  onDelete,
-  placeholder,
-  wikidataprop,
-  onChange,
-  value,
-  options,
-  choices,
-  unique,
-  required
-}) => {
+const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options}) => {
+
+  const {name, type, placeholder, wikidataprop, value, choices, unique, required} = property;
+
   const [inputFields, setInputFields] = useState<string[]>([value || ""]); // Array to store dynamically added fields
   
   // CSS styling starting point

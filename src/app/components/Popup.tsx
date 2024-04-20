@@ -1,21 +1,15 @@
 import React, { useState } from "react";
-import { FieldProps } from "./Field";
 import {
   categories,
   properties,
-  propertyInputPlaceholder,
-  propertyInputTypes,
-  categoryNameForProperty,
-  valueNameForProperty,
-  choicesForProperty,
-  uniqueForProperty,
-  requiredForProperty,
+  Property,
+  getPropertyByName,
 } from "../propgliederung";
 
 /** Functions needed by th Popups */
 interface PopupProps {
   /** Method to add properties to the page @param fields Array of properties that will be added to the page */
-  onAddFields: (fields: FieldProps[]) => void; // Callback function to add fields
+  onAddFields: (fields: Property[]) => void; // Callback function to add fields
   /** Method to close th Popup */
   onClose: () => void; // Callback function to close the popup
 }
@@ -30,41 +24,6 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Selected category
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]); // Selected properties
 
-  /*************Helper functions***************/
-  /**
-   * Helper function to get input type of a property
-   * @param property the property name of the property
-   * @returns Type of the given property
-   */
-  const getInputTypeForProperty = (property: string): string => {
-    return propertyInputTypes[property] || "text";
-  };
-  /**
-   * Helper function to get placeholder of a property
-   * @param property the property name of the property
-   * @returns placeholder of the given property
-   */
-  const getInputPlaceholderForProperty = (property: string): string => {
-    return propertyInputPlaceholder[property] || "";
-  };
-  /**
-   * Helper function to get the category name of a property
-   * @param property the property name of the property
-   * @returns category name of the given property
-   */
-  const getCategoryNameForProperty = (property: string): string => {
-    return categoryNameForProperty[property] || "";
-  };
-  /**
-   * Helper function to get the default value of a property
-   * @param property the property name of the property
-   * @returns default value of the given property
-   */
-  const getValueNameForProperty = (property: string): string => {
-    return valueNameForProperty[property] || "";
-  };
-  /****************************************/
-
   /**
    * Callback function when a category is selected
    * @param category category name of the selected category
@@ -77,17 +36,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
       // properties of the one subcategory:
       const propsOfTheOneSubCat = properties[category][Object.keys(properties[category])[0]].properties
       // add the properties of this subcategory directly
-      const fields = propsOfTheOneSubCat.map((property, index) => ({
-        id: index,
-        name: property,
-        type: getInputTypeForProperty(property),
-        placeholder: getInputPlaceholderForProperty(property),
-        category: getCategoryNameForProperty(property),
-        value: getValueNameForProperty(property),
-        choices: choicesForProperty[property],
-        unique: uniqueForProperty[property],
-        required: requiredForProperty[property]
-      }));
+      const fields = propsOfTheOneSubCat.map((property, index) => (
+        getPropertyByName(property)
+      ));
       // add properties to the page
       onAddFields(fields);
       // close Popup, no subcategory selection needed 
@@ -101,17 +52,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
  
   /** Create Property fields based on selected properties and add them using the onAddFields callback */
   const handleSubmit = () => {
-    const fields = selectedProperties.map((property, index) => ({
-      id: index,
-      name: property,
-      type: getInputTypeForProperty(property),
-      placeholder: getInputPlaceholderForProperty(property),
-      category: getCategoryNameForProperty(property),
-      value: getValueNameForProperty(property),
-      choices: choicesForProperty[property],
-      unique: uniqueForProperty[property],
-      required: requiredForProperty[property]
-    }));
+    const fields = selectedProperties.map((property, index) => (
+      getPropertyByName(property)
+    ));
     onAddFields(fields);
     onClose();
   };

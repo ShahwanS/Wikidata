@@ -1,14 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import Field, { FieldProps } from "./components/Field";
+import Field from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
 import { convert2Markup } from "./convertToMarkup";
 import { revalidatePath } from "next/cache";
+import { Property } from "./propgliederung";
 // Define the Home component
 export default function Home() {
   // Define state variables
-  const [fields, setFields] = useState<FieldProps[]>([
+  const [fields, setFields] = useState<Property[]>([
     // Initial fields
     {
       name: "Offizieller Name",
@@ -37,7 +38,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
   // Function to add new fields
-  const addFields = (newFields: FieldProps[]) => {
+  const addFields = (newFields: Property[]) => {
     const uniqueFields = newFields.filter((newField) => {
       return !fields.some(
         (field: { name: string; type: string }) =>
@@ -56,16 +57,16 @@ export default function Home() {
 
   // Function to add a rich text field
   const addRichTextField = () => {
-    const richTextField: FieldProps = {
+    const richTextField: Property = {
       name: "Rich Text",
       type: "richtext",
     };
     setFields([...fields, richTextField]);
   };
   // Function to remove a field
-  const removeField = (fieldssss: FieldProps) => {
+  const removeField = (fieldssss: Property) => {
     const updatedFields = fields.filter(
-      (field: FieldProps) => field !== fieldssss
+      (field: Property) => field !== fieldssss
     );
     setFields(updatedFields);
   };
@@ -101,12 +102,12 @@ export default function Home() {
 
   // Interface to group fields by category
   interface GroupedFields {
-    [category: string]: FieldProps[];
+    [category: string]: Property[];
   }
 
   // Group fields by their category for rendering
   const fieldsByCategory = fields.reduce<GroupedFields>(
-    (acc: GroupedFields, field: FieldProps) => {
+    (acc: GroupedFields, field: Property) => {
       const category = field.category || ""; // Assign to 'Other' if category is undefined
       if (!acc[category]) {
         acc[category] = [];
@@ -162,14 +163,8 @@ export default function Home() {
                     return (
                       <Field
                         key={category+field.name}
-                        name={field.name}
-                        type={field.type}
-                        value={field.value}
-                        placeholder={field.placeholder}
+                        property={field}
                         onDelete={() => removeField(field)}
-                        choices={field.choices}
-                        unique={field.unique}
-                        required={field.required}
                       />
                     );
                   }
