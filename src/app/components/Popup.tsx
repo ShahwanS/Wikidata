@@ -69,7 +69,30 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
    */
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    setStep(2);
+    // Check if the category has only one subcategory
+    if(!(Object.keys(properties[category]).length > 1) && Object.keys(properties[category])[0]) {
+      // there only one subcategory
+      // properties of the one subcategory:
+      const propsOfTheOneSubCat = properties[category][Object.keys(properties[category])[0]].properties
+      // add the properties of this subcategory directly
+      const fields = propsOfTheOneSubCat.map((property, index) => ({
+        id: index,
+        name: property,
+        type: getInputTypeForProperty(property),
+        placeholder: getInputPlaceholderForProperty(property),
+        category: getCategoryNameForProperty(property),
+        value: getValueNameForProperty(property),
+        choices: choicesForProperty[property]
+      }));
+      // add properties to the page
+      onAddFields(fields);
+      // close Popup, no subcategory selection needed 
+      onClose();
+    }
+    else{
+      // there are more than one subcategory, go to step 2: Subcategoryselection
+      setStep(2);
+    }
   };
  
   /** Create Property fields based on selected properties and add them using the onAddFields callback */
