@@ -34,9 +34,9 @@ export default function Home() {
     },
   ]);
   /** This state is for the Richtextfields that are currently displayed on the page */
-  const [richTextState, setRichTextState] = useState<{ [key: string]: string }>(
-    {}
-  );
+  const [richTextState, setRichTextState] = useState<{ [key: string]: string }>({});
+  /** This state counts, how many Richtexts were added in the running session */
+  const [richtextId, setRichtextId] = useState<number>(0);
   /** The state saves if the Popup is shown or not */
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
@@ -71,9 +71,11 @@ export default function Home() {
   /** Function to add a rich text field */
   const addRichTextField = () => {
     const richTextField: Property = {
-      name: "Rich Text",
+      name: "Rich Text"+(richtextId),
       type: "richtext",
+      unique: true
     };
+    setRichtextId(richtextId+1)
     setFields([...fields, richTextField]);
   };
   /**
@@ -175,9 +177,9 @@ export default function Home() {
                     return (
                       <div key={fieldIndex} className="col-span-2">
                         <RichTextField
-                          name={field.name}
-                          wikiDataProp="richtext"
+                          property={field}
                           updateContent={updateRichTextContent}
+                          onDelete={() => removeField(field)}
                         />
                       </div>
                     );

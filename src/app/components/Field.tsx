@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { Property } from "../propgliederung";
@@ -11,6 +11,7 @@ export interface FieldProps {
   onDelete?: () => void; // Function to handle delete action
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   options?: Array<{ label: string; value: string }>;
+  children?: ReactNode;
 }
 
 /**
@@ -18,7 +19,7 @@ export interface FieldProps {
  * @param FieldProps Property welche durch die Komponente dargestellt werden soll 
  * @returns 
  */
-const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options}) => {
+const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,children}) => {
 
   const {name, type, placeholder, wikidataprop, value, choices, unique, required} = property;
 
@@ -141,6 +142,7 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options}) => {
           {...(type === "number" ? { min: "0" } : {})}
         />
         ))}
+        {children}
         </>
       )}
     </div>

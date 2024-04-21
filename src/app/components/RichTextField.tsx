@@ -11,10 +11,7 @@ const ReactQuill = dynamic(() => import("react-quill"), {
 });
 
 /**  Defines the parameters needed to generate a React component with richtext. */
-export interface RichTextFieldProps {
-  /** name of the richtext property */
-  name: string;
-  wikiDataProp?: string;
+export type RichTextFieldProps = FieldProps & {
   /**
    * Method that is called when the richtext changes
    * @param name name of the richtextproperty
@@ -28,8 +25,9 @@ export interface RichTextFieldProps {
  * @param param0 Object with the parameters for the richtextfield
  */
 const RichTextField: React.FC<RichTextFieldProps> = ({
-  name,
+  property,
   updateContent,
+  onDelete
 }) => {
   const [content, setContent] = useState("");
 
@@ -39,20 +37,22 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
    */
   const handleChange = (content: string) => {
     setContent(content);
-    updateContent(name, content); // Update parent component's state
+    updateContent(property.name, content); // Update parent component's state
   };
 
   return (
-    <div className="my-10">
-      <Field
-        property={{name: "Abschnittstitel", type: "text", placeholder: "Abschnittstitel eingeben"}}
-      />
-      <ReactQuill
-        theme="snow"
-        value={content}
-        onChange={handleChange}
-        style={{ height: "400px" }}
-      />
+    <div className="my-10" key={"div"+property.name}>
+      <Field property={{name: "Abschnittstitel", type: "text", placeholder: "Abschnittstitel eingeben", unique: true}} 
+             onDelete={onDelete} 
+             key={"field"+property.name}>
+        <ReactQuill
+          key={"quill"+property.name}
+          theme="snow"
+          value={content}
+          onChange={handleChange}
+          style={{ height: "400px" }}
+        />
+      </Field>
     </div>
   );
 };

@@ -396,6 +396,7 @@ export function getPropertyByName(propertyName: string) :Property {
   if (!property) {
     return {name: propertyName, type: "text"};
   }
+  property.placeholder = propertyInputPlaceholder[property.name]
   return property;
 }
 /*************Helper functions***************/
