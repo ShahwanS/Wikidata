@@ -6,9 +6,10 @@ import RichTextField from "./components/RichTextField";
 import { convert2Markup } from "./convertToMarkup";
 import { revalidatePath } from "next/cache";
 import { Property } from "./propgliederung";
-// Define the Home component
+/** Define the Home component */
 export default function Home() {
   // Define state variables
+  /** The state saves the properties that are currently displayed on the page */
   const [fields, setFields] = useState<Property[]>([
     // Initial fields
     {
@@ -22,32 +23,44 @@ export default function Home() {
       name: "Datum der offiziellen Eröffnung",
       type: "text",
       placeholder: "Datum : MM/YY oder Jahr",
-      unique: true
+      unique: true,
+      required: true
     },
-    { name: "Bild", type: "file" },
+    { name: "Bild", type: "file", required: true},
     {
       name: "Webseite",
       type: "text",
-      placeholder: "https://example.com",
+      placeholder: "https://example.com", required: true
     },
   ]);
+  /** This state is for the Richtextfields that are currently displayed on the page */
   const [richTextState, setRichTextState] = useState<{ [key: string]: string }>(
     {}
   );
-
+  /** The state saves if the Popup is shown or not */
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
   // Function to add new fields
+  /**
+   * Method adds properties to the page
+   * @param newFields Array of properties to be added to the page
+   */
   const addFields = (newFields: Property[]) => {
+    // check for each property if it already exists on the page
     const uniqueFields = newFields.filter((newField) => {
       return !fields.some(
         (field: { name: string; type: string }) =>
           field.name === newField.name && field.type === newField.type
       );
     });
+    //add the filtered properties to the page
     setFields([...fields, ...uniqueFields]);
   };
-
+  /**
+   * Method to update a richtextfield
+   * @param fieldName Name of the richtextfield to be updated
+   * @param content Content of the richtextfield to be updated
+   */
   const updateRichTextContent = (fieldName: string, content: string) => {
     setRichTextState((prevState) => ({
       ...prevState,
@@ -55,7 +68,7 @@ export default function Home() {
     }));
   };
 
-  // Function to add a rich text field
+  /** Function to add a rich text field */
   const addRichTextField = () => {
     const richTextField: Property = {
       name: "Rich Text",
@@ -63,7 +76,10 @@ export default function Home() {
     };
     setFields([...fields, richTextField]);
   };
-  // Function to remove a field
+  /**
+   * Method to remove a property from the page
+   * @param fieldssss Property to be removed
+   */
   const removeField = (fieldssss: Property) => {
     const updatedFields = fields.filter(
       (field: Property) => field !== fieldssss
@@ -71,7 +87,10 @@ export default function Home() {
     setFields(updatedFields);
   };
 
-  // Function to handle form submission
+  /**
+   * Handle form submission
+   * @param event Event that happens by click submit
+   */
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -100,12 +119,12 @@ export default function Home() {
     }
   };
 
-  // Interface to group fields by category
+  /** Interface to group fields by category */
   interface GroupedFields {
     [category: string]: Property[];
   }
 
-  // Group fields by their category for rendering
+  /** Grouped fields by their category for rendering */
   const fieldsByCategory = fields.reduce<GroupedFields>(
     (acc: GroupedFields, field: Property) => {
       const category = field.category || ""; // Assign to 'Other' if category is undefined
@@ -117,7 +136,10 @@ export default function Home() {
     },
     {}
   );
-
+  /**
+   * Handle reset the whole page
+   * @param event Event for click reset
+   */
   const handleReset = (event: any) => {
     const confirmReset = window.confirm(
       "Möchten Sie wirklich alle Felder zurücksetzen?"
