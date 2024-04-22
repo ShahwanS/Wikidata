@@ -12,6 +12,7 @@ export interface FieldProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   options?: Array<{ label: string; value: string }>;
   children?: ReactNode;
+  showWikiProp? : boolean
 }
 
 /**
@@ -19,7 +20,7 @@ export interface FieldProps {
  * @param FieldProps Property welche durch die Komponente dargestellt werden soll 
  * @returns 
  */
-const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,children}) => {
+const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,children,showWikiProp}) => {
 
   const {name, type, placeholder, wikidataprop, value, choices, unique, required} = property;
 
@@ -50,6 +51,9 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
       <div className="flex justify-between">
         <label className="block mb-2 text-sm font-medium text-gray-700">
           {name}
+        {showWikiProp && wikidataprop!= ("" || undefined) && (
+          <>{" ("}<a href={"https://www.wikidata.org/wiki/Property:"+wikidataprop} target="_blank" tabIndex={-1} className="text-blue-600 underline">{wikidataprop}</a>{")"}</>
+        )}
         </label>
         <div>
           {/* Trash bin icon to delete the last input field or the entire property component; only if the property is not mandatory */}
@@ -59,6 +63,7 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
                 onClick={removeInputField}
                 className="ml-2 text-red-500 hover:text-red-700"
                 aria-label={`Delete ${name}`}
+                tabIndex={-1}
               >
                 <MdDeleteOutline size="20px" />
               </button>
@@ -70,6 +75,7 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
                 type="button"
                 onClick={addInputField}
                 className="ml-2 text-green-800 hover:opacity-40"
+                tabIndex={-1}
               >
                 <CiCirclePlus size="20px" />
               </button>
@@ -116,7 +122,7 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
       ) 
       : type === "radio" ? (
         inputFields.map((d, index)=>(
-          <div>
+          <div key={name+index}>
             {choices?.map((choice, i)=>(
               <>
                 <input type="radio" key={name+d+index+choice+i} id={choice} name={"Rollstuhl geeignet"+index} value={choice}/>

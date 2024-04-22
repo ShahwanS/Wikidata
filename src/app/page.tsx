@@ -16,6 +16,7 @@ export default function Home() {
       name: "Offizieller Name",
       type: "text",
       placeholder: "Name",
+      wikidataprop: "P1448",
       unique: true,
       required: true
     },
@@ -23,14 +24,15 @@ export default function Home() {
       name: "Datum der offiziellen Eröffnung",
       type: "text",
       placeholder: "Datum : MM/YY oder Jahr",
+      wikidataprop: "P1619",
       unique: true,
       required: true
     },
-    { name: "Bild", type: "file", required: true},
+    { name: "Bild", type: "file", wikidataprop: "P18", required: true},
     {
       name: "Webseite",
       type: "text",
-      placeholder: "https://example.com", required: true
+      placeholder: "https://example.com", wikidataprop: "P856", required: true
     },
   ]);
   /** This state is for the Richtextfields that are currently displayed on the page */
@@ -41,6 +43,8 @@ export default function Home() {
   const [richtextCounter, setRichtextCounter] = useState<number>(0);
   /** The state saves if the Popup is shown or not */
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  /** The state saves if the Wikipropnumbers are shown or not */
+  const [showWikiProps, setShowWikiProps] = useState<boolean>(false);
 
   // Function to add new fields
   /**
@@ -197,6 +201,7 @@ export default function Home() {
                         key={category+field.name}
                         property={field}
                         onDelete={() => removeField(field)}
+                        showWikiProp={showWikiProps}
                       />
                     );
                 })}
@@ -245,6 +250,14 @@ export default function Home() {
               >
                 alle Felder zurücksetzen
               </button>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  onChange={(e)=>{setShowWikiProps(e.target.checked)}}
+                />
+                <label className="text-sm">Wikidata-Propertynummern anzeigen</label>
+              </div>
               <button
                 type="submit"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
