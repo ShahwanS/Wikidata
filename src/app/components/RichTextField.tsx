@@ -18,6 +18,8 @@ export type RichTextFieldProps = FieldProps & {
    * @param content content of the richtext field
    */
   updateContent: (name: string, content: string) => void;
+  initContent: string;
+  initTitle: string
 }
 
 /**
@@ -27,9 +29,12 @@ export type RichTextFieldProps = FieldProps & {
 const RichTextField: React.FC<RichTextFieldProps> = ({
   property,
   updateContent,
-  onDelete
+  onDelete,
+  onChange, //hier geht es um den Abschnittstitel
+  initContent,
+  initTitle
 }) => {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(initContent);
 
   /**
    * Method for handling changes of the richtext
@@ -41,12 +46,13 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
   };
 
   return (
-    <div className="my-10" key={"div"+property.name}>
-      <Field property={{name: "Abschnittstitel", type: "text", placeholder: "Abschnittstitel eingeben", unique: true}} 
+    <div className="my-10 py-2" key={property.name}>
+      <Field property={{name: "Freitext", type: "richtext", placeholder: "Abschnittstitel eingeben", value: initTitle, unique: true}} 
              onDelete={onDelete} 
-             key={"field"+property.name}>
+             onChange={onChange}
+             key={property.name}>
         <ReactQuill
-          key={"quill"+property.name}
+          key={property.name}
           theme="snow"
           value={content}
           onChange={handleChange}

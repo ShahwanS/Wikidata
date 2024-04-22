@@ -103,7 +103,7 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
               }
             }}              
           />
-          {/* Review of the selected image */}
+          {/* Preview of the selected image */}
           {d && (
             <img 
               src={d} 
@@ -127,6 +127,20 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
           )
         )
       )
+      : type==="richtext" ? (
+        // The case when the Fieldcomponent is used for a richtextfield
+        <>
+        <input
+          key={name}
+          className={`${baseInputClasses} bg-white`}
+          placeholder={placeholder}
+          type="text"
+          defaultValue={value || ""}
+          onChange={onChange}
+        />
+        {children}
+        </>
+      )
       : (
         // Render regular input fields
         <>
@@ -142,7 +156,6 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
           {...(type === "number" ? { min: "0" } : {})}
         />
         ))}
-        {children}
         </>
       )}
     </div>

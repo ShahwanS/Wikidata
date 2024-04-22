@@ -35,8 +35,10 @@ export default function Home() {
   ]);
   /** This state is for the Richtextfields that are currently displayed on the page */
   const [richTextState, setRichTextState] = useState<{ [key: string]: string }>({});
+  // kleiner workaround, weil beim Löschen eines richtexts die Titel nachfolgender Richtexts unerklärlicherweise verschwinden
+  const [richTextTitle, setRichTextTitle] = useState<{ [key: string]: string }>({});
   /** This state counts, how many Richtexts were added in the running session */
-  const [richtextId, setRichtextId] = useState<number>(0);
+  const [richtextCounter, setRichtextCounter] = useState<number>(0);
   /** The state saves if the Popup is shown or not */
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
@@ -67,17 +69,33 @@ export default function Home() {
       [fieldName]: content,
     }));
   };
+  // das gleiche nochmal für den Titel des Richtexts
+  const updateRichTextTitle = (fieldName: string, newtitle: string) => {
+    setRichTextTitle((prevState) => ({
+      ...prevState,
+      [fieldName]: newtitle,
+    }));
+  };
 
   /** Function to add a rich text field */
   const addRichTextField = () => {
-    const richTextField: Property = {
-      name: "Rich Text"+(richtextId),
-      type: "richtext",
-      unique: true
-    };
-    setRichtextId(richtextId+1)
-    setFields([...fields, richTextField]);
+    const newRichtextStat = {...richTextState}
+    newRichtextStat["Rich Text"+richtextCounter] = ""
+    setRichTextState(newRichtextStat)
+    setRichtextCounter(richtextCounter+1)
   };
+  /**
+   * Methode to delete a richtext field
+   * @param richtextName Name of the richtext to be removed
+   */
+  const removeRichTextField = (richtextName: string) => {
+    const newRichtextState = {...richTextState};
+    delete newRichtextState[richtextName]
+    setRichTextState(newRichtextState)
+    const newRichtextTitle = {...richTextTitle};
+    delete newRichtextTitle[richtextName]
+    setRichTextTitle(newRichtextTitle)
+  }
   /**
    * Method to remove a property from the page
    * @param fieldssss Property to be removed
@@ -166,6 +184,7 @@ export default function Home() {
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded shadow-md"
         >
+          <>
           {Object.entries(fieldsByCategory).map(([category, fields], index) => (
             <div key={index}>
               <h2 className="flex justify-center items-center text-xl font-bold mb-10 mt-4">
@@ -173,17 +192,6 @@ export default function Home() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                 {fields.map((field, fieldIndex) => {
-                  if (field.type === "richtext") {
-                    return (
-                      <div key={fieldIndex} className="col-span-2">
-                        <RichTextField
-                          property={field}
-                          updateContent={updateRichTextContent}
-                          onDelete={() => removeField(field)}
-                        />
-                      </div>
-                    );
-                  } else {
                     return (
                       <Field
                         key={category+field.name}
@@ -191,12 +199,27 @@ export default function Home() {
                         onDelete={() => removeField(field)}
                       />
                     );
-                  }
                 })}
               </div>
             </div>
-          ))}
-
+            ))}
+            {Object.keys(richTextState).map((richtextName,index)=>{
+              return(
+                <>
+                {index===0 ? (<h2 className="flex justify-center items-center text-xl font-bold mb-10 mt-4">Weitere Angaben als Freitext</h2>) : ("")}
+                <RichTextField
+                      key={richtextName}
+                      property={{name: richtextName, type: "richie"}}
+                      updateContent={updateRichTextContent}
+                      onDelete={()=>removeRichTextField(richtextName)}
+                      initContent={richTextState[richtextName]}
+                      initTitle={richTextTitle[richtextName]}
+                      onChange={(e)=>updateRichTextTitle(richtextName,e.target.value)} // dieses onChange bezieht sich auf das Feld mit dem Abschnittstitel
+                />
+                </>
+              )
+            })}
+          </>
           <div className="flex-col items-center justify-between mt-4 space-y-10">
             <div className="flex justify-between items-center">
               <button
