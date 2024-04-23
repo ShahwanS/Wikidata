@@ -128,7 +128,7 @@ export default function Home() {
     });
 
     console.log("Fields Data:", fieldsData);
-    const markupOutput = convert2Markup(fieldsData);
+    const markupOutput = convert2Markup(fieldsData,showWikiProps);
 
     if (markupOutput !== undefined) {
       const blob = new Blob([markupOutput], { type: "text/markdown" });
