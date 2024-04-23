@@ -34,10 +34,9 @@ function simpleHtmlToMarkdown(html: string) {
  * @param data
  * @returns makdown-data
  */
-export const convert2Markup = (data: any) => {
-  //console.log("Sended Data : " + data)
+export const convert2Markup = (data: any,isShowedWikiProps:boolean) => {
   const dataAsMap = dataToMap(data); // First mapping properties to categories
-  const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
+  const dataAsJson = convertDataToJson(dataAsMap,isShowedWikiProps); // Then maped data to json
   const dataAsMd = json2md(dataAsJson); // Finally json to markdown
   return dataAsMd;
 };
@@ -47,67 +46,23 @@ export const convert2Markup = (data: any) => {
  * @param dataAsMap (map with category and data)
  * @return JSON (array of objects)
  */
-const convertDataToJson = (dataAsMap: Map<any, any>) => {
-  const jsonOutput = [];
+const convertDataToJson = (dataAsMap: Map<any, any>, isShowedWikiProps: boolean) => {
+  const jsonOutput: { h1?: string; h2?: any; p?: string; }[] = [];
 
-  // Adding the title from "Namensangaben"
-  const title = getTitle(dataAsMap.get("Namensangaben"));
-  jsonOutput.push({ h1: title });
+  addTitleToJson(dataAsMap,jsonOutput)  // Add Title to Json
 
+  // Add all Data in Map to Json
   dataAsMap.forEach((dataList, category) => {
-    let hasValidData = false; // Flag to check if the category has valid data
-
-    // Preprocess data list to filter out invalid data (e.g., empty images)
-    const processedDataList = dataList.filter(
-      ([dataName, inputData, wikiprop]: [string, any, string]) => {
-        if (wikiprop === "P18" || wikiprop === "P7417") {
-          return inputData instanceof File ? inputData.name : inputData;
-        }
-        return true; // Keep all non-image data by default
-      }
-    );
-
-    // Check if processedDataList has valid data
-    hasValidData = processedDataList.length > 0;
-
+    let hasValidData = dataList.length > 0; // Flag to check if the category has valid data
     if (hasValidData) {
-      jsonOutput.push({ h2: category }); // Add the category if it has valid data
-
-      processedDataList.forEach(
-        ([dataName, inputData, wikiprop]: [string, any, string]) => {
-          //console.log("Data Length : " + inputData)
-          if (isImage(inputData,wikiprop)) { // Check if data is image
-            const hasImage = inputData.name !== ""
-            if(hasImage){
-                const imagePath = `./images/${inputData.name}`;
-                jsonOutput.push({
-                  p: `### ${wikiprop}\t${dataName}\n![Image](${imagePath})`,
-                });
-            }
-            else{ 
-              // There aren't ontput if inputData is empty
-            }
-          } else if (wikiprop === "P856") {
-            jsonOutput.push({
-              p: `### ${wikiprop}\t${dataName}\n[Link](${inputData})`,
-            });
-          } else if (wikiprop === "richtext") {
-            const markdown = simpleHtmlToMarkdown(inputData);
-            //jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n${markdown}` });
-            jsonOutput.push({ p: `### ${'FreiText'}\t${dataName}\n${markdown}` });
-            console.log(inputData.name)
-          } else {
-            jsonOutput.push({
-              p: `### ${wikiprop}\t${dataName}\n${inputData}`,
-            });
-          }
-        }
-      );
+      addCategoryAsSubtitleToJson(category,jsonOutput) // Add category name as Subtitle 
+      addDataFromCategoryToJson(dataList,jsonOutput)  // Add input in each category to json
     }
-  });
+  })
 
-  return jsonOutput;
-};
+  return jsonOutput
+}
+
 
 /**
  * Special Method to combine wikiData-props with corresponding categories
@@ -155,6 +110,8 @@ const dataToMap = (data: any) => {
   return resultMap;
 };
 
+
+
 /**
  * This method returns a map, which contains all data with category and wikiproperty and dataName as key
  * @returns map (Key : DataName, Value: [Category,Wikiprop] )
@@ -174,6 +131,184 @@ function allCategoryAndWikiprop() {
 }
 
 /**
+ * check, whether inputData is image
+ * @param inputData any
+ * @param wikiprop Wikipediaproperty
+ * @returns boolen
+ */
+function checkImage(inputData: any, wikiprop: String ): boolean {
+  const IMAGEWIKIPROPS = ["P18","P7417","P9721","P8592","P5775","P3311"];
+  const isImageFile = inputData instanceof File;
+  const wikipropExists = IMAGEWIKIPROPS.includes(wikiprop);
+  return isImageFile && wikipropExists;
+}
+
+
+/**
+ * Adds data from a category to the JSON output.
+ * @param dataList List of data items from the category
+ * @param jsonOutput JSON output array
+ */
+function addDataFromCategoryToJson(dataList : any,jsonOutput : any){
+
+  // Store the WikiProperty from the previous data to determine if the current data is from an additional field
+  let previousDataWikiProperty = "";
+
+  dataList.forEach(
+    ([dataName, inputData, wikiprop]: [string, any, string]) => {
+
+      let isNotFromAdditionalField = (previousDataWikiProperty != wikiprop)
+
+      const isUrl = (wikiprop === "P856")
+      const isRichtext = (wikiprop === "richtext")
+      const isImage = checkImage(inputData,wikiprop)
+
+      if (isImage) { 
+        addImageToJson(wikiprop,dataName,inputData,jsonOutput)
+      } 
+      else if (isUrl) {
+        addUrlToJson(wikiprop,dataName,inputData,jsonOutput)
+      } 
+      else if (isRichtext) {
+        addRichTextToJson(wikiprop,dataName,inputData,jsonOutput)
+      } 
+      else {
+        if(isNotFromAdditionalField){
+          addNormalDataToJson(wikiprop,dataName,inputData,jsonOutput) 
+        }
+        else{
+          addDataFromAdditonalFieldToJson(inputData,jsonOutput)
+        }
+      } 
+
+      previousDataWikiProperty = wikiprop;
+    })
+}
+
+
+
+/**
+ * This method is for data, which comes from "Weitere Felder", 
+ * because dataName of this data contains trailing digits
+ * Removes trailing numbers from a given string.
+ * If no trailing numbers are present, the input string is returned unchanged.
+ * @param input The input string from which to remove trailing numbers.
+ * @returns The input string with trailing numbers removed.
+ */
+function removeTrailingNumber(input: any): string {
+  const strInput = typeof input === 'string' ? input : input.toString();  // convert to string
+  return strInput.replace(/\d+$/, '');   // Remove trailing digits
+}
+
+
+/**
+ * Adds the title from "Namensangaben" to the JSON output.
+ * @param dataAsMap Map containing the data categorized by name
+ * @param jsonOutput JSON output array
+ */
+function addTitleToJson(dataAsMap:any,jsonOutput:any){
+  // Adding the title from "Namensangaben"
+  const title = getTitle(dataAsMap.get("Namensangaben"));
+  jsonOutput.push({ h1: title });
+}
+
+/**
+ * Adds the category as a subtitle to the JSON output.
+ * @param category Category name
+ * @param jsonOutput JSON output array
+ */
+function addCategoryAsSubtitleToJson(category:any,jsonOutput:any){
+  jsonOutput.push({ h2: category });
+} 
+
+/**
+ * Adds image data to the JSON output.
+ * @param wikiprop Wiki property associated with the data
+ * @param dataName Name of the data
+ * @param inputData Image data
+ * @param jsonOutput JSON output array
+ */
+function addImageToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
+  const containsImage = inputData.name !== ""
+  if(containsImage){
+      const imagePath = `./images/${inputData.name}`;
+      jsonOutput.push({
+        p: `### ${wikiprop}\t${dataName}\n![${dataName}](${imagePath})`,
+      });
+  }
+  else{ 
+    // There aren't ontput if inputData is empty
+  }
+}
+
+/**
+ * Adds a URL to the JSON output.
+ * @param wikiprop Wiki property associated with the data
+ * @param dataName Name of the data
+ * @param inputData URL data
+ * @param jsonOutput JSON output array
+ */
+function addUrlToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
+  jsonOutput.push({
+    p: `### ${wikiprop}\t${dataName}\n[${dataName}](${inputData})`,
+  });
+}
+
+/**
+ * Adds rich text data to the JSON output.
+ * @param wikiprop Wiki property associated with the data
+ * @param dataName Name of the data
+ * @param inputData Rich text data
+ * @param jsonOutput JSON output array
+ */
+function addRichTextToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
+  const markdown = simpleHtmlToMarkdown(inputData);
+  jsonOutput.push({ 
+    p: `### ${wikiprop}\t${dataName}\n${markdown}` 
+  });
+}
+
+/**
+ * Adds normal data (non-URL, non-rich text) to the JSON output.
+ * @param wikiprop Wiki property associated with the data
+ * @param dataName Name of the data
+ * @param inputData Normal data
+ * @param jsonOutput JSON output array
+ */
+function addNormalDataToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
+  jsonOutput.push({  
+    p: `### ${wikiprop}\t${dataName}\n-\t${inputData}`,
+  });
+}
+
+/**
+ * Adds data from an additional field to the JSON output.
+ * @param inputData Additional field data
+ * @param jsonOutput JSON output array
+ */
+function addDataFromAdditonalFieldToJson(inputData: any, jsonOutput:any){
+  jsonOutput.push({ p: `-\t${inputData}` });
+}
+
+
+/**
+ * Preprocesses data list to filter out invalid data (e.g., empty images)
+ * @param dataList Data list to preprocess
+ * @returns Processed data list
+ */
+const preprocessDataList = (dataList: any[]) => {
+  return dataList.filter(([dataName, inputData, wikiprop]: [string, any, string]) => {
+    // Check if the data property is an image (P18 or P7417) and has a File object
+    if ((wikiprop === "P18" || wikiprop === "P7417") && inputData instanceof File) {
+      // Exclude if the data is an empty file
+      return inputData.size > 0;
+    }
+    // Keep all non-image data and images with valid File objects
+    return true;
+  });
+};
+
+/**
  *
  * @param dataList A list from the categorie
  * @param targetDataName
@@ -191,32 +326,4 @@ function getTitle(dataList: any[]): string {
     }
   }
   return "Default Title"; // Return a default title if "Offizieller Name" is not found
-}
-
-/**
- * check, whether inputData is image
- * @param inputData any
- * @param wikiprop Wikipediaproperty
- * @returns boolen
- */
-function isImage(inputData: any, wikiprop: String ): boolean {
-  const IMAGEWIKIPROPS = ["P18","P7417","P9721","P8592","P5775","P3311"];
-  const isImageFile = inputData instanceof File;
-  const wikipropExists = IMAGEWIKIPROPS.includes(wikiprop);
-  return isImageFile && wikipropExists;
-}
-
-
-
-/**
- * This method is for data, which comes from "Weitere Felder", 
- * because dataName of this data contains trailing digits
- * Removes trailing numbers from a given string.
- * If no trailing numbers are present, the input string is returned unchanged.
- * @param input The input string from which to remove trailing numbers.
- * @returns The input string with trailing numbers removed.
- */
-function removeTrailingNumber(input: any): string {
-  const strInput = typeof input === 'string' ? input : input.toString();  // convert to string
-  return strInput.replace(/\d+$/, '');   // Remove trailing digits
 }
