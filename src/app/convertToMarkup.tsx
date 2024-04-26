@@ -56,7 +56,7 @@ const convertDataToJson = (dataAsMap: Map<any, any>, isShowedWikiProps: boolean)
     let hasValidData = dataList.length > 0; // Flag to check if the category has valid data
     if (hasValidData) {
       addCategoryAsSubtitleToJson(category,jsonOutput) // Add category name as Subtitle 
-      addDataFromCategoryToJson(dataList,jsonOutput)  // Add input in each category to json
+      addDataFromCategoryToJson(dataList,jsonOutput,isShowedWikiProps)  // Add input in each category to json
     }
   })
 
@@ -149,7 +149,7 @@ function checkImage(inputData: any, wikiprop: String ): boolean {
  * @param dataList List of data items from the category
  * @param jsonOutput JSON output array
  */
-function addDataFromCategoryToJson(dataList : any,jsonOutput : any){
+function addDataFromCategoryToJson(dataList : any, jsonOutput : any, isShowedWikiProps : boolean){
 
   // Store the WikiProperty from the previous data to determine if the current data is from an additional field
   let previousDataWikiProperty = "";
@@ -157,24 +157,28 @@ function addDataFromCategoryToJson(dataList : any,jsonOutput : any){
   dataList.forEach(
     ([dataName, inputData, wikiprop]: [string, any, string]) => {
 
-      let isNotFromAdditionalField = (previousDataWikiProperty != wikiprop)
+      let isNotFromAdditionalField = (previousDataWikiProperty != wikiprop) // true, if this data does not come from additional field
 
-      const isUrl = (wikiprop === "P856")
-      const isRichtext = (wikiprop === "richtext")
-      const isImage = checkImage(inputData,wikiprop)
+      const isUrl = (wikiprop === "P856")     // URL
+      const isRichtext = (wikiprop === "richtext") // Richtext
+      const isImage = checkImage(inputData,wikiprop) // Image
 
       if (isImage) { 
-        addImageToJson(wikiprop,dataName,inputData,jsonOutput)
+        if(isNotFromAdditionalField){
+          addImageToJson(wikiprop,dataName,inputData,jsonOutput,isShowedWikiProps);
+        } else{
+          addImageFromAdditonalFieldToJson(inputData,dataName,jsonOutput)
+        }
       } 
       else if (isUrl) {
-        addUrlToJson(wikiprop,dataName,inputData,jsonOutput)
+        addUrlToJson(wikiprop,dataName,inputData,jsonOutput,isShowedWikiProps)
       } 
       else if (isRichtext) {
         addRichTextToJson(wikiprop,dataName,inputData,jsonOutput)
       } 
       else {
         if(isNotFromAdditionalField){
-          addNormalDataToJson(wikiprop,dataName,inputData,jsonOutput) 
+          addNormalDataToJson(wikiprop,dataName,inputData,jsonOutput,isShowedWikiProps) 
         }
         else{
           addDataFromAdditonalFieldToJson(inputData,jsonOutput)
@@ -189,7 +193,7 @@ function addDataFromCategoryToJson(dataList : any,jsonOutput : any){
 
 /**
  * This method is for data, which comes from "Weitere Felder", 
- * because dataName of this data contains trailing digits
+ * because dataName of this data contains trailing digits 
  * Removes trailing numbers from a given string.
  * If no trailing numbers are present, the input string is returned unchanged.
  * @param input The input string from which to remove trailing numbers.
@@ -228,16 +232,13 @@ function addCategoryAsSubtitleToJson(category:any,jsonOutput:any){
  * @param inputData Image data
  * @param jsonOutput JSON output array
  */
-function addImageToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
+function addImageToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any,isShowedWikiProps:boolean){
   const containsImage = inputData.name !== ""
   if(containsImage){
       const imagePath = `./images/${inputData.name}`;
-      jsonOutput.push({
-        p: `### ${wikiprop}\t${dataName}\n![${dataName}](${imagePath})`,
-      });
-  }
-  else{ 
-    // There aren't ontput if inputData is empty
+      isShowedWikiProps ? 
+      jsonOutput.push({p: `### ${wikiprop}\t${dataName}\n![${dataName}](${imagePath})`,}) :  // with wikiProp
+      jsonOutput.push({p: `### ${dataName}\n![${dataName}](${imagePath})`,});     // Without wikiprop
   }
 }
 
@@ -248,11 +249,12 @@ function addImageToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput
  * @param inputData URL data
  * @param jsonOutput JSON output array
  */
-function addUrlToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
-  jsonOutput.push({
-    p: `### ${wikiprop}\t${dataName}\n[${dataName}](${inputData})`,
-  });
+function addUrlToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any,isShowedWikiProps:boolean){
+  isShowedWikiProps ?
+  jsonOutput.push({  p: `### ${wikiprop}\t${dataName}\n[${dataName}](${inputData})`,}) :
+  jsonOutput.push({ p: `### ${dataName}\n[${dataName}](${inputData})`,});
 }
+
 
 /**
  * Adds rich text data to the JSON output.
@@ -263,10 +265,9 @@ function addUrlToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:a
  */
 function addRichTextToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
   const markdown = simpleHtmlToMarkdown(inputData);
-  jsonOutput.push({ 
-    p: `### ${wikiprop}\t${dataName}\n${markdown}` 
-  });
+  jsonOutput.push({p: `### ${wikiprop}\t${dataName}\n${markdown}` });
 }
+
 
 /**
  * Adds normal data (non-URL, non-rich text) to the JSON output.
@@ -275,11 +276,26 @@ function addRichTextToJson(wikiprop:string,dataName:string,inputData:any,jsonOut
  * @param inputData Normal data
  * @param jsonOutput JSON output array
  */
-function addNormalDataToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
-  jsonOutput.push({  
-    p: `### ${wikiprop}\t${dataName}\n-\t${inputData}`,
-  });
+function addNormalDataToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any,isShowedWikiProps:boolean){
+  isShowedWikiProps ?
+  jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n-\t${inputData}`,}) :
+  jsonOutput.push({ p: `### ${dataName}\n-\t${inputData}`,}) ;
 }
+
+
+/**
+ * Adds image from an additional field to the JSON output.
+ * @param inputData Additional field data
+ * @param jsonOutput JSON output array
+ */
+function addImageFromAdditonalFieldToJson(inputData: any, dataName:String, jsonOutput:any){
+  const containsImage = inputData.name !== ""
+  if(containsImage){
+    const imagePath = `./images/${inputData.name}`;
+    jsonOutput.push({p: `![${dataName}](${imagePath})`,}); 
+  }
+}
+
 
 /**
  * Adds data from an additional field to the JSON output.
@@ -292,24 +308,7 @@ function addDataFromAdditonalFieldToJson(inputData: any, jsonOutput:any){
 
 
 /**
- * Preprocesses data list to filter out invalid data (e.g., empty images)
- * @param dataList Data list to preprocess
- * @returns Processed data list
- */
-const preprocessDataList = (dataList: any[]) => {
-  return dataList.filter(([dataName, inputData, wikiprop]: [string, any, string]) => {
-    // Check if the data property is an image (P18 or P7417) and has a File object
-    if ((wikiprop === "P18" || wikiprop === "P7417") && inputData instanceof File) {
-      // Exclude if the data is an empty file
-      return inputData.size > 0;
-    }
-    // Keep all non-image data and images with valid File objects
-    return true;
-  });
-};
-
-/**
- *
+ * Get data of offizieller name to use it as title in .md data
  * @param dataList A list from the categorie
  * @param targetDataName
  */
