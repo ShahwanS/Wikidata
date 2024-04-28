@@ -22,10 +22,16 @@ function simpleHtmlToMarkdown(html: string) {
         )
         .trim();
     })
-    .replace(/<a href="(.*?)">(.*?)<\/a>/g, "[$2]($1)") // Links
+    .replace(/<a href="(.*?)"[^>]*>(.*?)<\/a>/g, "[$2]($1)") // Links
     .replace(/<p>(.*?)<\/p>/g, "$1\n") // Convert paragraphs to text followed by a newline
     .replace(/<br\s*\/?>/g, "\n") // Convert <br> tags to newlines
     .replace(/<b><i>(.*?)<\/i><\/b>/g, "**_$1_**")
+    .replace(/<h1>(.*?)<\/h1>/g, "# $1\n") // convert h1 
+    .replace(/<h2>(.*?)<\/h2>/g, "## $1\n") // convert h2
+    .replace(/<h3>(.*?)<\/h3>/g, "### $1\n") // convert h3
+    // there is no underline in markdown: delete <u>-tags because otherwise they become _..._ and this is not correct
+    .replace(/<u>/g, "")
+    .replace(/<\/u>/g, "")
   return markdown.trim(); // Trim the final string to remove any leading/trailing whitespace
 }
 
@@ -82,7 +88,7 @@ const dataToMap = (data: any) => {
         dataName.startsWith("Rich Text") ||
         dataName.startsWith("Abschnittstitel eingeben")
       ) {
-        const category = "Abschnitte";
+        const category = "Weitere Angaben als Freitext";
         const wikiprop = "richtext";
         const dataEntry = [dataName, inputData, wikiprop];
 
@@ -265,7 +271,7 @@ function addUrlToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:a
  */
 function addRichTextToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any){
   const markdown = simpleHtmlToMarkdown(inputData);
-  jsonOutput.push({p: `### ${wikiprop}\t${dataName}\n${markdown}` });
+    jsonOutput.push({p: `${markdown}` });
 }
 
 

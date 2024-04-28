@@ -4,8 +4,9 @@ import Field from "./components/Field";
 import Popup from "./components/Popup";
 import RichTextField from "./components/RichTextField";
 import { convert2Markup } from "./convertToMarkup";
-import { revalidatePath } from "next/cache";
 import { Property } from "./propgliederung";
+import { exampleFields, exampleRichtexts } from "./loadexample";
+
 /** Define the Home component */
 export default function Home() {
   // Define state variables
@@ -45,7 +46,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   /** The state saves if the Wikipropnumbers are shown or not */
   const [showWikiProps, setShowWikiProps] = useState<boolean>(false);
-
+  
   // Function to add new fields
   /**
    * Method adds properties to the page
@@ -86,6 +87,9 @@ export default function Home() {
     const newRichtextStat = {...richTextState}
     newRichtextStat["Rich Text"+richtextCounter] = ""
     setRichTextState(newRichtextStat)
+    const newRichtextTitle = {...richTextTitle}
+    newRichtextTitle["Rich Text"+richtextCounter] = ""
+    setRichTextTitle(newRichtextTitle)
     setRichtextCounter(richtextCounter+1)
   };
   /**
@@ -124,15 +128,16 @@ export default function Home() {
 
     // Directly add rich text content from state to fieldsData
     Object.keys(richTextState).forEach((fieldName) => {
-      fieldsData[fieldName] = richTextState[fieldName];
+      // check if the richtext has a title, is so directly to markdown title
+      fieldsData[fieldName] = (richTextTitle[fieldName]?("# "+richTextTitle[fieldName]+"\n"):(""))+richTextState[fieldName];
     });
 
     console.log("Fields Data:", fieldsData);
-    const markupOutput = convert2Markup(fieldsData,showWikiProps);
+        const markupOutput = convert2Markup(fieldsData,showWikiProps);
 
     if (markupOutput !== undefined) {
       const blob = new Blob([markupOutput], { type: "text/markdown" });
-      const title = fieldsData["Offizieller Name"];
+      const title = fieldsData["Offizieller Name0"];
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -184,6 +189,14 @@ export default function Home() {
         <header className="text-3xl font-semibold text-center mb-4">
           Wikidata Formular
         </header>
+        {/* uncomment this button to quickly have some sample data available
+            intended for testing purposes */}
+        {/* <button onClick={()=>{
+          setFields([]);setTimeout(() => {setFields(exampleFields());
+            exampleRichtexts(setRichTextTitle,setRichTextState);setRichtextCounter(2)}, 0)}} className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300"
+            >
+              Lade Beispieldaten
+        </button> */}
         <form
           onSubmit={handleSubmit}
           className="bg-white p-6 rounded shadow-md"

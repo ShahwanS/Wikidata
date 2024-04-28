@@ -47,7 +47,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
 
   return (
     <div className="my-10 py-2" key={property.name}>
-      <Field property={{name: "Freitext", type: "richtext", placeholder: "Abschnittstitel eingeben", value: initTitle, unique: true}} 
+      <Field property={{name: "Freitext", type: "richtext", placeholder: "Abschnittstitel eingeben", value: [initTitle], unique: true}} 
              onDelete={onDelete} 
              onChange={onChange}
              key={property.name}>
@@ -57,7 +57,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
           value={content}
           onChange={handleChange}
           style={{ height: "400px" }}
-        />
+                  />
       </Field>
     </div>
   );

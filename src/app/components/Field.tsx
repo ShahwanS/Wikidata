@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { Property } from "../propgliederung";
+import Image from 'next/image';
 
 /**
  * Things that are needed to generate a React component for a property.
@@ -24,7 +25,7 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
 
   const {name, type, placeholder, wikidataprop, value, choices, unique, required} = property;
 
-  const [inputFields, setInputFields] = useState<string[]>([value || ""]); // Array to store dynamically added fields
+  const [inputFields, setInputFields] = useState<string[]>(value || [""]) // Array to store dynamically added fields
   
   // CSS styling starting point
   const baseInputClasses =
@@ -95,7 +96,6 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
             placeholder={placeholder}
             type={type}
             name={name+index}
-            defaultValue={d.toString()}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
@@ -111,11 +111,8 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
           />
           {/* Preview of the selected image */}
           {d && (
-            <img 
-              src={d} 
-              alt="" 
-              style={{ maxWidth: '70%', height: 'auto', marginTop: '10px', marginLeft: 'auto', marginRight: 'auto'}}/>
-          )}  
+            <Image alt={"Ausgewähltes "+name} src={d} width={500} height={300} />  
+            )}
           </>
         ))}
         </>

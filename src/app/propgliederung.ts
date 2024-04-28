@@ -7,7 +7,7 @@ export type Property = {
   unique?: boolean; // true, wenn eine Property nur genau einen Wert haben kann, Bsp: Anzahl Fahrstühle: ein Gebäude kann nicht gleichzeitig 2 und 4 Fahrstühle haben, wenn nichts angegeben: null, also false
   maxvalues?: number; // maximale Anzahl an Werten, z.B es gibt nur max. ein Eröffnungsdatum
   required?: boolean; // gibt an, ob die Property ausgefüllt werden muss; z.B.: Es muss angegeben werden, um welches Gebäude es geht. wenn nichts angegeben: null, also false
-  value?: string; // Vorausgefüllter Wert
+  value?: string[]; // Vorausgefüllter Wert
   wikidataprop?: string; // Associated wikidataproperty-number, if exists; some properties do not have one
   choices?: string[]; // if the property have predefined values: list of all possible values
   category?: string; // Category of the Property
@@ -191,13 +191,13 @@ export const propgliederung: Category[] = [
           {
             name: "Zeitzone",
             type: "text",
-            value: "MEZ",
+            value: ["MEZ"],
             wikidataprop: "P6237", unique: true
           },
           {
             name: "Land",
             type: "text",
-            value: "Deutschland",
+            value: ["Deutschland"],
             wikidataprop: "P17", unique: true
           },
           { name: "Blickrichtung", type: "text", wikidataprop: "P7787", unique: true },
@@ -276,7 +276,7 @@ export const propgliederung: Category[] = [
         properties: [
           {
             name: "Ist Instanz von",
-            value: "Gebäude",
+            value: ["Gebäude"],
             type: "text",
             wikidataprop: "P31",
           }, // immer Gebäude
@@ -355,7 +355,7 @@ export const propertyInputTypes: Record<string, string> = {};
 /** Record for Porperties and their category name */
 export const categoryNameForProperty: Record<string, string> = {};
 /** Record for properties and their the default input value */
-export const valueNameForProperty: Record<string, string> = {};
+export const valueNameForProperty: Record<string, string[]> = {};
 /** Record for properties and their the default input value */
 export const choicesForProperty: Record<string, string[]> = {};
 /** Record for properties and their uniquevalue */
@@ -364,28 +364,6 @@ export const uniqueForProperty: Record<string, boolean> = {};
 export const requiredForProperty: Record<string, boolean> = {};
 /** Record for property names and their property objects */
 export const PropertyByName: Record<string, Property> = {};
-//generate it from the propgliederung
-propgliederung.forEach((cat) => {
-  categories[cat.title] = cat;
-  properties[cat.title] = {};
-  cat.subcategories.forEach((subcat) => {
-    properties[cat.title][subcat.name] = {
-      name: subcat.name,
-      properties: subcat.properties.map((prop) => prop.name),
-      description: subcat.description,
-    };
-    subcat.properties.forEach((prop) => {
-      propertyInputTypes[prop.name] = prop.type;
-      if (prop.name) PropertyByName[prop.name] = prop;
-      prop.category = cat.title;
-      if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
-      if (prop.required) requiredForProperty[prop.name] = prop.required;
-      if (prop.choices) choicesForProperty[prop.name] = prop.choices;
-      if (prop.value) valueNameForProperty[prop.name] = prop.value;
-      categoryNameForProperty[prop.name] = cat.title;
-    });
-  });
-});
 /**
  * Given the name of a property, the function delivers the property object
  * @param propertyName Name of the property
@@ -429,8 +407,8 @@ const getCategoryNameForProperty = (property: string): string => {
  * @param property the property name of the property
  * @returns default value of the given property
  */
-const getValueNameForProperty = (property: string): string => {
-  return valueNameForProperty[property] || "";
+const getValueNameForProperty = (property: string): string[] => {
+  return valueNameForProperty[property] || [""];
 };
 /****************************************/
 
@@ -512,3 +490,27 @@ export const propertyInputPlaceholder: Record<string, string> = {
   "Steht in der Denkmalliste": "Denkmaliste eingeben",
   "Offizielle Website": "URL eingeben",
 };
+
+//generate it from the propgliederung
+propgliederung.forEach((cat) => {
+  categories[cat.title] = cat;
+  properties[cat.title] = {};
+  cat.subcategories.forEach((subcat) => {
+    properties[cat.title][subcat.name] = {
+      name: subcat.name,
+      properties: subcat.properties.map((prop) => prop.name),
+      description: subcat.description,
+    };
+    subcat.properties.forEach((prop) => {
+      propertyInputTypes[prop.name] = prop.type;
+      if (prop.name) PropertyByName[prop.name] = prop;
+      prop.category = cat.title;
+      if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
+      if (prop.required) requiredForProperty[prop.name] = prop.required;
+      if (prop.choices) choicesForProperty[prop.name] = prop.choices;
+      if (prop.value) valueNameForProperty[prop.name] = prop.value;
+      categoryNameForProperty[prop.name] = cat.title;
+      prop.placeholder = propertyInputPlaceholder[prop.name]
+    });
+  });
+});
