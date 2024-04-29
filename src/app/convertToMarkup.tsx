@@ -1,5 +1,5 @@
 import json2md from "json2md";
-import { propgliederung } from "./propgliederung";
+import { getPropertyByName, propgliederung } from "./propgliederung";
 /**
  * Simple function to translate html-tags to markdown-tags
  */
@@ -284,8 +284,8 @@ function addRichTextToJson(wikiprop:string,dataName:string,inputData:any,jsonOut
  */
 function addNormalDataToJson(wikiprop:string,dataName:string,inputData:any,jsonOutput:any,isShowedWikiProps:boolean){
   isShowedWikiProps ?
-  jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n-\t${inputData}`,}) :
-  jsonOutput.push({ p: `### ${dataName}\n-\t${inputData}`,}) ;
+  jsonOutput.push({ p: `### ${wikiprop}\t${dataName}\n-\t${inputData}${getPropertyByName(dataName).unit?(" "+getPropertyByName(dataName).unit):("")}`,}) :
+  jsonOutput.push({ p: `### ${dataName}\n-\t${inputData}${getPropertyByName(dataName).unit?(" "+getPropertyByName(dataName).unit):("")}`,}) ;
 }
 
 

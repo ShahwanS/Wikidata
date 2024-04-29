@@ -11,6 +11,7 @@ export type Property = {
   wikidataprop?: string; // Associated wikidataproperty-number, if exists; some properties do not have one
   choices?: string[]; // if the property have predefined values: list of all possible values
   category?: string; // Category of the Property
+  unit?: string;
 }
 /** Structure how a subcategorie could be described */
 export type SubCategory = {
@@ -43,16 +44,16 @@ export const propgliederung: Category[] = [
         name: "Dimensionen",
         description: "Gebäudemaße: Breite, Länge und Höhe.",
         properties: [
-          { name: "Höhe (Dimensionen)", type: "number", wikidataprop: "P2048", unique: true },
-          { name: "Länge", type: "number", wikidataprop: "P2043", unique: true },
-          { name: "Breite", type: "number", wikidataprop: "P2049", unique: true },
+          { name: "Höhe", type: "number", wikidataprop: "P2048", unique: true , unit: "Meter"},
+          { name: "Länge", type: "number", wikidataprop: "P2043", unique: true , unit: "Meter"},
+          { name: "Breite", type: "number", wikidataprop: "P2049", unique: true , unit: "Meter"},
         ],
       },
       {
         name: "Flächenangaben",
         description: "Angaben zur Fläche",
         properties: [
-          { name: "Grundfläche", type: "number", wikidataprop: "P2046", unique: true },
+          { name: "Grundfläche", type: "number", wikidataprop: "P2046", unique: true , unit: "Quadratmeter"},
         ],
       },
       {
@@ -167,7 +168,7 @@ export const propgliederung: Category[] = [
             name: "Baukosten",
             type: "number",
             description: "in EUR",
-            wikidataprop: "P2130", unique: true
+            wikidataprop: "P2130", unique: true, unit: "EUR"
           },
         ],
       },

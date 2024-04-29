@@ -148,16 +148,23 @@ const Field: React.FC<FieldProps> = ({property,onChange,onDelete,options,childre
         // Render regular input fields
         <>
         {inputFields.map((d, index)=>(
+          <div key={name + "in" + index} className="flex items-center">
           <input
-          key={name+"in"+index}
-          className={`${baseInputClasses} bg-white`}
-          placeholder={placeholder}
-          type={type}
-          name={name+index}
-          defaultValue={d.toString()}
-          onChange={(e)=>{const updatedData=inputFields; updatedData[index]= e.target.value; console.log(updatedData); setInputFields(updatedData)}}
-          {...(type === "number" ? { min: "0" } : {})}
-        />
+            className={`${baseInputClasses} bg-white mr-2`}
+            placeholder={placeholder}
+            type={type}
+            name={name + index}
+            defaultValue={d.toString()}
+            onChange={(e) => {
+              const updatedData = inputFields;
+              updatedData[index] = e.target.value;
+              console.log(updatedData);
+              setInputFields(updatedData);
+            }}
+            {...(type === "number" ? { min: "0" } : {})}
+          />
+          {property.unit ? (<label className="text-gray-600">{property.unit}</label>):(<></>)}
+        </div>
         ))}
         </>
       )}
