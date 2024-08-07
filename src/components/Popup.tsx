@@ -4,7 +4,7 @@ import {
   properties,
   Property,
   getPropertyByName,
-} from "../propgliederung";
+} from "../utils/propgliederung";
 
 /** Functions needed by th Popups */
 interface PopupProps {
@@ -31,30 +31,33 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
     // Check if the category has only one subcategory
-    if(!(Object.keys(properties[category]).length > 1) && Object.keys(properties[category])[0]) {
+    if (
+      !(Object.keys(properties[category]).length > 1) &&
+      Object.keys(properties[category])[0]
+    ) {
       // there only one subcategory
       // properties of the one subcategory:
-      const propsOfTheOneSubCat = properties[category][Object.keys(properties[category])[0]].properties
+      const propsOfTheOneSubCat =
+        properties[category][Object.keys(properties[category])[0]].properties;
       // add the properties of this subcategory directly
-      const fields = propsOfTheOneSubCat.map((property, index) => (
+      const fields = propsOfTheOneSubCat.map((property, index) =>
         getPropertyByName(property)
-      ));
+      );
       // add properties to the page
       onAddFields(fields);
-      // close Popup, no subcategory selection needed 
+      // close Popup, no subcategory selection needed
       onClose();
-    }
-    else{
+    } else {
       // there are more than one subcategory, go to step 2: Subcategoryselection
       setStep(2);
     }
   };
- 
+
   /** Create Property fields based on selected properties and add them using the onAddFields callback */
   const handleSubmit = () => {
-    const fields = selectedProperties.map((property, index) => (
+    const fields = selectedProperties.map((property, index) =>
       getPropertyByName(property)
-    ));
+    );
     onAddFields(fields);
     onClose();
   };
@@ -64,7 +67,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
    * Adds or removes the names of the properties to array of propertynames that will be added to the page
    * @param event the event that happens when category is selected
    */
-  const handleSubCategorySelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubCategorySelect = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const subCategory = event.target.value;
     let updatedProperties = [...selectedProperties];
 

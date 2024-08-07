@@ -12,7 +12,7 @@ export type Property = {
   choices?: string[]; // if the property have predefined values: list of all possible values
   category?: string; // Category of the Property
   unit?: string;
-}
+};
 /** Structure how a subcategorie could be described */
 export type SubCategory = {
   name: string;
@@ -20,7 +20,7 @@ export type SubCategory = {
   properties: Property[];
   // selected?: boolean;
   // setSelected?: (setvalue: boolean) => void;
-}
+};
 
 /** Structure how a categorie could be described */
 export type Category = {
@@ -29,11 +29,11 @@ export type Category = {
   subcategories: SubCategory[];
   // selected?: boolean;
   // setSelected?: (setvalue: boolean) => void;
-}
+};
 
-/** Porperties-Gliederung 
+/** Porperties-Gliederung
  *  (orientiert sich an der Pdf-Datei)
-*/
+ */
 export const propgliederung: Category[] = [
   {
     title: "Gebäudemaße und -eigenschaften",
@@ -44,16 +44,40 @@ export const propgliederung: Category[] = [
         name: "Dimensionen",
         description: "Gebäudemaße: Breite, Länge und Höhe.",
         properties: [
-          { name: "Höhe", type: "number", wikidataprop: "P2048", unique: true , unit: "Meter"},
-          { name: "Länge", type: "number", wikidataprop: "P2043", unique: true , unit: "Meter"},
-          { name: "Breite", type: "number", wikidataprop: "P2049", unique: true , unit: "Meter"},
+          {
+            name: "Höhe",
+            type: "number",
+            wikidataprop: "P2048",
+            unique: true,
+            unit: "Meter",
+          },
+          {
+            name: "Länge",
+            type: "number",
+            wikidataprop: "P2043",
+            unique: true,
+            unit: "Meter",
+          },
+          {
+            name: "Breite",
+            type: "number",
+            wikidataprop: "P2049",
+            unique: true,
+            unit: "Meter",
+          },
         ],
       },
       {
         name: "Flächenangaben",
         description: "Angaben zur Fläche",
         properties: [
-          { name: "Grundfläche", type: "number", wikidataprop: "P2046", unique: true , unit: "Quadratmeter"},
+          {
+            name: "Grundfläche",
+            type: "number",
+            wikidataprop: "P2046",
+            unique: true,
+            unit: "Quadratmeter",
+          },
         ],
       },
       {
@@ -63,17 +87,20 @@ export const propgliederung: Category[] = [
           {
             name: "Oberirdische Stockwerke",
             type: "number",
-            wikidataprop: "P1101", unique: true
+            wikidataprop: "P1101",
+            unique: true,
           },
           {
             name: "Unterirdische Stockwerke",
             type: "number",
-            wikidataprop: "P1139", unique: true
+            wikidataprop: "P1139",
+            unique: true,
           },
           {
             name: "Anzahl an Fahrstühlen",
             type: "number",
-            wikidataprop: "P1301", unique: true
+            wikidataprop: "P1301",
+            unique: true,
           },
         ],
       },
@@ -81,7 +108,12 @@ export const propgliederung: Category[] = [
         name: "Räume, Zugehörigkeit",
         description: "Anzahl Räume; bedeutende Räume; ist Teil von",
         properties: [
-          { name: "Anzahl Räume", type: "number", wikidataprop: "P8733", unique: true },
+          {
+            name: "Anzahl Räume",
+            type: "number",
+            wikidataprop: "P8733",
+            unique: true,
+          },
           {
             name: "Ist Teil von",
             type: "text",
@@ -111,9 +143,13 @@ export const propgliederung: Category[] = [
              * ADA |
              * wheelchair accessibility |
              * accessibility for people with visual disabilities
-            */
-            choices: ["Sehr gut zugänglich mit Rollstuhl", "teilweise zugänglich mit Rollstuhl", "nicht zugänglich mit Rollstuhl"],
-            unique: true
+             */
+            choices: [
+              "Sehr gut zugänglich mit Rollstuhl",
+              "teilweise zugänglich mit Rollstuhl",
+              "nicht zugänglich mit Rollstuhl",
+            ],
+            unique: true,
           },
         ],
       },
@@ -127,7 +163,12 @@ export const propgliederung: Category[] = [
         name: "Namen",
         description: "offizieller Name, Kurzname, Spitzname, Namensgeber",
         properties: [
-          { name: "Offizieller Name", type: "text", wikidataprop: "P1448", unique: true },
+          {
+            name: "Offizieller Name",
+            type: "text",
+            wikidataprop: "P1448",
+            unique: true,
+          },
           { name: "Kurzname", type: "text", wikidataprop: "P1813" },
           { name: "Spitzname", type: "text", wikidataprop: "P1449" },
           { name: "Namensgeber", type: "text", wikidataprop: "P138" },
@@ -168,7 +209,9 @@ export const propgliederung: Category[] = [
             name: "Baukosten",
             type: "number",
             description: "in EUR",
-            wikidataprop: "P2130", unique: true, unit: "EUR"
+            wikidataprop: "P2130",
+            unique: true,
+            unit: "EUR",
           },
         ],
       },
@@ -188,20 +231,32 @@ export const propgliederung: Category[] = [
             type: "text",
             wikidataprop: "P2789",
           },
-          { name: "Koordinaten", type: "text", wikidataprop: "P625", unique: true },
+          {
+            name: "Koordinaten",
+            type: "text",
+            wikidataprop: "P625",
+            unique: true,
+          },
           {
             name: "Zeitzone",
             type: "text",
             value: ["MEZ"],
-            wikidataprop: "P6237", unique: true
+            wikidataprop: "P6237",
+            unique: true,
           },
           {
             name: "Land",
             type: "text",
             value: ["Deutschland"],
-            wikidataprop: "P17", unique: true
+            wikidataprop: "P17",
+            unique: true,
           },
-          { name: "Blickrichtung", type: "text", wikidataprop: "P7787", unique: true },
+          {
+            name: "Blickrichtung",
+            type: "text",
+            wikidataprop: "P7787",
+            unique: true,
+          },
         ],
       },
       {
@@ -209,8 +264,18 @@ export const propgliederung: Category[] = [
         description: "Adressangaben zu dem Gebäude",
         properties: [
           { name: "Straße", type: "text", wikidataprop: "P669", unique: true }, //wenn Straße als eigenständiges Item vorhanden
-          { name: "Komplette Adresse", type: "text", wikidataprop: "P6375", unique: true }, // wenn Straße nicht als eigenständiges Item
-          { name: "Postleitzahl", type: "text", wikidataprop: "P281", unique: true },
+          {
+            name: "Komplette Adresse",
+            type: "text",
+            wikidataprop: "P6375",
+            unique: true,
+          }, // wenn Straße nicht als eigenständiges Item
+          {
+            name: "Postleitzahl",
+            type: "text",
+            wikidataprop: "P281",
+            unique: true,
+          },
         ],
       },
     ],
@@ -228,10 +293,21 @@ export const propgliederung: Category[] = [
           {
             name: "Datum der offiziellen Eröffnung",
             type: "text",
-            wikidataprop: "P1619", unique: true
+            wikidataprop: "P1619",
+            unique: true,
           },
-          { name: "Schließungsdatum", type: "text", wikidataprop: "P3999", unique: true },
-          { name: "Abrissdatum", type: "text", wikidataprop: "P576", unique: true },
+          {
+            name: "Schließungsdatum",
+            type: "text",
+            wikidataprop: "P3999",
+            unique: true,
+          },
+          {
+            name: "Abrissdatum",
+            type: "text",
+            wikidataprop: "P576",
+            unique: true,
+          },
           { name: "Schlüsselereignis", type: "text", wikidataprop: "P793" },
           { name: "Schlüsselperson", type: "text", wikidataprop: "P3342" },
           { name: "Auftraggeber", type: "text", wikidataprop: "P88" },
@@ -251,8 +327,18 @@ export const propgliederung: Category[] = [
         description:
           " Nutzungszustand, Erhaltungszustand, Nutzer, Verwendungszweck, Betreiber, Unterhalten durch, Eigentümer, Konfessionszugehörigkeit",
         properties: [
-          { name: "Nutzungszustand", type: "text", wikidataprop: "P5817", unique: true },
-          { name: "Erhaltungszustand", type: "text", wikidataprop: "P5816", unique: true },
+          {
+            name: "Nutzungszustand",
+            type: "text",
+            wikidataprop: "P5817",
+            unique: true,
+          },
+          {
+            name: "Erhaltungszustand",
+            type: "text",
+            wikidataprop: "P5816",
+            unique: true,
+          },
           { name: "Nutzer", type: "text", wikidataprop: "P466" },
           { name: "Verwendungszweck", type: "text", wikidataprop: "P366" },
           { name: "Betreiber", type: "text", wikidataprop: "P137" },
@@ -347,8 +433,7 @@ type Properties = {
 };
 
 export const categories: Record<string, Category> = {};
-propgliederung.forEach((cat) => {
-});
+propgliederung.forEach((cat) => {});
 /**  Provides index signature to get properties by giving the name of a category and subcategory*/
 export const properties: Properties = {};
 /** Record for Porperties and their input types */
@@ -370,14 +455,15 @@ export const PropertyByName: Record<string, Property> = {};
  * @param propertyName Name of the property
  * @returns Property object from the propgliederung, if not exist: a default object with type text
  */
-export function getPropertyByName(propertyName: string) :Property {
+export function getPropertyByName(propertyName: string): Property {
   const property = PropertyByName[propertyName];
   if (!property) {
-    return {name: propertyName, type: "text"};
+    return { name: propertyName, type: "text" };
   }
-  property.placeholder = propertyInputPlaceholder[property.name]
+  property.placeholder = propertyInputPlaceholder[property.name];
   return property;
 }
+
 /*************Helper functions***************/
 /**
  * Helper function to get input type of a property
@@ -412,7 +498,6 @@ const getValueNameForProperty = (property: string): string[] => {
   return valueNameForProperty[property] || [""];
 };
 /****************************************/
-
 
 /**
  * TODO: gute Placeholder entwickeln und in propgliederung einfügen
@@ -511,7 +596,7 @@ propgliederung.forEach((cat) => {
       if (prop.choices) choicesForProperty[prop.name] = prop.choices;
       if (prop.value) valueNameForProperty[prop.name] = prop.value;
       categoryNameForProperty[prop.name] = cat.title;
-      prop.placeholder = propertyInputPlaceholder[prop.name]
+      prop.placeholder = propertyInputPlaceholder[prop.name];
     });
   });
 });

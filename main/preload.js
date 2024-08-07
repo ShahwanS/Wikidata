@@ -1,10 +1,10 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  on: (channel: any, callback: any) => {
+  on: (channel, callback) => {
     ipcRenderer.on(channel, callback);
   },
-  send: (channel: any, args: any) => {
+  send: (channel, args) => {
     ipcRenderer.send(channel, args);
   },
 });

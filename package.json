@@ -1,6 +1,6 @@
 {
   "name": "wikiform",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "private": true,
   "main": "main/main.js",
   "author": "Saif Shahwan, Daniel Dausend, Hirokata Nakashima, Lukas Vögel",
