@@ -1,3 +1,0 @@
-dist/wikiform[[:space:]]Setup[[:space:]]1.2.0.exe filter=lfs diff=lfs merge=lfs -text
-dist/win-unpacked/resources/app.asar filter=lfs diff=lfs merge=lfs -text
-dist/win-unpacked/wikiform.exe filter=lfs diff=lfs merge=lfs -text
