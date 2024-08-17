@@ -9,189 +9,160 @@ import { exampleFields, exampleRichtexts } from "./loadexample";
 
 /** Define the Home component */
 export default function Home() {
-  // Define state variables
-  /** The state saves the properties that are currently displayed on the page */
-  const [fields, setFields] = useState<Property[]>([
-    // Initial fields
-    {
-      name: "Offizieller Name",
-      type: "text",
-      placeholder: "Name",
-      wikidataprop: "P1448",
-      unique: true,
-      required: true,
-    },
-    {
-      name: "Datum der offiziellen Eröffnung",
-      type: "text",
-      placeholder: "Datum : MM/YY oder Jahr",
-      wikidataprop: "P1619",
-      unique: true,
-      required: true,
-    },
-    { name: "Bild", type: "file", wikidataprop: "P18", required: true },
-    {
-      name: "Webseite",
-      type: "text",
-      placeholder: "https://example.com",
-      wikidataprop: "P856",
-      required: true,
-    },
-  ]);
-
-  /** This state is for the Richtextfields that are currently displayed on the page */
-  const [richTextState, setRichTextState] = useState<{ [key: string]: string }>(
+  // State variables
+  const [fields, setFields] = useState<Property[]>(initialFields());
+  const [richTextState, setRichTextState] = useState<Record<string, string>>(
     {}
   );
-
-  // kleiner workaround, weil beim Löschen eines richtexts die Titel nachfolgender Richtexts unerklärlicherweise verschwinden
-  const [richTextTitle, setRichTextTitle] = useState<{ [key: string]: string }>(
+  const [richTextTitle, setRichTextTitle] = useState<Record<string, string>>(
     {}
   );
-
-  /** This state counts, how many Richtexts were added in the running session */
   const [richtextCounter, setRichtextCounter] = useState<number>(0);
-  /** The state saves if the Popup is shown or not */
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  /** The state saves if the Wikipropnumbers are shown or not */
   const [showWikiProps, setShowWikiProps] = useState<boolean>(false);
 
-  // Function to add new fields
-  /**
-   * Method adds properties to the page
-   * @param newFields Array of properties to be added to the page
-   */
+  /** Helper function to initialize the fields */
+  function initialFields(): Property[] {
+    return [
+      {
+        name: "Offizieller Name",
+        type: "text",
+        placeholder: "Name",
+        wikidataprop: "P1448",
+        unique: true,
+        required: true,
+      },
+      {
+        name: "Datum der offiziellen Eröffnung",
+        type: "text",
+        placeholder: "Datum : MM/YY oder Jahr",
+        wikidataprop: "P1619",
+        unique: true,
+        required: true,
+      },
+      { name: "Bild", type: "file", wikidataprop: "P18", required: true },
+      {
+        name: "Webseite",
+        type: "text",
+        placeholder: "https://example.com",
+        wikidataprop: "P856",
+        required: true,
+      },
+    ];
+  }
+
+  /** Adds unique fields to the page */
   const addFields = (newFields: Property[]) => {
-    // check for each property if it already exists on the page
-    const uniqueFields = newFields.filter((newField) => {
-      return !fields.some(
-        (field: { name: string; type: string }) =>
-          field.name === newField.name && field.type === newField.type
-      );
-    });
-    //add the filtered properties to the page
-    setFields([...fields, ...uniqueFields]);
-  };
-  /**
-   * Method to update a richtextfield
-   * @param fieldName Name of the richtextfield to be updated
-   * @param content Content of the richtextfield to be updated
-   */
-  const updateRichTextContent = (fieldName: string, content: string) => {
-    setRichTextState((prevState) => ({
-      ...prevState,
-      [fieldName]: content,
-    }));
-  };
-  // das gleiche nochmal für den Titel des Richtexts
-  const updateRichTextTitle = (fieldName: string, newtitle: string) => {
-    setRichTextTitle((prevState) => ({
-      ...prevState,
-      [fieldName]: newtitle,
-    }));
-  };
-
-  /** Function to add a rich text field */
-  const addRichTextField = () => {
-    const newRichtextStat = { ...richTextState };
-    newRichtextStat["Rich Text" + richtextCounter] = "";
-    setRichTextState(newRichtextStat);
-    const newRichtextTitle = { ...richTextTitle };
-    newRichtextTitle["Rich Text" + richtextCounter] = "";
-    setRichTextTitle(newRichtextTitle);
-    setRichtextCounter(richtextCounter + 1);
-  };
-  /**
-   * Methode to delete a richtext field
-   * @param richtextName Name of the richtext to be removed
-   */
-  const removeRichTextField = (richtextName: string) => {
-    const newRichtextState = { ...richTextState };
-    delete newRichtextState[richtextName];
-    setRichTextState(newRichtextState);
-    const newRichtextTitle = { ...richTextTitle };
-    delete newRichtextTitle[richtextName];
-    setRichTextTitle(newRichtextTitle);
-  };
-  /**
-   * Method to remove a property from the page
-   * @param fieldssss Property to be removed
-   */
-  const removeField = (fieldssss: Property) => {
-    const updatedFields = fields.filter(
-      (field: Property) => field !== fieldssss
+    const uniqueFields = newFields.filter(
+      (newField) =>
+        !fields.some(
+          (field) =>
+            field.name === newField.name && field.type === newField.type
+        )
     );
-    setFields(updatedFields);
+    setFields((prevFields) => [...prevFields, ...uniqueFields]);
   };
 
-  /**
-   * Handle form submission
-   * @param event Event that happens by click submit
-   */
+  /** Updates the content of a RichText field */
+  const updateRichTextContent = (fieldName: string, content: string) => {
+    setRichTextState((prevState) => ({ ...prevState, [fieldName]: content }));
+  };
+
+  /** Updates the title of a RichText field */
+  const updateRichTextTitle = (fieldName: string, newTitle: string) => {
+    setRichTextTitle((prevState) => ({ ...prevState, [fieldName]: newTitle }));
+  };
+
+  /** Adds a new RichText field */
+  const addRichTextField = () => {
+    const richTextKey = `Rich Text${richtextCounter}`;
+    setRichTextState((prevState) => ({ ...prevState, [richTextKey]: "" }));
+    setRichTextTitle((prevState) => ({ ...prevState, [richTextKey]: "" }));
+    setRichtextCounter((prevCounter) => prevCounter + 1);
+  };
+
+  /** Removes a RichText field */
+  const removeRichTextField = (richTextName: string) => {
+    setRichTextState((prevState) => {
+      const newState = { ...prevState };
+      delete newState[richTextName];
+      return newState;
+    });
+    setRichTextTitle((prevState) => {
+      const newState = { ...prevState };
+      delete newState[richTextName];
+      return newState;
+    });
+  };
+
+  /** Removes a field from the page */
+  const removeField = (fieldToRemove: Property) => {
+    setFields((prevFields) =>
+      prevFields.filter((field) => field !== fieldToRemove)
+    );
+  };
+
+  /** Handles form submission */
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Initialize formData with existing form fields
     const formData = new FormData(event.target as HTMLFormElement);
     let fieldsData = Object.fromEntries(formData.entries());
 
-    // Directly add rich text content from state to fieldsData
     Object.keys(richTextState).forEach((fieldName) => {
-      // check if the richtext has a title, is so directly to markdown title
-      fieldsData[fieldName] =
-        (richTextTitle[fieldName]
-          ? "# " + richTextTitle[fieldName] + "\n"
-          : "") + richTextState[fieldName];
+      fieldsData[fieldName] = formatRichTextContent(fieldName);
     });
 
-    console.log("Fields Data:", fieldsData);
     const markupOutput = convert2Markup(fieldsData, showWikiProps);
-
     if (markupOutput !== undefined) {
-      const blob = new Blob([markupOutput], { type: "text/markdown" });
-      const title = fieldsData["Offizieller Name0"];
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Wikidata_` + title + `.md`;
-      a.click();
+      downloadMarkdownFile(markupOutput, fieldsData["Offizieller Name0"]);
     } else {
       alert("Bitte füllen Sie alle Felder aus");
     }
   };
 
-  /** Interface to group fields by category */
-  interface GroupedFields {
-    [category: string]: Property[];
-  }
+  /** Formats the RichText content including the title */
+  const formatRichTextContent = (fieldName: string): string => {
+    const title = richTextTitle[fieldName]
+      ? `# ${richTextTitle[fieldName]}\n`
+      : "";
+    return title + richTextState[fieldName];
+  };
 
-  /** Grouped fields by their category for rendering */
-  const fieldsByCategory = fields.reduce<GroupedFields>(
-    (acc: GroupedFields, field: Property) => {
-      const category = field.category || ""; // Assign to 'Other' if category is undefined
-      if (!acc[category]) {
-        acc[category] = [];
-      }
+  /** Downloads the generated Markdown file */
+  const downloadMarkdownFile = (
+    markupOutput: string,
+    title: FormDataEntryValue
+  ) => {
+    const blob = new Blob([markupOutput], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Wikidata_${title}.md`;
+    a.click();
+  };
+
+  /** Groups fields by their category for rendering */
+  const fieldsByCategory = groupFieldsByCategory(fields);
+
+  /** Groups fields by their category */
+  function groupFieldsByCategory(
+    fields: Property[]
+  ): Record<string, Property[]> {
+    return fields.reduce<Record<string, Property[]>>((acc, field) => {
+      const category = field.category || "";
+      if (!acc[category]) acc[category] = [];
       acc[category].push(field);
       return acc;
-    },
-    {}
-  );
-  /**
-   * Handle reset the whole page
-   * @param event Event for click reset
-   */
-  const handleReset = (event: any) => {
-    const confirmReset = window.confirm(
-      "Möchten Sie wirklich alle Felder zurücksetzen?"
-    );
-    if (!confirmReset) {
-      // If the user clicks "Cancel", prevent the form from resetting
-      event.preventDefault();
-    } else {
-      // Reset the whole page to initial state deleting all old info
+    }, {});
+  }
+
+  /** Handles resetting the whole page */
+  const handleReset = (event: React.FormEvent) => {
+    if (window.confirm("Möchten Sie wirklich alle Felder zurücksetzen?")) {
       window.location.reload();
-      setFields([]);
+    } else {
+      event.preventDefault();
     }
   };
 
