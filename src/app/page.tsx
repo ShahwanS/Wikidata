@@ -92,26 +92,7 @@ export default function Home() {
       delete newState[richTextName];
       return newState;
     });
-
-  /** Removes a RichText field */
-  const removeRichTextField = (richTextName: string) => {
-    setRichTextState((prevState) => {
-      const newState = { ...prevState };
-      delete newState[richTextName];
-      return newState;
-    });
-    setRichTextTitle((prevState) => {
-      const newState = { ...prevState };
-      delete newState[richTextName];
-      return newState;
-    });
   };
-
-  /** Removes a field from the page */
-  const removeField = (fieldToRemove: Property) => {
-    setFields((prevFields) =>
-      prevFields.filter((field) => field !== fieldToRemove)
-    );
 
   /** Removes a field from the page */
   const removeField = (fieldToRemove: Property) => {
