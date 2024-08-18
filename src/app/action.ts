@@ -1,10 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+"use server";
 
-export async function POST(request: NextRequest) {
+export async function commitToGitLab(fileName: string, fileContent: string) {
   try {
-    // JSON body parsing
-    const { fileName, fileContent } = await request.json();
-
     // Setting filename and path
     const folderName = fileName;
     const formattedFileName = `${fileName}_${formatDateForFilename()}.md`;
@@ -36,20 +33,8 @@ export async function POST(request: NextRequest) {
 
     const result = await response.json();
     console.log("Commit created:", result);
-
-    // Return a success response to the client
-    return NextResponse.json({
-      message: "File successfully committed to GitLab!",
-      result,
-    });
   } catch (error) {
     console.error("Error handling the POST request:", error);
-
-    // Return an error response to the client
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 500 }
-    );
   }
 }
 

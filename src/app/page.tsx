@@ -6,6 +6,7 @@ import RichTextField from "@/components/RichTextField";
 import { convert2Markup } from "@/utils/convertToMarkup";
 import { Property } from "@/utils/propgliederung";
 import { exampleFields, exampleRichtexts } from "./loadexample";
+import { commitToGitLab } from "./action";
 /** Define the Home component */
 export default function Home() {
   // State variables
@@ -121,16 +122,7 @@ export default function Home() {
 
       // Send the generated Markdown file to GitLab
       try {
-        await fetch("/api/gitlabUpload", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fileName: fileName,
-            fileContent: markupOutput,
-          }),
-        });
+        await commitToGitLab(fileName.toString(), markupOutput);
         alert("Markup file successfully sent to GitLab!");
       } catch (error) {
         console.error("Failed to send the markup file to GitLab:", error);
