@@ -92,7 +92,26 @@ export default function Home() {
       delete newState[richTextName];
       return newState;
     });
+
+  /** Removes a RichText field */
+  const removeRichTextField = (richTextName: string) => {
+    setRichTextState((prevState) => {
+      const newState = { ...prevState };
+      delete newState[richTextName];
+      return newState;
+    });
+    setRichTextTitle((prevState) => {
+      const newState = { ...prevState };
+      delete newState[richTextName];
+      return newState;
+    });
   };
+
+  /** Removes a field from the page */
+  const removeField = (fieldToRemove: Property) => {
+    setFields((prevFields) =>
+      prevFields.filter((field) => field !== fieldToRemove)
+    );
 
   /** Removes a field from the page */
   const removeField = (fieldToRemove: Property) => {
@@ -110,11 +129,11 @@ export default function Home() {
 
     Object.keys(richTextState).forEach((fieldName) => {
       fieldsData[fieldName] = formatRichTextContent(fieldName);
+      fieldsData[fieldName] = formatRichTextContent(fieldName);
     });
 
     // Convert form data to Markdown content
     const markupOutput = convert2Markup(fieldsData, showWikiProps);
-
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
       const fileName = fieldsData["Offizieller Name0"] || "output";
