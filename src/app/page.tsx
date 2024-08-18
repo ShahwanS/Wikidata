@@ -6,7 +6,6 @@ import RichTextField from "@/components/RichTextField";
 import { convert2Markup } from "@/utils/convertToMarkup";
 import { Property } from "@/utils/propgliederung";
 import { exampleFields, exampleRichtexts } from "./loadexample";
-
 /** Define the Home component */
 export default function Home() {
   // State variables
@@ -103,7 +102,7 @@ export default function Home() {
   };
 
   /** Handles form submission */
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const formData = new FormData(event.target as HTMLFormElement);
@@ -113,9 +112,30 @@ export default function Home() {
       fieldsData[fieldName] = formatRichTextContent(fieldName);
     });
 
+    // Convert form data to Markdown content
     const markupOutput = convert2Markup(fieldsData, showWikiProps);
+
     if (markupOutput !== undefined) {
-      downloadMarkdownFile(markupOutput, fieldsData["Offizieller Name0"]);
+      // Name the file based on a form field, or default to "output"
+      const fileName = fieldsData["Offizieller Name0"] || "output";
+
+      // Send the generated Markdown file to GitLab
+      try {
+        await fetch("/api/gitlabUpload", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fileName: fileName,
+            fileContent: markupOutput,
+          }),
+        });
+        alert("Markup file successfully sent to GitLab!");
+      } catch (error) {
+        console.error("Failed to send the markup file to GitLab:", error);
+        alert("There was an error sending the file to GitLab.");
+      }
     } else {
       alert("Bitte füllen Sie alle Felder aus");
     }
