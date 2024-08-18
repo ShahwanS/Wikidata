@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "concurrently -n \"NEXT,ELECTRON\" -c \"yellow,blue\" --kill-others \"next dev\" \"electron .\"",
     "start": "next dev",
-    "build": "rimraf dist && next build && electron-builder --publish always",
+    "electron": "electron-builder",
+    "build": "rimraf dist && next build",
     "export": "next export",
     "lint": "next lint"
   },
