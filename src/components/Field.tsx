@@ -3,7 +3,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import { Property } from "../utils/propgliederung";
 import Image from "next/image";
-
+import { InputField } from "@/components/ui/input";
 /**
  * Things that are needed to generate a React component for a property.
  */
@@ -64,31 +64,31 @@ const Field: React.FC<FieldProps> = ({
   return (
     <div className="mb-6">
       {/* HEADER of the Property component */}
-      <div className="flex justify-between">
-        <label className="block mb-2 text-sm font-medium text-gray-700">
+      <div className="flex justify-between items-center mb-2">
+        <label className="text-sm font-medium text-gray-700 flex items-center">
           {name}
-          {showWikiProp && wikidataprop != ("" || undefined) && (
-            <>
-              {" ("}
+          {showWikiProp && wikidataprop && (
+            <span className="ml-2 text-xs text-gray-500">
+              (
               <a
-                href={"https://www.wikidata.org/wiki/Property:" + wikidataprop}
+                href={`https://www.wikidata.org/wiki/Property:${wikidataprop}`}
                 target="_blank"
-                tabIndex={-1}
-                className="text-blue-600 underline"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
               >
                 {wikidataprop}
               </a>
-              {")"}
-            </>
+              )
+            </span>
           )}
         </label>
-        <div>
+        <div className="flex items-center">
           {/* Trash bin icon to delete the last input field or the entire property component; only if the property is not mandatory */}
           {!required && (
             <button
               type="button"
               onClick={removeInputField}
-              className="ml-2 text-red-500 hover:text-red-700"
+              className="p-1 text-red-500 hover:text-red-700 transition-colors duration-200"
               aria-label={`Delete ${name}`}
               tabIndex={-1}
             >
@@ -101,7 +101,7 @@ const Field: React.FC<FieldProps> = ({
             <button
               type="button"
               onClick={addInputField}
-              className="ml-2 text-green-800 hover:opacity-40"
+              className="p-1 ml-2 text-green-600 hover:text-green-800 transition-colors duration-200"
               tabIndex={-1}
             >
               <CiCirclePlus size="20px" />
@@ -185,7 +185,7 @@ const Field: React.FC<FieldProps> = ({
         <>
           {inputFields.map((d, index) => (
             <div key={name + "in" + index} className="flex items-center">
-              <input
+              <InputField
                 className={`${baseInputClasses} bg-white mr-2`}
                 placeholder={placeholder}
                 type={type}

@@ -162,7 +162,7 @@ export default function Home() {
     fields: Property[]
   ): Record<string, Property[]> {
     return fields.reduce<Record<string, Property[]>>((acc, field) => {
-      const category = field.category || "";
+      const category = field.category || "Main";
       if (!acc[category]) acc[category] = [];
       acc[category].push(field);
       return acc;
@@ -180,50 +180,45 @@ export default function Home() {
 
   // Render the component
   return (
-    <div className="min-h-screen bg-wikipediaGray flex justify-center items-center">
-      <div className="max-w-5xl mx-auto">
-        <header className="text-3xl font-semibold text-center mb-4">
-          Wikidata Formular
+    <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 flex justify-center items-center p-4 sm:p-6 lg:p-8">
+      <div className="w-full max-w-4xl">
+        <header className="text-5xl font-extrabold text-center mb-12 text-gray-800">
+          <h1 className="inline-block p-3 bg-white rounded-lg shadow-lg">
+            Wikidata Formular
+          </h1>
         </header>
-        {/* uncomment this button to quickly have some sample data available
-            intended for testing purposes */}
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded shadow-md"
+          className="bg-white rounded-3xl shadow-2xl overflow-hidden"
         >
-          <>
+          <div className="p-8 space-y-12">
             {Object.entries(fieldsByCategory).map(
               ([category, fields], index) => (
-                <div key={index}>
-                  <h2 className="flex justify-center items-center text-xl font-bold mb-10 mt-4">
+                <div key={index} className="space-y-8">
+                  <h2 className="text-3xl font-bold text-gray-700 border-b-2 border-gray-200 pb-3">
                     {category}
                   </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                    {fields.map((field, fieldIndex) => {
-                      return (
-                        <Field
-                          key={category + field.name}
-                          property={field}
-                          onDelete={() => removeField(field)}
-                          showWikiProp={showWikiProps}
-                        />
-                      );
-                    })}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {fields.map((field, fieldIndex) => (
+                      <Field
+                        key={category + field.name}
+                        property={field}
+                        onDelete={() => removeField(field)}
+                        showWikiProp={showWikiProps}
+                      />
+                    ))}
                   </div>
                 </div>
               )
             )}
-            {Object.keys(richTextState).map((richtextName, index) => {
-              return (
-                <>
-                  {index === 0 ? (
-                    <h2 className="flex justify-center items-center text-xl font-bold mb-10 mt-4">
-                      Weitere Angaben als Freitext
-                    </h2>
-                  ) : (
-                    ""
-                  )}
+
+            {Object.keys(richTextState).length > 0 && (
+              <div className="space-y-8">
+                <h2 className="text-3xl font-bold text-gray-700 border-b-2 border-gray-200 pb-3">
+                  Weitere Angaben als Freitext
+                </h2>
+                {Object.keys(richTextState).map((richtextName, index) => (
                   <RichTextField
                     key={richtextName}
                     property={{ name: richtextName, type: "richie" }}
@@ -233,25 +228,26 @@ export default function Home() {
                     initTitle={richTextTitle[richtextName]}
                     onChange={(e: { target: { value: string } }) =>
                       updateRichTextTitle(richtextName, e.target.value)
-                    } // dieses onChange bezieht sich auf das Feld mit dem Abschnittstitel
+                    }
                   />
-                </>
-              );
-            })}
-          </>
-          <div className="flex-col items-center justify-between mt-4 space-y-10">
-            <div className="flex justify-between items-center">
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-gray-50 px-8 py-8 space-y-8">
+            <div className="flex flex-wrap justify-between items-center gap-6">
               <button
                 type="button"
                 onClick={() => setShowPopup(true)}
-                className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300 mr-2"
+                className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
               >
                 Weitere Felder hinzufügen
               </button>
               <button
                 type="button"
                 onClick={addRichTextField}
-                className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300"
+                className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
               >
                 Freitext hinzufügen
               </button>
@@ -265,43 +261,53 @@ export default function Home() {
                     setRichtextCounter(2);
                   }, 0);
                 }}
-                className="bg-wikipediaBlue hover:bg-wikipediaBlueDark text-white font-bold py-2 px-4 rounded transition duration-300"
+                className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
               >
                 Lade Beispieldaten
               </button>
             </div>
-            <div className="flex justify-between items-center">
+
+            <div className="flex flex-wrap justify-between items-center gap-6">
               <button
                 type="button"
                 onClick={handleReset}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+                className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
               >
-                alle Felder zurücksetzen
+                Alle Felder zurücksetzen
               </button>
-              <div className="flex items-center">
+              <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  className="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  onChange={(e) => {
-                    setShowWikiProps(e.target.checked);
-                  }}
+                  id="showWikiProps"
+                  className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-400 border-gray-300 transition duration-150 ease-in-out"
+                  onChange={(e) => setShowWikiProps(e.target.checked)}
                 />
-                <label className="text-sm">
+                <label
+                  htmlFor="showWikiProps"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Wikidata-Propertynummern anzeigen
                 </label>
               </div>
-
               <button
                 type="submit"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+                className="px-8 py-4 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
               >
                 Speichern
               </button>
             </div>
           </div>
         </form>
+
         {showPopup && (
-          <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} />
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full">
+              <Popup
+                onAddFields={addFields}
+                onClose={() => setShowPopup(false)}
+              />
+            </div>
+          </div>
         )}
       </div>
     </div>

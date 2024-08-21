@@ -127,6 +127,10 @@ export function setNormalDataInMap(
     dataName,
     allCategoryAndPropertyMap
   );
+  if (!categoryAndWikiprop) {
+    console.error("No category and WikiProp found for:", dataName);
+    return; // Handle this case appropriately
+  }
   const category = categoryAndWikiprop[0];
   const wikiprop = categoryAndWikiprop[1];
   const categoryExistsInMap = resultMap.has(category);
