@@ -1,4 +1,5 @@
 import { propgliederung } from "./propgliederung";
+import { Buffer } from "buffer";
 
 export function getTitle(dataList: any[]): string {
   if (!dataList) {
@@ -153,3 +154,18 @@ export function getCategoryAndWikipropAsList(
 ): [string, string] {
   return allCategoryAndPropertyMap.get(dataName);
 }
+
+// Helper function to convert File to base64
+export async function serverFileToBase64(
+  arrayBuffer: ArrayBuffer
+): Promise<string> {
+  return Buffer.from(arrayBuffer).toString("base64");
+}
+
+//helper function to format date for filename
+export const formatDateForFilename = (): string => {
+  const date = new Date();
+  return `${date.getFullYear()}-${
+    date.getMonth() + 1
+  }-${date.getDate()}_${date.getHours()}-${date.getMinutes()}`;
+};

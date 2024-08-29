@@ -114,10 +114,9 @@ const Field: React.FC<FieldProps> = ({
       {type === "file" ? (
         // Render file input fields
         <>
-          {inputFields.map((d, index) => (
-            <>
+          {inputFields.map((data, index) => (
+            <React.Fragment key={name + "in" + index}>
               <input
-                key={name + "in" + index}
                 className={`${baseInputClasses} file:mr-4  file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
                 placeholder={placeholder}
                 type={type}
@@ -138,15 +137,15 @@ const Field: React.FC<FieldProps> = ({
                 }}
               />
               {/* Preview of the selected image */}
-              {d && (
+              {data && (
                 <Image
                   alt={"Ausgewähltes " + name}
-                  src={d}
+                  src={data}
                   width={500}
                   height={300}
                 />
               )}
-            </>
+            </React.Fragment>
           ))}
         </>
       ) : type === "radio" ? (

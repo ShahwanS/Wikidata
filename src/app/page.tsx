@@ -6,7 +6,7 @@ import RichTextField from "@/components/RichTextField";
 import { convert2Markup } from "@/utils/convertToMarkup";
 import { Property } from "@/utils/propgliederung";
 import { exampleFields, exampleRichtexts } from "./loadexample";
-import { commitToGitLab } from "./action";
+import { commitToGitLab } from "@/app/actions";
 /** Define the Home component */
 export default function Home() {
   // State variables
@@ -113,6 +113,7 @@ export default function Home() {
       fieldsData[fieldName] = formatRichTextContent(fieldName);
       fieldsData[fieldName] = formatRichTextContent(fieldName);
     });
+    console.log(fieldsData);
 
     // Convert form data to Markdown content
     const markupOutput = convert2Markup(fieldsData, showWikiProps);

@@ -1,13 +1,21 @@
-import { getTitle, checkImage, simpleHtmlToMarkdown } from "./utils";
+"use client";
+
+import {
+  getTitle,
+  checkImage,
+  simpleHtmlToMarkdown,
+  formatDateForFilename,
+} from "./utils";
 import { getPropertyByName } from "./propgliederung";
+import { uploadImage } from "@/app/actions";
+import { json } from "stream/consumers";
 
 /**
  * Adds the title from "Namensangaben" to the JSON output.
  * @param dataAsMap Map containing the data categorized by name
  * @param jsonOutput JSON output array
  */
-export function addTitleToJson(dataAsMap: any, jsonOutput: any) {
-  const title = getTitle(dataAsMap.get("Namensangaben"));
+export function addTitleToJson(title: string, jsonOutput: any) {
   jsonOutput.push({ h1: title });
 }
 
@@ -24,31 +32,41 @@ export function addCategoryAsSubtitleToJson(category: any, jsonOutput: any) {
  * Adds data from a category to the JSON output.
  * @param dataList List of data items from the category
  * @param jsonOutput JSON output array
+ * @param isShowedWikiProps Boolean indicating if wiki properties should be shown
+ * @param title Title used for file naming
  */
-export function addDataFromCategoryToJson(
+export async function addDataFromCategoryToJson(
   dataList: any,
   jsonOutput: any,
-  isShowedWikiProps: boolean
+  isShowedWikiProps: boolean,
+  title: string
 ) {
   let previousDataWikiProperty = "";
 
-  dataList.forEach(([dataName, inputData, wikiprop]: [string, any, string]) => {
-    let isNotFromAdditionalField = previousDataWikiProperty != wikiprop;
+  for (const [dataName, inputData, wikiprop] of dataList) {
+    const isNotFromAdditionalField = previousDataWikiProperty !== wikiprop;
     const isUrl = wikiprop === "P856";
     const isRichtext = wikiprop === "richtext";
     const isImage = checkImage(inputData, wikiprop);
 
     if (isImage) {
+      //if inputData is not an instance of File return
+      if (inputData.size == 0) {
+        console.warn(`No image data provided for ${dataName}. Skipping.`);
+        continue;
+      }
+      // Always await async function to handle images correctly
       if (isNotFromAdditionalField) {
-        addImageToJson(
-          wikiprop,
-          dataName,
+        uploadImageAndAddToJson(
           inputData,
+          dataName,
           jsonOutput,
+          title,
+          wikiprop,
           isShowedWikiProps
         );
       } else {
-        addImageFromAdditionalFieldToJson(inputData, dataName, jsonOutput);
+        uploadImageAndAddToJson(inputData, dataName, jsonOutput, title);
       }
     } else if (isUrl) {
       addUrlToJson(
@@ -60,63 +78,96 @@ export function addDataFromCategoryToJson(
       );
     } else if (isRichtext) {
       addRichTextToJson(wikiprop, dataName, inputData, jsonOutput);
+    } else if (isNotFromAdditionalField) {
+      addNormalDataToJson(
+        wikiprop,
+        dataName,
+        inputData,
+        jsonOutput,
+        isShowedWikiProps
+      );
     } else {
-      if (isNotFromAdditionalField) {
-        addNormalDataToJson(
-          wikiprop,
-          dataName,
-          inputData,
-          jsonOutput,
-          isShowedWikiProps
-        );
-      } else {
-        addDataFromAdditionalFieldToJson(inputData, jsonOutput);
-      }
+      addDataFromAdditionalFieldToJson(inputData, jsonOutput);
     }
 
     previousDataWikiProperty = wikiprop;
-  });
-}
-
-/**
- * Adds image data to the JSON output.
- * @param wikiprop Wiki property associated with the data
- * @param dataName Name of the data
- * @param inputData Image data
- * @param jsonOutput JSON output array
- */
-function addImageToJson(
-  wikiprop: string,
-  dataName: string,
-  inputData: any,
-  jsonOutput: any,
-  isShowedWikiProps: boolean
-) {
-  const containsImage = inputData.name !== "";
-  if (containsImage) {
-    const imagePath = `./images/${inputData.name}`;
-    isShowedWikiProps
-      ? jsonOutput.push({
-          p: `### ${wikiprop}\t${dataName}\n![${dataName}](${imagePath})`,
-        }) // with wikiProp
-      : jsonOutput.push({ p: `### ${dataName}\n![${dataName}](${imagePath})` }); // Without wikiprop
   }
 }
 
 /**
- * Adds image from an additional field to the JSON output.
- * @param inputData Additional field data
+ * Helper function to upload image and add its data to JSON output.
+ * @param inputData Image data
+ * @param dataName Name of the data
  * @param jsonOutput JSON output array
+ * @param title Title used for file naming
+ * @param wikiprop Wiki property associated with the data (optional)
+ * @param isShowedWikiProps Boolean indicating if wiki properties should be shown (optional)
+ * @returns {Promise<void>}
  */
-function addImageFromAdditionalFieldToJson(
+async function uploadImageAndAddToJson(
   inputData: any,
-  dataName: String,
-  jsonOutput: any
-) {
-  const containsImage = inputData.name !== "";
-  if (containsImage) {
-    const imagePath = `./images/${inputData.name}`;
-    jsonOutput.push({ p: `![${dataName}](${imagePath})` });
+  dataName: string,
+  jsonOutput: any,
+  title: string,
+  wikiprop?: string,
+  isShowedWikiProps?: boolean
+): Promise<void> {
+  if (!inputData || !title) {
+    console.warn(
+      `Input data or title is missing for ${dataName}. Skipping image upload.`
+    );
+    return;
+  }
+
+  const fileExtension = inputData.name.split(".").pop() || "jpg";
+  const formattedFileName = `${
+    inputData.name
+  }_${formatDateForFilename()}.${fileExtension}`;
+  const rawFilePath =
+    `https://gitlab.uni-marburg.de/shahwan/project-wissensraeume-demo/-/raw/main/${title}/images/${formattedFileName}`.replace(
+      / /g,
+      "%20"
+    );
+
+  let newEntry;
+  if (wikiprop && isShowedWikiProps !== undefined) {
+    newEntry = {
+      p: isShowedWikiProps
+        ? `### ${wikiprop}\t${dataName}\n![${dataName}](${rawFilePath})`
+        : `### ${dataName}\n![${dataName}](${rawFilePath})`,
+    };
+  } else {
+    newEntry = {
+      p: `### ${dataName}\n![${dataName}](${rawFilePath})`,
+    };
+  }
+
+  // Optimistically push to jsonOutput
+  console.log("Optimistically pushing new entry to jsonOutput:");
+  jsonOutput.push(newEntry);
+  const entryIndex = jsonOutput.length - 1; // Store the index of the new entry
+
+  const formData = new FormData();
+  formData.append("fileName", title);
+  formData.append("fileContent", inputData);
+
+  try {
+    // Attempt to upload image with retries
+    const success = await uploadImage(formData);
+    if (!success) {
+      console.warn(
+        `Failed to upload image for ${dataName}. Reverting jsonOutput.`
+      );
+      jsonOutput.splice(entryIndex, 1); // Remove the specific entry on error
+      console.log("popped entry from jsonOutput:", newEntry);
+    }
+  } catch (error: any) {
+    console.error(
+      `Error in uploadImageAndAddToJson for ${dataName}:`,
+      error instanceof Error ? error.message : String(error)
+    );
+    jsonOutput.splice(entryIndex, 1); // Remove the specific entry on error
+    console.log("popped entry from jsonOutput:", newEntry);
   }
 }
 

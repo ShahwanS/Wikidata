@@ -2,7 +2,8 @@ import {
   addTitleToJson,
   addCategoryAsSubtitleToJson,
   addDataFromCategoryToJson,
-} from "./JsonElements";
+} from "@/utils/JsonElements";
+import { getTitle } from "./utils";
 
 /**
  * Convert data to JSON
@@ -14,15 +15,15 @@ export const convertDataToJson = (
   isShowedWikiProps: boolean
 ) => {
   const jsonOutput: { h1?: string; h2?: string; p?: string }[] = [];
-
-  addTitleToJson(dataAsMap, jsonOutput); // Add Title to JSON
+  const title = getTitle(dataAsMap.get("Namensangaben"));
+  addTitleToJson(title, jsonOutput); // Add Title to JSON
 
   // Add all Data in Map to JSON
   dataAsMap.forEach((dataList, category) => {
     let hasValidData = dataList.length > 0; // Flag to check if the category has valid data
     if (hasValidData) {
       addCategoryAsSubtitleToJson(category, jsonOutput); // Add category name as Subtitle
-      addDataFromCategoryToJson(dataList, jsonOutput, isShowedWikiProps); // Add input in each category to JSON
+      addDataFromCategoryToJson(dataList, jsonOutput, isShowedWikiProps, title); // Add input in each category to JSON
     }
   });
 

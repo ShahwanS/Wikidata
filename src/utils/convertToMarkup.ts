@@ -10,6 +10,10 @@ import { convertDataToJson } from "./JsonConversion";
 export const convert2Markup = (data: any, isShowedWikiProps: boolean) => {
   const dataAsMap = dataToMap(data); // First mapping properties to categories
   const dataAsJson = convertDataToJson(dataAsMap, isShowedWikiProps); // Then maped data to json
+  console.log(
+    "Final dataAsJson before markdown conversion:",
+    JSON.stringify(dataAsJson, null, 2)
+  );
   const dataAsMd = json2md(dataAsJson); // Finally json to markdown
   return dataAsMd;
 };
