@@ -6,179 +6,126 @@ import {
   getPropertyByName,
 } from "../utils/propgliederung";
 
-/** Functions needed by th Popups */
 interface PopupProps {
-  /** Method to add properties to the page @param fields Array of properties that will be added to the page */
-  onAddFields: (fields: Property[]) => void; // Callback function to add fields
-  /** Method to close th Popup */
-  onClose: () => void; // Callback function to close the popup
+  onAddFields: (fields: Property[]) => void;
+  onClose: () => void;
 }
 
-/**
- * Reactcomponent that renders the Popup window for Category and subcategory selection
- * @param param0 object which contains the needed function for a popup
- */
 const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
-  const [step, setStep] = useState(1); // Current step in the popup
-  /**    */
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Selected category
-  const [selectedProperties, setSelectedProperties] = useState<string[]>([]); // Selected properties
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
-  /**
-   * Callback function when a category is selected
-   * @param category category name of the selected category
-   */
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    // Check if the category has only one subcategory
-    if (
-      !(Object.keys(properties[category]).length > 1) &&
-      Object.keys(properties[category])[0]
-    ) {
-      // there only one subcategory
-      // properties of the one subcategory:
-      const propsOfTheOneSubCat =
-        properties[category][Object.keys(properties[category])[0]].properties;
-      // add the properties of this subcategory directly
-      const fields = propsOfTheOneSubCat.map((property, index) =>
-        getPropertyByName(property)
-      );
-      // add properties to the page
-      onAddFields(fields);
-      // close Popup, no subcategory selection needed
-      onClose();
-    } else {
-      // there are more than one subcategory, go to step 2: Subcategoryselection
-      setStep(2);
-    }
+    setSelectedProperties([]);
   };
 
-  /** Create Property fields based on selected properties and add them using the onAddFields callback */
-  const handleSubmit = () => {
-    const fields = selectedProperties.map((property, index) =>
-      getPropertyByName(property)
+  const handlePropertyToggle = (propertyName: string) => {
+    setSelectedProperties((prev) =>
+      prev.includes(propertyName)
+        ? prev.filter((p) => p !== propertyName)
+        : [...prev, propertyName]
     );
-    onAddFields(fields);
-    onClose();
   };
 
-  /**
-   * Callback function when a sub-category is selected or unselected:
-   * Adds or removes the names of the properties to array of propertynames that will be added to the page
-   * @param event the event that happens when category is selected
-   */
-  const handleSubCategorySelect = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const subCategory = event.target.value;
-    let updatedProperties = [...selectedProperties];
-
-    // Ensure selectedCategory is not null before proceeding
-    if (selectedCategory && properties[selectedCategory]) {
-      if (event.target.checked) {
-        // Add all properties from the sub-category
-        updatedProperties.push(
-          ...properties[selectedCategory][subCategory].properties
-        );
-      } else {
-        // Remove all properties from the sub-category
-        updatedProperties = updatedProperties.filter(
-          (p) =>
-            !properties[selectedCategory][subCategory].properties.includes(p)
-        );
-      }
-
-      setSelectedProperties(updatedProperties);
-    }
+  const handleAddSelectedFields = () => {
+    const fields = selectedProperties
+      .map((property) => getPropertyByName(property))
+      .filter((field): field is Property => field !== undefined);
+    onAddFields(fields);
+    setSelectedProperties([]);
   };
 
   return (
-    <div className="popup fixed inset-0 bg-gray-700 bg-opacity-75 overflow-y-auto h-full w-full">
-      <div className="relative top-10 mx-auto p-8 border w-3/4 max-w-6xl shadow-xl rounded-lg bg-white">
-        {/* Category Selection */}
-        {step === 1 && (
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Kategorie auswählen
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Object.values(categories).map((category) => (
-                <div
-                  key={category.title}
-                  className="flex flex-col border p-4 rounded-lg shadow-sm transition duration-300 h-full hover:border-gray-800 hover:shadow-md"
-                >
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-800 mb-2">
-                      {category.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4 flex-1">
-                      {category.description}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleCategorySelect(category.title)}
-                    className="px-4 py-2 w-full text-white bg-gray-800 hover:bg-gray-900 rounded-md transition duration-300 self-end"
-                  >
-                    Wählen
-                  </button>
-                </div>
-              ))}
-            </div>
+    <div className="fixed left-0 top-0 h-full w-1/3 bg-white shadow-xl overflow-hidden flex flex-col">
+      <div className="p-4 border-b flex justify-between items-center">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Kategorien und Eigenschaften
+        </h2>
+        <button
+          onClick={onClose}
+          className="text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
 
-            <button
-              onClick={onClose}
-              className="absolute bottom-14 right-10 w-[250px] bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6"
+      <div className="flex-1 flex overflow-hidden">
+        {/* Category List */}
+        <div className="w-1/2 border-r overflow-y-auto bg-gray-50">
+          {Object.values(categories).map((category) => (
+            <div
+              key={category.title}
+              className={`p-4 cursor-pointer hover:bg-gray-200 transition-colors ${
+                selectedCategory === category.title
+                  ? "bg-gray-200 border-l-4 border-sky-500"
+                  : ""
+              }`}
+              onClick={() => handleCategorySelect(category.title)}
             >
-              Schließen
-            </button>
-          </div>
-        )}
+              <h3 className="font-semibold text-gray-800">{category.title}</h3>
+              <p className="text-sm text-gray-600">{category.description}</p>
+            </div>
+          ))}
+        </div>
 
-        {/* Property Selection */}
-        {step === 2 && selectedCategory && (
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-              Wähle Unterkategorie in {selectedCategory}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(properties[selectedCategory]).map(
-                ([subCategory, info]) => (
-                  <label
-                    key={subCategory}
-                    className="block p-4 border rounded-lg shadow-sm transition duration-300 hover:border-gray-800 hover:shadow-md"
-                  >
-                    <input
-                      type="checkbox"
-                      value={subCategory}
-                      onChange={handleSubCategorySelect}
-                      className="form-checkbox h-5 w-5 text-gray-600 rounded-md border-gray-300 focus:ring-gray-500 mr-2"
-                    />
-                    <span className="text-gray-700 font-bold">
-                      {subCategory}
-                    </span>
-                    <p className="text-gray-600">{info.description}</p>
-                  </label>
-                )
-              )}
-            </div>
-            <div className="flex justify-between">
-              <button
-                onClick={handleSubmit}
-                className=" bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6  w-[250px]"
-              >
-                Felder hinzufügen{" "}
-              </button>
-              <button
-                onClick={onClose}
-                className=" w-[250px] bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-300 mt-6"
-              >
-                Schließen
-              </button>
-            </div>
-          </div>
-        )}
-        {/* Close Button */}
-        <div className="mt-6"></div>
+        {/* Property List */}
+        <div className="w-1/2 overflow-y-auto bg-white">
+          {selectedCategory &&
+            Object.entries(properties[selectedCategory]).map(
+              ([subCategory, info]) => (
+                <div key={subCategory} className="p-4 border-b">
+                  <h4 className="font-semibold text-gray-800">{subCategory}</h4>
+                  <ul className="p-2 space-y-2">
+                    {info.properties.map((property) => (
+                      <li
+                        key={property}
+                        className={`p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer ${
+                          selectedProperties.includes(property)
+                            ? "bg-sky-100 border-2 border-sky-500"
+                            : "bg-gray-100"
+                        }`}
+                        onClick={() => handlePropertyToggle(property)}
+                      >
+                        <span className="font-medium text-gray-800">
+                          {property}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            )}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="p-4 bg-gray-100 border-t">
+        <div className="flex flex-col space-y-4">
+          <button
+            onClick={handleAddSelectedFields}
+            className="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+            disabled={selectedProperties.length === 0}
+          >
+            Ausgewählte hinzufügen ({selectedProperties.length})
+          </button>
+          <span className="text-sm text-gray-600 text-center mt-2">
+            Eigenschaften auswählen, die hinzugefügt werden sollen
+          </span>
+        </div>
       </div>
     </div>
   );
