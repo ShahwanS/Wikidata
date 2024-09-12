@@ -7,9 +7,9 @@ import { convertDataToJson } from "./JsonConversion";
  * @param data
  * @returns makdown-data
  */
-export const convert2Markup = (data: any, isShowedWikiProps: boolean) => {
+export const convert2Markup = (data: any) => {
   const dataAsMap = dataToMap(data); // First mapping properties to categories
-  const dataAsJson = convertDataToJson(dataAsMap, isShowedWikiProps); // Then maped data to json
+  const dataAsJson = convertDataToJson(dataAsMap); // Then maped data to json
   console.log(
     "Final dataAsJson before markdown conversion:",
     JSON.stringify(dataAsJson, null, 2)

@@ -32,13 +32,11 @@ export function addCategoryAsSubtitleToJson(category: any, jsonOutput: any) {
  * Adds data from a category to the JSON output.
  * @param dataList List of data items from the category
  * @param jsonOutput JSON output array
- * @param isShowedWikiProps Boolean indicating if wiki properties should be shown
  * @param title Title used for file naming
  */
 export async function addDataFromCategoryToJson(
   dataList: any,
   jsonOutput: any,
-  isShowedWikiProps: boolean,
   title: string
 ) {
   let previousDataWikiProperty = "";
@@ -62,30 +60,17 @@ export async function addDataFromCategoryToJson(
           dataName,
           jsonOutput,
           title,
-          wikiprop,
-          isShowedWikiProps
+          wikiprop
         );
       } else {
         uploadImageAndAddToJson(inputData, dataName, jsonOutput, title);
       }
     } else if (isUrl) {
-      addUrlToJson(
-        wikiprop,
-        dataName,
-        inputData,
-        jsonOutput,
-        isShowedWikiProps
-      );
+      addUrlToJson(wikiprop, dataName, inputData, jsonOutput);
     } else if (isRichtext) {
       addRichTextToJson(wikiprop, dataName, inputData, jsonOutput);
     } else if (isNotFromAdditionalField) {
-      addNormalDataToJson(
-        wikiprop,
-        dataName,
-        inputData,
-        jsonOutput,
-        isShowedWikiProps
-      );
+      addNormalDataToJson(wikiprop, dataName, inputData, jsonOutput);
     } else {
       addDataFromAdditionalFieldToJson(inputData, jsonOutput);
     }
@@ -130,7 +115,7 @@ async function uploadImageAndAddToJson(
     );
 
   let newEntry;
-  if (wikiprop && isShowedWikiProps !== undefined) {
+  if (wikiprop !== undefined) {
     newEntry = {
       p: isShowedWikiProps
         ? `### ${wikiprop}\t${dataName}\n![${dataName}](${rawFilePath})`
@@ -182,10 +167,9 @@ function addUrlToJson(
   wikiprop: string,
   dataName: string,
   inputData: any,
-  jsonOutput: any,
-  isShowedWikiProps: boolean
+  jsonOutput: any
 ) {
-  isShowedWikiProps
+  wikiprop
     ? jsonOutput.push({
         p: `### ${wikiprop}\t${dataName}\n[${dataName}](${inputData})`,
       })
@@ -220,10 +204,9 @@ function addNormalDataToJson(
   wikiprop: string,
   dataName: string,
   inputData: any,
-  jsonOutput: any,
-  isShowedWikiProps: boolean
+  jsonOutput: any
 ) {
-  isShowedWikiProps
+  wikiprop
     ? jsonOutput.push({
         p: `### ${wikiprop}\t${dataName}\n-\t${inputData}${
           getPropertyByName(dataName).unit
