@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-/** Define the Home component */
+/** Define the Home components */
 export default function Home() {
   // State variables
   const [fields, setFields] = useState<Property[]>(initialFields());
