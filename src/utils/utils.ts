@@ -165,7 +165,7 @@ export async function serverFileToBase64(
 //helper function to format date for filename
 export const formatDateForFilename = (): string => {
   const date = new Date();
-  return `${date.getFullYear()}-${
-    date.getMonth() + 1
-  }-${date.getDate()}_${date.getHours()}`;
+  return `${date.getUTCFullYear()}-${
+    date.getUTCMonth() + 1
+  }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}`;
 };
