@@ -1,18 +1,8 @@
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
-  images: {
-    unoptimized: true,
-  },
-  // Optional: Change links `/me` -> `/me/` and emit `/me.html` -> `/me/index.html`
-  // trailingSlash: true,
+const createNextIntlPlugin = require("next-intl/plugin");
 
-  // Optional: Prevent automatic `/me` -> `/me/`, instead preserve `href`
-  // skipTrailingSlashRedirect: true,
+const withNextIntl = createNextIntlPlugin();
 
-  // Optional: Change the output directory `out` -> `dist`
-  // distDir: 'dist',
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {};
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

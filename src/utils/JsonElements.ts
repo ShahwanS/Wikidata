@@ -6,10 +6,8 @@ import {
   simpleHtmlToMarkdown,
   formatDateForFilename,
 } from "./utils";
-import { getPropertyByName } from "./propgliederung";
 import { uploadImage } from "@/app/actions";
-import { json } from "stream/consumers";
-
+import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
 /**
  * Adds the title from "Namensangaben" to the JSON output.
  * @param dataAsMap Map containing the data categorized by name
@@ -37,7 +35,8 @@ export function addCategoryAsSubtitleToJson(category: any, jsonOutput: any) {
 export async function addDataFromCategoryToJson(
   dataList: any,
   jsonOutput: any,
-  title: string
+  title: string,
+  getPropertyByName: any
 ) {
   let previousDataWikiProperty = "";
 
@@ -70,7 +69,13 @@ export async function addDataFromCategoryToJson(
     } else if (isRichtext) {
       addRichTextToJson(wikiprop, dataName, inputData, jsonOutput);
     } else if (isNotFromAdditionalField) {
-      addNormalDataToJson(wikiprop, dataName, inputData, jsonOutput);
+      addNormalDataToJson(
+        wikiprop,
+        dataName,
+        inputData,
+        jsonOutput,
+        getPropertyByName
+      );
     } else {
       addDataFromAdditionalFieldToJson(inputData, jsonOutput);
     }
@@ -192,7 +197,6 @@ function addRichTextToJson(
   const markdown = simpleHtmlToMarkdown(inputData);
   jsonOutput.push({ p: `${markdown}` });
 }
-
 /**
  * Adds normal data (non-URL, non-rich text) to the JSON output.
  * @param wikiprop Wiki property associated with the data
@@ -204,7 +208,8 @@ function addNormalDataToJson(
   wikiprop: string,
   dataName: string,
   inputData: any,
-  jsonOutput: any
+  jsonOutput: any,
+  getPropertyByName: any
 ) {
   wikiprop
     ? jsonOutput.push({

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Field, { FieldProps } from "./Field";
 // Import the CSS directly; Next.js handles this for both server and client-side
 import "react-quill/dist/quill.snow.css";
+import { useTranslations } from "next-intl";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   loading: () => <p>Loading editor...</p>,
@@ -19,8 +20,8 @@ export type RichTextFieldProps = FieldProps & {
    */
   updateContent: (name: string, content: string) => void;
   initContent: string;
-  initTitle: string
-}
+  initTitle: string;
+};
 
 /**
  * React component for generating a richtextfield
@@ -32,10 +33,10 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
   onDelete,
   onChange, //hier geht es um den Abschnittstitel
   initContent,
-  initTitle
+  initTitle,
 }) => {
+  const t = useTranslations("initial");
   const [content, setContent] = useState(initContent);
-
   /**
    * Method for handling changes of the richtext
    * @param content Richtext
@@ -47,17 +48,25 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
 
   return (
     <div className="my-10 py-2" key={property.name}>
-      <Field property={{name: "Freitext", type: "richtext", placeholder: "Abschnittstitel eingeben", value: [initTitle], unique: true}} 
-             onDelete={onDelete} 
-             onChange={onChange}
-             key={property.name}>
+      <Field
+        property={{
+          name: "",
+          type: "richtext",
+          placeholder: t("form.richTextPlaceholder"),
+          value: [initTitle],
+          unique: true,
+        }}
+        onDelete={onDelete}
+        onChange={onChange}
+        key={property.name}
+      >
         <ReactQuill
           key={property.name}
           theme="snow"
           value={content}
           onChange={handleChange}
           style={{ height: "400px" }}
-                  />
+        />
       </Field>
     </div>
   );

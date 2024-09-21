@@ -1,24 +1,30 @@
 "use client";
 import React, { useState } from "react";
-import Field from "@/components/Field";
 import Popup from "@/components/Popup";
 import RichTextField from "@/components/RichTextField";
 import { convert2Markup } from "@/utils/convertToMarkup";
 import { Property } from "@/utils/propgliederung";
-import { exampleFields, exampleRichtexts } from "./loadexample";
 import { commitToGitLab } from "@/app/actions";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormFieldGroup from "@/components/FormFieldGroup";
-import RichTextGroup from "@/components/RichTextGroup";
 import { useFormFields } from "@/hooks/useFormFields";
 import { useRichTextFields } from "@/hooks/useRichTextFields";
-/** Define the Home components */
+import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
+import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+
+/** 
+ * Define the Home components 
+ * This component is the main page of the application.
+ * It handles the form submission, resetting the page, and loading examples.
+ */
 export default function Home() {
-  const { fields, addFields, removeField, setFields } = useFormFields(
-    initialFields()
-  );
+  // Initialize hooks and state variables
+  const t = useTranslations("initial");
+  const { fields, addFields, removeField, setFields, initialFields } =
+    useFormFields();
   const {
     richTextState,
     richTextTitle,
@@ -33,38 +39,29 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
+  const params = useParams();
+  const locale = params?.locale || "de";
+  const { getPropertyByName, translatedPropgliederung } =
+    useTranslatedRecords();
 
-  /** Helper function to initialize the fields */
-  function initialFields(): Property[] {
-    return [
-      {
-        name: "Offizieller Name",
-        type: "text",
-        placeholder: "Name",
-        wikidataprop: "P1448",
-        unique: true,
-        required: true,
-      },
-      {
-        name: "Datum der offiziellen Eröffnung",
-        type: "text",
-        placeholder: "Datum : MM/YY oder Jahr",
-        wikidataprop: "P1619",
-        unique: true,
-        required: true,
-      },
-      { name: "Bild", type: "file", wikidataprop: "P18", required: true },
-      {
-        name: "Webseite",
-        type: "text",
-        placeholder: "https://example.com",
-        wikidataprop: "P856",
-        required: true,
-      },
-    ];
-  }
+  // Load examples based on the locale
+  const loadExamples = async () => {
+    let exampleModule;
+    if (locale === "de") {
+      exampleModule = await import("@/app/loadexampleDe");
+    } else {
+      exampleModule = await import("@/app/loadexampleEn");
+    }
+    setFields(exampleModule.exampleFields(getPropertyByName));
+    exampleModule.exampleRichtexts(setRichTextTitle, setRichTextState);
+    setRichtextCounter(2);
+  };
 
-  /** Handles form submission */
+  /** 
+   * Handles form submission 
+   * This function is called when the form is submitted.
+   * It converts the form data to Markdown content and sends it to GitLab.
+   */
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -77,10 +74,18 @@ export default function Home() {
     });
 
     // Convert form data to Markdown content
-    const markupOutput = convert2Markup(fieldsData);
+    const markupOutput = convert2Markup(
+      fieldsData,
+      translatedPropgliederung,
+      getPropertyByName,
+      locale.toString()
+    );
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
-      const fileName = fieldsData["Offizieller Name0"] || "output";
+      const fileName =
+        fieldsData["Offizieller Name0"] ||
+        fieldsData["Official Name0"] ||
+        "output";
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);
@@ -88,7 +93,7 @@ export default function Home() {
         handleReset();
       } catch (error) {
         console.error("Failed to send the markup file to GitLab:", error);
-        toast.error("Fehler beim Senden des Markup-Files an GitLab.", {
+        toast.error(t("form.errorSending"), {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -102,7 +107,7 @@ export default function Home() {
     } else {
     }
 
-    toast.info("Formular gespeichert", {
+    toast.info(t("form.formSaved"), {
       position: "top-right",
       autoClose: 3000,
       hideProgressBar: false,
@@ -113,7 +118,10 @@ export default function Home() {
     });
   };
 
-  /** Formats the RichText content including the title */
+  /** 
+   * Formats the RichText content including the title 
+   * This function formats the RichText content including the title.
+   */
   const formatRichTextContent = (fieldName: string): string => {
     const title = richTextTitle[fieldName]
       ? `# ${richTextTitle[fieldName]}\n`
@@ -137,7 +145,10 @@ export default function Home() {
   // /** Groups fields by their category for rendering */
   // const fieldsByCategory = groupFieldsByCategory(fields);
 
-  /** Groups fields by their category */
+  /** 
+   * Groups fields by their category 
+   * This function groups the fields by their category for rendering.
+   */
   function groupFieldsByCategory(
     fields: Property[]
   ): Record<string, Property[]> {
@@ -149,11 +160,15 @@ export default function Home() {
     }, {});
   }
 
-  /** Handles resetting the whole page */
+  /** 
+   * Handles resetting the whole page 
+   * This function handles resetting the whole page.
+   */
   const handleReset = () => {
     setShowResetModal(true);
   };
 
+  // Confirm the reset action
   const confirmReset = () => {
     setFields([]);
     setTimeout(() => {
@@ -180,14 +195,6 @@ export default function Home() {
           )}
 
           <div className={`flex-grow ${showPopup ? "lg:w-3/4" : "w-full"}`}>
-            <header
-              className={`text-5xl font-extrabold text-center mb-12 text-gray-800`}
-            >
-              <h1 className="inline-block p-5 bg-white rounded-lg shadow-sm">
-                Wikidata Formular
-              </h1>
-            </header>
-
             <form
               onSubmit={handleSubmit}
               className="bg-white rounded-3xl shadow-2xl overflow-hidden relative"
@@ -214,7 +221,7 @@ export default function Home() {
                 {Object.keys(richTextState).length > 0 && (
                   <div className="space-y-8">
                     <h2 className="text-3xl font-bold text-gray-700 border-b-2 border-gray-200 pb-3">
-                      Weitere Angaben als Freitext
+                      {t("form.additionalText")}
                     </h2>
                     {Object.keys(richTextState).map((richtextName, index) => (
                       <RichTextField
@@ -234,9 +241,9 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={addRichTextField}
-                  className="py-3 w-full bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
+                  className="py-3 w-full bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                 >
-                  Freitext hinzufügen
+                  {t("form.addRichText")}
                 </button>
               </div>
               <div className="bg-gray-100 px-8 py-8 space-y-8">
@@ -244,26 +251,23 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setShowPopup(!showPopup)}
-                    className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
+                    className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    {showPopup
-                      ? "Sidebar schließen"
-                      : "Weitere Felder hinzufügen"}
+                    {showPopup ? t("form.closeSidebar") : t("form.addFields")}
                   </button>
 
                   <button
                     type="button"
                     onClick={() => {
                       setFields([]);
+                      setRichTextState({});
                       setTimeout(() => {
-                        setFields(exampleFields());
-                        exampleRichtexts(setRichTextTitle, setRichTextState);
-                        setRichtextCounter(2);
+                        loadExamples();
                       }, 0);
                     }}
-                    className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
+                    className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    Lade Beispieldaten
+                    {t("form.loadExampleData")}
                   </button>
                 </div>
 
@@ -271,16 +275,16 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
+                    className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    Alle Felder zurücksetzen
+                    {t("form.resetAllFields")}
                   </button>
 
                   <button
                     type="submit"
-                    className="px-8 py-4 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
+                    className="px-8 py-4 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    Speichern
+                    {t("form.submit")}
                   </button>
                 </div>
               </div>
@@ -291,23 +295,22 @@ export default function Home() {
         {showResetModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
-              <h3 className="text-lg font-bold mb-4">Formular zurücksetzen</h3>
-              <p className="mb-6">
-                Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle
-                eingegebenen Daten werden gelöscht.
-              </p>
+              <h3 className="text-lg font-bold mb-4">
+                {t("form.FormReset.title")}
+              </h3>
+              <p className="mb-6">{t("form.FormReset.description")}</p>
               <div className="flex justify-start space-x-4">
                 <button
                   onClick={() => setShowResetModal(false)}
                   className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
                 >
-                  Abbrechen
+                  {t("form.FormReset.cancel")}
                 </button>
                 <button
                   onClick={confirmReset}
                   className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
-                  Zurücksetzen
+                  {t("form.FormReset.confirm")}
                 </button>
               </div>
             </div>

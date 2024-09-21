@@ -1,16 +1,19 @@
-import { Property, getPropertyByName } from "@/utils/propgliederung";
+import { Property } from "@/utils/propgliederung";
 
 function createExampleField(
   propName: string,
-  exampleValues: string[]
+  exampleValues: string[],
+  getPropertyByName: (propName: string) => Property
 ): Property {
   return { ...getPropertyByName(propName), value: exampleValues };
 }
 
-export function exampleFields(): Property[] {
+export function exampleFields(
+  getPropertyByName: (propName: string) => Property
+): Property[] {
   const example: Property[] = [];
+
   example.push(
-    // Initial fields
     {
       ...getPropertyByName("Offizieller Name"),
       value: ["Marburger Landgrafenschloss"],
@@ -34,38 +37,60 @@ export function exampleFields(): Property[] {
       required: true,
     },
 
-    createExampleField("Kurzname", [
-      "MR Schloss",
-      "Marburger Schloss",
-      "Schloss",
-    ]),
-    createExampleField("Baujahr", ["11. Jahrhundert"]),
-    createExampleField("Schlüsselperson", ["Landgraf Philipp"]),
-    createExampleField("Breite", ["200"]),
-    createExampleField("Länge", ["80"]),
-    createExampleField("Enthält", [
-      "Fürstensaal",
-      "Großer Saal",
-      "Schlosskapelle",
-    ]),
-    createExampleField("Angrenzende Gebäude", ["Hexenturm", "Bückingsgarten"]),
-    createExampleField("Blickrichtung", ["Süden"]),
-    createExampleField("Rollstuhl geeignet", [""]),
-    createExampleField("Koordinaten", ["50°48'36.7\"N, 8°46'1.2\"E"]),
+    createExampleField(
+      "Kurzname",
+      ["MR Schloss", "Marburger Schloss", "Schloss"],
+      getPropertyByName
+    ),
+    createExampleField("Baujahr", ["11. Jahrhundert"], getPropertyByName),
+    createExampleField(
+      "Schlüsselperson",
+      ["Landgraf Philipp"],
+      getPropertyByName
+    ),
+    createExampleField("Breite", ["200"], getPropertyByName),
+    createExampleField("Länge", ["80"], getPropertyByName),
+    createExampleField(
+      "Enthält",
+      ["Fürstensaal", "Großer Saal", "Schlosskapelle"],
+      getPropertyByName
+    ),
+    createExampleField(
+      "Angrenzende Gebäude",
+      ["Hexenturm", "Bückingsgarten"],
+      getPropertyByName
+    ),
+    createExampleField("Blickrichtung", ["Süden"], getPropertyByName),
+    createExampleField("Rollstuhl geeignet", [""], getPropertyByName),
+    createExampleField(
+      "Koordinaten",
+      ["50°48'36.7\"N, 8°46'1.2\"E"],
+      getPropertyByName
+    ),
     getPropertyByName("Land"),
     getPropertyByName("Zeitzone"),
     getPropertyByName("Baumaterial"),
-    createExampleField("Komplette Adresse", ["Schloss 1"]),
-    createExampleField("Postleitzahl", ["35037"]),
-    createExampleField("Architekturstil", ["gotische Säle", ""]),
-    createExampleField("Verwendungszweck", [
-      "festliche und kulturelle Anlässe",
-      "Museum",
-    ]),
-    createExampleField("Anzahl an Fahrstühlen", ["0"]),
-    createExampleField("Ist Instanz von", ["Gebäude", "Schloss", "Burg"]),
-    createExampleField("Erhaltungszustand", [""])
+    createExampleField("Komplette Adresse", ["Schloss 1"], getPropertyByName),
+    createExampleField("Postleitzahl", ["35037"], getPropertyByName),
+    createExampleField(
+      "Architekturstil",
+      ["gotische Säle", ""],
+      getPropertyByName
+    ),
+    createExampleField(
+      "Verwendungszweck",
+      ["festliche und kulturelle Anlässe", "Museum"],
+      getPropertyByName
+    ),
+    createExampleField("Anzahl an Fahrstühlen", ["0"], getPropertyByName),
+    createExampleField(
+      "Ist Instanz von",
+      ["Gebäude", "Schloss", "Burg"],
+      getPropertyByName
+    ),
+    createExampleField("Erhaltungszustand", [""], getPropertyByName)
   );
+
   return example;
 }
 

@@ -1,0 +1,381 @@
+{
+  "form": {
+    "building": {
+      "title": "Gebäudemaße und -eigenschaften",
+      "description": "Größe des Gebäudes und Angaben zu Räumen, Stockwerken, Fahrstühlen",
+      "dimensions": {
+        "title": "Dimensionen",
+        "description": "Gebäudemaße: Breite, Länge und Höhe.",
+        "height": {
+          "label": "Höhe",
+          "placeholder": "Höhe in Metern eingeben"
+        },
+        "length": {
+          "label": "Länge",
+          "placeholder": "Länge in Metern eingeben"
+        },
+        "width": {
+          "label": "Breite",
+          "placeholder": "Breite in Metern eingeben"
+        }
+      },
+      "areas": {
+        "title": "Flächenangaben",
+        "description": "Angaben zur Fläche",
+        "groundArea": {
+          "label": "Grundfläche",
+          "placeholder": "Grundfläche in Quadratmetern eingeben"
+        }
+      },
+      "floors": {
+        "title": "Stockwerke",
+        "description": "Anzahl an Stockwerken und Fahrstühlen",
+        "aboveGround": {
+          "label": "Oberirdische Stockwerke",
+          "placeholder": "Anzahl der Etagen über Grund eingeben"
+        },
+        "belowGround": {
+          "label": "Unterirdische Stockwerke",
+          "placeholder": "Anzahl der Etagen unter Grund eingeben"
+        },
+        "elevators": {
+          "label": "Anzahl an Fahrstühlen",
+          "placeholder": "Anzahl der Aufzüge eingeben"
+        }
+      },
+      "rooms": {
+        "title": "Räume und Zugehörigkeit",
+        "description": "Anzahl Räume; bedeutende Räume; ist Teil von",
+        "roomCount": {
+          "label": "Anzahl Räume",
+          "placeholder": "Anzahl der Räume eingeben"
+        },
+        "partOf": {
+          "label": "Ist Teil von",
+          "placeholder": "z.B. ein größerer Gebäudekomplex?"
+        },
+        "contains": {
+          "label": "Enthält",
+          "placeholder": "z.B. wichtige Räume oder ähnliches"
+        }
+      },
+      "accessibility": {
+        "title": "Zugänglichkeit",
+        "description": "Rollstuhl geeignet",
+        "wheelchairAccessible": {
+          "label": "Rollstuhl geeignet",
+          "choices": {
+            "veryAccessible": "Sehr gut zugänglich mit Rollstuhl",
+            "partiallyAccessible": "teilweise zugänglich mit Rollstuhl",
+            "notAccessible": "nicht zugänglich mit Rollstuhl"
+          },
+          "placeholder": "Ja/Nein eingeben"
+        }
+      }
+    },
+    "nameDetails": {
+      "title": "Namensangaben",
+      "description": "Verschiedene Namen des Gebäudes sowie Namensgeber",
+      "officialName": {
+        "label": "Offizieller Name",
+        "placeholder": "Offiziellen Namen eingeben",
+        "required": true
+      },
+      "shortName": {
+        "label": "Kurzname",
+        "placeholder": "Kurzname eingeben"
+      },
+      "nickname": {
+        "label": "Spitzname",
+        "placeholder": "Spitzname eingeben"
+      },
+      "namesake": {
+        "label": "Namensgeber",
+        "placeholder": "Namensgeber eingeben"
+      }
+    },
+    "architectureDetails": {
+      "title": "Architektonische Angaben",
+      "description": "Stil, Inspiration, Architekt",
+      "style": {
+        "label": "Architekturstil",
+        "placeholder": "Architektonischen Stil eingeben"
+      },
+      "inspiredBy": {
+        "label": "Inspiriert von",
+        "placeholder": "Inspiriert von eingeben"
+      },
+      "architect": {
+        "label": "Architekt",
+        "placeholder": "Architekt eingeben"
+      }
+    },
+    "constructionDetails": {
+      "title": "Baudetails",
+      "description": "Angaben zu Material, Baumethode, Bauunternehmen, Kosten u.a.",
+      "materials": {
+        "label": "Baumaterial",
+        "placeholder": "Wesentlichste Baumaterialien"
+      },
+      "method": {
+        "label": "Baumethode",
+        "placeholder": "Baumethode eingeben"
+      },
+      "company": {
+        "label": "Bauunternehmen",
+        "placeholder": "Bauunternehmen eingeben"
+      },
+      "developer": {
+        "label": "Immobilienentwickler",
+        "placeholder": "Immobilienentwickler eingeben"
+      },
+      "engineer": {
+        "label": "Statiker / Ingenieur",
+        "placeholder": "Ingenieur eingeben"
+      },
+      "cost": {
+        "label": "Baukosten",
+        "description": "in EUR",
+        "placeholder": "Baukosten in EUR eingeben"
+      }
+    },
+    "geographicDetails": {
+      "title": "Geographische Angaben",
+      "description": "Standort, Ausrichtung, Nachbarn",
+      "location": {
+        "label": "Standort",
+        "description": "Nachbarschaft, Koordinaten, Blickrichtung",
+        "adjacentBuildings": {
+          "label": "Angrenzende Gebäude",
+          "placeholder": "Physisch verbunden mit"
+        },
+        "connectedTo": {
+          "label": "Physisch verbunden mit",
+          "placeholder": "z.B. einem größeren Gebäudekomplex?"
+        },
+        "coordinates": {
+          "label": "Koordinaten",
+          "placeholder": "Längen- / Breitengrad eingeben"
+        },
+        "timezone": {
+          "label": "Zeitzone",
+          "value": "MEZ",
+          "placeholder": "Zeitzone eingeben"
+        },
+        "country": {
+          "label": "Land",
+          "value": "Deutschland",
+          "placeholder": "Land eingeben"
+        },
+        "orientation": {
+          "label": "Blickrichtung",
+          "placeholder": "Blickrichtung eingeben"
+        }
+      },
+      "address": {
+        "label": "Adresse",
+        "description": "Adressangaben zu dem Gebäude",
+        "street": {
+          "label": "Straße",
+          "placeholder": "Straße eingeben"
+        },
+        "fullAddress": {
+          "label": "Komplette Adresse",
+          "placeholder": "Straße und Hausnummer eingeben"
+        },
+        "postalCode": {
+          "label": "Postleitzahl",
+          "placeholder": "Postleitzahl eingeben"
+        }
+      }
+    },
+    "historicalData": {
+      "title": "Historische Daten",
+      "description": "Baujahr, Begründer, Eröffnung, Schließung, Abriss u.a.",
+      "yearBuilt": {
+        "label": "Baujahr",
+        "placeholder": "Datum: MM/JJ oder Jahr"
+      },
+      "openingDate": {
+        "label": "Datum der offiziellen Eröffnung",
+        "placeholder": "Datum: MM/JJ oder Jahr"
+      },
+      "closingDate": {
+        "label": "Schließungsdatum",
+        "placeholder": "Datum: MM/JJ oder Jahr"
+      },
+      "demolitionDate": {
+        "label": "Abrissdatum",
+        "placeholder": "Datum: MM/JJ oder Jahr"
+      },
+      "keyEvent": {
+        "label": "Schlüsselereignis",
+        "placeholder": "Wichtiges historisches Ereignis (z.B. Religionsgespräche)"
+      },
+      "keyPerson": {
+        "label": "Schlüsselperson",
+        "placeholder": "z.B. Landgraf Philipp"
+      },
+      "contractor": {
+        "label": "Auftraggeber",
+        "placeholder": "Auftraggeber eingeben"
+      },
+      "founder": {
+        "label": "Begründer",
+        "placeholder": "Begründer eingeben"
+      },
+      "predecessor": {
+        "label": "Vorgängerbauwerk",
+        "placeholder": "Vorgängerbauwerk eingeben"
+      },
+      "successor": {
+        "label": "Nachfolgebauwerk",
+        "placeholder": "Nachfolgebauwerk eingeben"
+      }
+    },
+    "usage": {
+      "title": "Nutzung",
+      "description": "Wer nutzt das Gebäude für was? Zustand des Gebäudes",
+      "state": {
+        "label": "Nutzungszustand",
+        "placeholder": "sehr schlecht/schlecht/normal/gut/sehr gut"
+      },
+      "condition": {
+        "label": "Erhaltungszustand",
+        "placeholder": "sehr schlecht/schlecht/normal/gut/sehr gut"
+      },
+      "user": {
+        "label": "Nutzer",
+        "placeholder": "Nutzer eingeben"
+      },
+      "purpose": {
+        "label": "Verwendungszweck",
+        "placeholder": "Verwendungszweck eingeben"
+      },
+      "operator": {
+        "label": "Betreiber",
+        "placeholder": "Betreiber eingeben"
+      },
+      "maintainedBy": {
+        "label": "Unterhalten durch",
+        "placeholder": "Wer unterhält das Gebäude?"
+      },
+      "owner": {
+        "label": "Eigentümer",
+        "placeholder": "Eigentümer des Gebäudes eingeben"
+      },
+      "denomination": {
+        "label": "Konfessionszugehörigkeit",
+        "placeholder": "Falls Zugehörigkeit gegeben"
+      }
+    },
+    "classification": {
+      "title": "Klassifizierung",
+      "description": "Angaben zur Klassifizierung, Schutzkategorie, Denkmalliste",
+      "instanceOf": {
+        "label": "Ist Instanz von",
+        "value": "Gebäude",
+        "placeholder": "Instanz von eingeben"
+      },
+      "commonsCategory": {
+        "label": "Commons-Kategorie",
+        "placeholder": "Commons-Kategorie eingeben"
+      },
+      "protectionCategory": {
+        "label": "Schutzkategorie",
+        "placeholder": "Schutzkategorie eingeben"
+      },
+      "monumentList": {
+        "label": "Steht in der Denkmalliste",
+        "placeholder": "Denkmalliste eingeben"
+      }
+    },
+    "links": {
+      "title": "Links",
+      "description": "Links zur offiziellen Website",
+      "website": {
+        "label": "Webseite",
+        "placeholder": "URL eingeben"
+      }
+    },
+    "media": {
+      "title": "Medien",
+      "description": "Bilder im Zusammenhang mit dem Gebäude",
+      "image": {
+        "label": "Bild",
+        "placeholder": "Bild hochladen"
+      },
+      "backImage": {
+        "label": "Bild der Rückseite",
+        "placeholder": "Bild der Rückseite hochladen"
+      },
+      "entranceImage": {
+        "label": "Bild des Eingangs",
+        "placeholder": "Bild des Eingangs hochladen"
+      },
+      "aerialView": {
+        "label": "Luftbild",
+        "placeholder": "Luftbild hochladen"
+      },
+      "interiorView": {
+        "label": "Innenansicht",
+        "placeholder": "Innenansicht hochladen"
+      },
+      "floorPlan": {
+        "label": "Grundrissdarstellung",
+        "placeholder": "Grundrissdarstellung hochladen"
+      }
+    }
+  },
+
+  "initial": {
+    "OfficialName": {
+      "label": "Offizieller Name",
+      "placeholder": "Geben Sie den offiziellen Namen ein"
+    },
+    "dateOfOpening": {
+      "label": "Eröffnungsdatum",
+      "placeholder": "Geben Sie das Datum ein: MM/JJ oder Jahr"
+    },
+    "image": {
+      "label": "Bild"
+    },
+    "Website": {
+      "label": "Website",
+      "placeholder": "Https://www.google.de"
+    },
+    "form": {
+      "title": "Wikidata Formular",
+      "addFields": "Weitere Felder hinzufügen",
+      "closeSidebar": "Sidebar schließen",
+      "loadExampleData": "Lade Beispieldaten",
+      "additionalText": "Zusätzlicher Text",
+      "richTextPlaceholder": "Text eingeben",
+
+      "addRichText": "Freitext hinzufügen",
+      "resetAllFields": "Alle Felder zurücksetzen",
+      "submit": "Speichern",
+      "formSaved": "Formular gespeichert",
+      "errorSending": "Fehler beim Senden des Markup-Files an GitLab.",
+      "resetFormTitle": "Formular zurücksetzen",
+      "resetFormDescription": "Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle eingegebenen Daten werden gelöscht.",
+      "cancel": "Abbrechen",
+      "confirmReset": "Zurücksetzen",
+      "FormReset": {
+        "title": "Formular zurücksetzen",
+        "description": "Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle eingegebenen Daten werden gelöscht.",
+        "cancel": "Abbrechen",
+        "confirm": "Zurücksetzen"
+      }
+    }
+  },
+  "LocaleSwitcher": {
+    "label": "Sprache ändern",
+    "locale": "{locale, select, de {🇩🇪 Deutsch} en {🇺🇸 English} other {Unbekannt}}"
+  },
+  "PropertyPopup": {
+    "categories": "Kategorien und Eigenschaften",
+    "addSelected": "Füge {count} ausgewählte Eigenschaften hinzu",
+    "selectProperties": "Eigenschaften auswählen, die hinzugefügt werden sollen"
+  }
+}

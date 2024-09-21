@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
 /** Defines the structure of a property */
 export type Property = {
@@ -16,13 +17,6 @@ export type Property = {
   unit?: string; // Unit of measurement
 };
 
-/** Structure for a subcategory */
-export type SubCategory = {
-  name: string;
-  description: string;
-  properties: Property[];
-};
-
 /** Structure for a category */
 export type Category = {
   title: string;
@@ -30,8 +24,15 @@ export type Category = {
   subcategories: SubCategory[];
 };
 
+/** Structure for a subcategory */
+export type SubCategory = {
+  name: string;
+  description: string;
+  properties: Property[];
+};
+
 /**  Defines index signature to get properties by giving the name of a category and subcategory*/
-type Properties = {
+export type Properties = {
   [category: string]: {
     [subCategory: string]: {
       name: string;
@@ -41,584 +42,583 @@ type Properties = {
   };
 };
 
-// Initialize the necessary objects
-export const categories: Record<string, Category> = {};
-export const properties: Properties = {};
-export const propertyInputTypes: Record<string, string> = {};
-export const categoryNameForProperty: Record<string, string> = {};
-export const valueNameForProperty: Record<string, string[]> = {};
-export const choicesForProperty: Record<string, string[]> = {};
-export const uniqueForProperty: Record<string, boolean> = {};
-export const requiredForProperty: Record<string, boolean> = {};
-export const PropertyByName: Record<string, Property> = {};
-
 /** Porperties-Gliederung
  *  (orientiert sich an der Pdf-Datei)
  */
-export const propgliederung: Category[] = [
+/** Main function that defines the structure of categories and properties with i18n */
+export const propgliederung = (t: (key: string) => string): Category[] => [
   {
-    title: "Gebäudemaße und -eigenschaften",
-    description:
-      "Größe des Gebäudes und Angaben zu Räumen Stockwerken, Fahrstühlen",
+    title: t("building.title"),
+    description: t("building.description"),
     subcategories: [
       {
-        name: "Dimensionen",
-        description: "Gebäudemaße: Breite, Länge und Höhe.",
+        name: t("building.dimensions.title"),
+        description: t("building.dimensions.description"),
         properties: [
           {
-            name: "Höhe",
+            name: t("building.dimensions.height.label"),
             type: "number",
             wikidataprop: "P2048",
             unique: true,
             unit: "Meter",
-            placeholder: "Höhe eingeben",
+            placeholder: t("building.dimensions.height.placeholder"),
           },
           {
-            name: "Länge",
+            name: t("building.dimensions.length.label"),
             type: "number",
             wikidataprop: "P2043",
             unique: true,
             unit: "Meter",
-            placeholder: "Länge in Metern eingeben",
+            placeholder: t("building.dimensions.length.placeholder"),
           },
           {
-            name: "Breite",
+            name: t("building.dimensions.width.label"),
             type: "number",
             wikidataprop: "P2049",
             unique: true,
             unit: "Meter",
-            placeholder: "Breite in Metern eingeben",
+            placeholder: t("building.dimensions.width.placeholder"),
           },
         ],
       },
       {
-        name: "Flächenangaben",
-        description: "Angaben zur Fläche",
+        name: t("building.areas.title"),
+        description: t("building.areas.description"),
         properties: [
           {
-            name: "Grundfläche",
+            name: t("building.areas.groundArea.label"),
             type: "number",
             wikidataprop: "P2046",
             unique: true,
             unit: "Quadratmeter",
-            placeholder: "Grundfläche in Quadratmetern eingeben",
+            placeholder: t("building.areas.groundArea.placeholder"),
           },
         ],
       },
       {
-        name: "Stockwerke",
-        description: "Anzahl an Stockwerke und Fahrstühlen",
+        name: t("building.floors.title"),
+        description: t("building.floors.description"),
         properties: [
           {
-            name: "Oberirdische Stockwerke",
+            name: t("building.floors.aboveGround.label"),
             type: "number",
             wikidataprop: "P1101",
             unique: true,
-            placeholder: "Anzahl der Etagen über Grund eingeben",
+            placeholder: t("building.floors.aboveGround.placeholder"),
           },
           {
-            name: "Unterirdische Stockwerke",
+            name: t("building.floors.belowGround.label"),
             type: "number",
             wikidataprop: "P1139",
             unique: true,
-            placeholder: "Anzahl der Etagen unter Grund eingeben",
+            placeholder: t("building.floors.belowGround.placeholder"),
           },
           {
-            name: "Anzahl an Fahrstühlen",
+            name: t("building.floors.elevators.label"),
             type: "number",
             wikidataprop: "P1301",
             unique: true,
-            placeholder: "Anzahl der Aufzüge eingeben",
+            placeholder: t("building.floors.elevators.placeholder"),
           },
         ],
       },
       {
-        name: "Räume, Zugehörigkeit",
-        description: "Anzahl Räume; bedeutende Räume; ist Teil von",
+        name: t("building.rooms.title"),
+        description: t("building.rooms.description"),
         properties: [
           {
-            name: "Anzahl Räume",
+            name: t("building.rooms.roomCount.label"),
             type: "number",
             wikidataprop: "P8733",
             unique: true,
-            placeholder: "Anzahl der Räume eingeben",
+            placeholder: t("building.rooms.roomCount.placeholder"),
           },
           {
-            name: "Ist Teil von",
+            name: t("building.rooms.partOf.label"),
             type: "text",
-            description: "z.B. größerer Gebäudekomplex",
             wikidataprop: "P361",
-            placeholder: "z.B. ein größerer Gebäudekomplex?",
+            placeholder: t("building.rooms.partOf.placeholder"),
           },
           {
-            name: "Enthält",
+            name: t("building.rooms.contains.label"),
             type: "text",
-            description: "z.B. einzelne bedeutende Räume",
             wikidataprop: "P527",
-            placeholder: "z.B. wichtige Räume oder ähnliches",
+            placeholder: t("building.rooms.contains.placeholder"),
           },
         ],
       },
       {
-        name: "Zugänglichkeit",
-        description: "Rollstuhl geeignet",
+        name: t("building.accessibility.title"),
+        description: t("building.accessibility.description"),
         properties: [
           {
-            name: "Rollstuhl geeignet",
+            name: t("building.accessibility.wheelchairAccessible.label"),
             type: "radio",
             wikidataprop: "P2846",
             choices: [
-              "Sehr gut zugänglich mit Rollstuhl",
-              "teilweise zugänglich mit Rollstuhl",
-              "nicht zugänglich mit Rollstuhl",
+              t(
+                "building.accessibility.wheelchairAccessible.choices.veryAccessible"
+              ),
+              t(
+                "building.accessibility.wheelchairAccessible.choices.partiallyAccessible"
+              ),
+              t(
+                "building.accessibility.wheelchairAccessible.choices.notAccessible"
+              ),
             ],
             unique: true,
-            placeholder: "Ja/Nein eingeben",
+            placeholder: t(
+              "building.accessibility.wheelchairAccessible.placeholder"
+            ),
           },
         ],
       },
     ],
   },
   {
-    title: "Namensangaben",
-    description: "Verschiedene Namen des Gebäudes sowie Namensgeber",
+    title: t("nameDetails.title"),
+    description: t("nameDetails.description"),
     subcategories: [
       {
-        name: "Namen",
-        description: "offizieller Name, Kurzname, Spitzname, Namensgeber",
+        name: t("nameDetails.title"),
+        description: t("nameDetails.description"),
         properties: [
           {
-            name: "Offizieller Name",
+            name: t("nameDetails.officialName.label"),
             type: "text",
             wikidataprop: "P1448",
             unique: true,
-            placeholder: "Offiziellen Namen eingeben",
+            placeholder: t("nameDetails.officialName.placeholder"),
             required: true,
           },
           {
-            name: "Kurzname",
+            name: t("nameDetails.shortName.label"),
             type: "text",
             wikidataprop: "P1813",
-            placeholder: "Kurzname eingeben",
+            placeholder: t("nameDetails.shortName.placeholder"),
           },
           {
-            name: "Spitzname",
+            name: t("nameDetails.nickname.label"),
             type: "text",
             wikidataprop: "P1449",
-            placeholder: "Spitzname eingeben",
+            placeholder: t("nameDetails.nickname.placeholder"),
           },
           {
-            name: "Namensgeber",
+            name: t("nameDetails.namesake.label"),
             type: "text",
             wikidataprop: "P138",
-            placeholder: "Namensgeber eingeben",
+            placeholder: t("nameDetails.namesake.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Architektonische Angaben",
-    description: "Stil, Inspiration, Architekt",
+    title: t("architectureDetails.title"),
+    description: t("architectureDetails.description"),
     subcategories: [
       {
-        name: "Architektur",
-        description: " Architekturstil, Inspiriert von, Architekt",
+        name: t("architectureDetails.title"),
+        description: t("architectureDetails.description"),
         properties: [
           {
-            name: "Architekturstil",
+            name: t("architectureDetails.style.label"),
             type: "text",
             wikidataprop: "P149",
-            placeholder: "Architektonischen Stil eingeben",
+            placeholder: t("architectureDetails.style.placeholder"),
           },
           {
-            name: "Inspiriert von",
+            name: t("architectureDetails.inspiredBy.label"),
             type: "text",
             wikidataprop: "P941",
-            placeholder: "Inspiriert von eingeben",
+            placeholder: t("architectureDetails.inspiredBy.placeholder"),
           },
           {
-            name: "Architekt",
+            name: t("architectureDetails.architect.label"),
             type: "text",
             wikidataprop: "P84",
-            placeholder: "Architekt eingeben",
+            placeholder: t("architectureDetails.architect.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Baudetails",
-    description:
-      "Angaben zu Material, Baumethode, Bauunternehmen, Kosten u.a. ",
+    title: t("constructionDetails.title"),
+    description: t("constructionDetails.description"),
     subcategories: [
       {
-        name: " Bauwesen",
-        description: " Baumaterial, Baumethode, Bauunternehmen, Kosten",
+        name: t("constructionDetails.title"),
+        description: t("constructionDetails.description"),
         properties: [
           {
-            name: "Baumaterial",
+            name: t("constructionDetails.materials.label"),
             type: "text",
             wikidataprop: "P186",
-            placeholder: "Wesentlichste Baumaterialien",
+            placeholder: t("constructionDetails.materials.placeholder"),
           },
           {
-            name: "Baumethode",
+            name: t("constructionDetails.method.label"),
             type: "text",
             wikidataprop: "P2079",
-            placeholder: "Baumethode eingeben",
+            placeholder: t("constructionDetails.method.placeholder"),
           },
           {
-            name: "Bauunternehmen",
+            name: t("constructionDetails.company.label"),
             type: "text",
             wikidataprop: "P193",
-            placeholder: "Bauunternehmen eingeben",
+            placeholder: t("constructionDetails.company.placeholder"),
           },
           {
-            name: "Immobilienentwickler",
+            name: t("constructionDetails.developer.label"),
             type: "text",
             wikidataprop: "P6237",
-            placeholder: "Immobilienentwickler eingeben",
+            placeholder: t("constructionDetails.developer.placeholder"),
           },
           {
-            name: "Statiker / Ingenieur",
+            name: t("constructionDetails.engineer.label"),
             type: "text",
             wikidataprop: "P631",
-            placeholder: "Ingeniuer eingeben",
+            placeholder: t("constructionDetails.engineer.placeholder"),
           },
           {
-            name: "Baukosten",
+            name: t("constructionDetails.cost.label"),
             type: "number",
-            description: "in EUR",
+            description: t("constructionDetails.cost.description"),
             wikidataprop: "P2130",
             unique: true,
             unit: "EUR",
-            placeholder: "Baukosten in EUR eingeben",
+            placeholder: t("constructionDetails.cost.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Geographische Angaben",
-    description: "Standort, Ausrichtung, Nachbarn",
+    title: t("geographicDetails.title"),
+    description: t("geographicDetails.description"),
     subcategories: [
       {
-        name: "Standort",
-        description: "Nachbarschaft, Koordinaten, Blickrichtung",
+        name: t("geographicDetails.location.title"),
+        description: t("geographicDetails.location.description"),
         properties: [
           {
-            name: "Angrenzende Gebäude",
+            name: t("geographicDetails.location.adjacentBuildings.label"),
             type: "text",
             wikidataprop: "P3032",
-            placeholder: "physisch verbunden mit",
+            placeholder: t(
+              "geographicDetails.location.adjacentBuildings.placeholder"
+            ),
           },
           {
-            name: "Physisch verbunden mit",
+            name: t("geographicDetails.location.connectedTo.label"),
             type: "text",
             wikidataprop: "P2789",
-            placeholder: "z.B. einem größeren Gebäudekomplex?",
+            placeholder: t(
+              "geographicDetails.location.connectedTo.placeholder"
+            ),
           },
           {
-            name: "Koordinaten",
+            name: t("geographicDetails.location.coordinates.label"),
             type: "text",
             wikidataprop: "P625",
             unique: true,
-            placeholder: "Längen- / Breitengrad eingeben",
+            placeholder: t(
+              "geographicDetails.location.coordinates.placeholder"
+            ),
           },
           {
-            name: "Zeitzone",
+            name: t("geographicDetails.location.timezone.label"),
             type: "text",
-            value: ["MEZ"],
+            value: [t("geographicDetails.location.timezone.value")],
             wikidataprop: "P6237",
             unique: true,
-            placeholder: "Zeitzone eingeben",
+            placeholder: t("geographicDetails.location.timezone.placeholder"),
           },
           {
-            name: "Land",
+            name: t("geographicDetails.location.country.label"),
             type: "text",
-            value: ["Deutschland"],
+            value: [t("geographicDetails.location.country.value")],
             wikidataprop: "P17",
             unique: true,
-            placeholder: "Land eingeben",
+            placeholder: t("geographicDetails.location.country.placeholder"),
           },
           {
-            name: "Blickrichtung",
+            name: t("geographicDetails.location.orientation.label"),
             type: "text",
             wikidataprop: "P7787",
             unique: true,
-            placeholder: "Blickrichtung eingeben",
+            placeholder: t(
+              "geographicDetails.location.orientation.placeholder"
+            ),
           },
         ],
       },
       {
-        name: "Adresse",
-        description: "Adressangaben zu dem Gebäude",
+        name: t("geographicDetails.address.label"),
+        description: t("geographicDetails.address.description"),
         properties: [
           {
-            name: "Straße",
+            name: t("geographicDetails.address.street.label"),
             type: "text",
             wikidataprop: "P669",
             unique: true,
-            placeholder: "Befindet Sich Auf Straße eingeben",
+            placeholder: t("geographicDetails.address.street.placeholder"),
           },
           {
-            name: "Komplette Adresse",
+            name: t("geographicDetails.address.fullAddress.label"),
             type: "text",
             wikidataprop: "P6375",
             unique: true,
-            placeholder: "Straße und Hausnummer eingeben",
+            placeholder: t("geographicDetails.address.fullAddress.placeholder"),
           },
           {
-            name: "Postleitzahl",
+            name: t("geographicDetails.address.postalCode.label"),
             type: "text",
             wikidataprop: "P281",
             unique: true,
-            placeholder: "Postleitzahl eingeben",
+            placeholder: t("geographicDetails.address.postalCode.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Historische Daten",
-    description: "Bahjahr, Begründer, Eröffnung, Schließung, Abriss u.a.",
+    title: t("historicalData.title"),
+    description: t("historicalData.description"),
     subcategories: [
       {
-        name: " Historische Daten",
-        description:
-          " Baujahr, Eröffnungsdatum, Schließungsdatum, Abrissdatum, Schlüsselereignis, Schlüsselperson, Auftraggeber, Begründer, Vorgängerbauwerk, Nachfolgebauwerk",
+        name: t("historicalData.title"),
+        description: t("historicalData.description"),
         properties: [
           {
-            name: "Baujahr",
+            name: t("historicalData.yearBuilt.label"),
             type: "text",
             wikidataprop: "P571",
             unique: true,
-            placeholder: "Datum : MM/YY oder Jahr",
+            placeholder: t("historicalData.yearBuilt.placeholder"),
           },
           {
-            name: "Datum der offiziellen Eröffnung",
+            name: t("historicalData.openingDate.label"),
             type: "text",
             wikidataprop: "P1619",
             unique: true,
-            placeholder: "Datum : MM/YY oder Jahr",
+            placeholder: t("historicalData.openingDate.placeholder"),
           },
           {
-            name: "Schließungsdatum",
+            name: t("historicalData.closingDate.label"),
             type: "text",
             wikidataprop: "P3999",
             unique: true,
-            placeholder: "Datum : MM/YY oder Jahr",
+            placeholder: t("historicalData.closingDate.placeholder"),
           },
           {
-            name: "Abrissdatum",
+            name: t("historicalData.demolitionDate.label"),
             type: "text",
             wikidataprop: "P576",
             unique: true,
-            placeholder: "Datum : MM/YY oder Jahr",
+            placeholder: t("historicalData.demolitionDate.placeholder"),
           },
           {
-            name: "Schlüsselereignis",
+            name: t("historicalData.keyEvent.label"),
             type: "text",
             wikidataprop: "P793",
-            placeholder:
-              "Wichtiges historisches Ereignis (z.B. Religionsgespräche)",
+            placeholder: t("historicalData.keyEvent.placeholder"),
           },
           {
-            name: "Schlüsselperson",
+            name: t("historicalData.keyPerson.label"),
             type: "text",
             wikidataprop: "P3342",
-            placeholder: "z.B. Landgraf Philipp",
+            placeholder: t("historicalData.keyPerson.placeholder"),
           },
           {
-            name: "Auftraggeber",
+            name: t("historicalData.contractor.label"),
             type: "text",
             wikidataprop: "P88",
-            placeholder: "Auftraggeber eingeben",
+            placeholder: t("historicalData.contractor.placeholder"),
           },
           {
-            name: "Begründer",
+            name: t("historicalData.founder.label"),
             type: "text",
             wikidataprop: "P112",
-            placeholder: "Begründer eingeben",
+            placeholder: t("historicalData.founder.placeholder"),
           },
           {
-            name: "Vorgängerbauwerk",
+            name: t("historicalData.predecessor.label"),
             type: "text",
             wikidataprop: "P1398",
-            placeholder: "Vorgängerbauwerk eingeben",
+            placeholder: t("historicalData.predecessor.placeholder"),
           },
           {
-            name: "Nachfolgebauwerk",
+            name: t("historicalData.successor.label"),
             type: "text",
             wikidataprop: "P167",
-            placeholder: "Nachfolgebauwerk eingeben",
+            placeholder: t("historicalData.successor.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Nutzung",
-    description: "Wer nutzt das Gebäude für was? Zustand des Gebäudes",
+    title: t("usage.title"),
+    description: t("usage.description"),
     subcategories: [
       {
-        name: "Nutzung und Zustand",
-        description:
-          " Nutzungszustand, Erhaltungszustand, Nutzer, Verwendungszweck, Betreiber, Unterhalten durch, Eigentümer, Konfessionszugehörigkeit",
+        name: t("usage.state.label"),
+        description: t("usage.description"),
         properties: [
           {
-            name: "Nutzungszustand",
+            name: t("usage.state.label"),
             type: "text",
             wikidataprop: "P5817",
             unique: true,
-            placeholder: "sehr schlecht/schlecht/normal/gut/sehr gut",
+            placeholder: t("usage.state.placeholder"),
           },
           {
-            name: "Erhaltungszustand",
+            name: t("usage.condition.label"),
             type: "text",
             wikidataprop: "P5816",
             unique: true,
-            placeholder: "sehr schlecht/schlecht/normal/gut/sehr gut",
+            placeholder: t("usage.condition.placeholder"),
           },
           {
-            name: "Nutzer",
+            name: t("usage.user.label"),
             type: "text",
             wikidataprop: "P466",
-            placeholder: "Nutzer eingeben",
+            placeholder: t("usage.user.placeholder"),
           },
           {
-            name: "Verwendungszweck",
+            name: t("usage.purpose.label"),
             type: "text",
             wikidataprop: "P366",
-            placeholder: "Verwendungszweck eingeben",
+            placeholder: t("usage.purpose.placeholder"),
           },
           {
-            name: "Betreiber",
+            name: t("usage.operator.label"),
             type: "text",
             wikidataprop: "P137",
-            placeholder: "Betreibender eingeben",
+            placeholder: t("usage.operator.placeholder"),
           },
           {
-            name: "Unterhalten durch",
+            name: t("usage.maintainedBy.label"),
             type: "text",
             wikidataprop: "P126",
-            placeholder: "Wer unterhält das Gebäude?",
+            placeholder: t("usage.maintainedBy.placeholder"),
           },
           {
-            name: "Eigentümer",
+            name: t("usage.owner.label"),
             type: "text",
             wikidataprop: "P127",
-            placeholder: "Eigentümer des Gebäudes eingeben",
+            placeholder: t("usage.owner.placeholder"),
           },
           {
-            name: "Konfessionszugehörigkeit",
+            name: t("usage.denomination.label"),
             type: "text",
             wikidataprop: "P140",
-            placeholder: "Falls Zugehörigkeit gegeben",
+            placeholder: t("usage.denomination.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Klassifizierung",
-    description: "Angaben zur Klassifizierung, Schutzkategorie, Denkmalliste",
+    title: t("classification.title"),
+    description: t("classification.description"),
     subcategories: [
       {
-        name: "Klassifizierung",
-        description: "Schutzkategorie, Denkmalliste, Ist Instanz von",
+        name: t("classification.title"),
+        description: t("classification.description"),
         properties: [
           {
-            name: "Ist Instanz von",
-            value: ["Gebäude"],
+            name: t("classification.instanceOf.label"),
+            value: [t("classification.instanceOf.value")],
             type: "text",
             wikidataprop: "P31",
-            placeholder: "Instanz Von eingeben",
+            placeholder: t("classification.instanceOf.placeholder"),
           },
           {
-            name: "Commons-Kategorie",
+            name: t("classification.commonsCategory.label"),
             type: "text",
             wikidataprop: "P373",
-            placeholder: "Commons Kategorie eingeben",
+            placeholder: t("classification.commonsCategory.placeholder"),
           },
           {
-            name: "Schutzkategorie",
+            name: t("classification.protectionCategory.label"),
             type: "text",
             wikidataprop: "P1435",
-            placeholder: "Schutzkategorie eingeben",
+            placeholder: t("classification.protectionCategory.placeholder"),
           },
           {
-            name: "Steht in der Denkmalliste",
+            name: t("classification.monumentList.label"),
             type: "text",
             wikidataprop: "P2817",
-            placeholder: "Denkmaliste eingeben",
+            placeholder: t("classification.monumentList.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Links",
-    description: "Links zur offiziellen Website",
+    title: t("links.title"),
+    description: t("links.description"),
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: t("links.title"),
+        description: t("links.description"),
         properties: [
           {
-            name: "Webseite",
+            name: t("links.website.label"),
             type: "url",
             wikidataprop: "P856",
-            placeholder: "URL eingeben",
+            placeholder: t("links.website.placeholder"),
           },
         ],
       },
     ],
   },
   {
-    title: "Medien",
-    description: "Bilder im Zusammenhang mit dem Gebäude",
+    title: t("media.title"),
+    description: t("media.description"),
     subcategories: [
       {
-        name: "",
-        description: "",
+        name: t("media.title"),
+        description: t("media.description"),
         properties: [
           {
-            name: "Bild",
+            name: t("media.image.label"),
             type: "file",
             wikidataprop: "P18",
-            placeholder: "Bild eingeben",
+            placeholder: t("media.image.placeholder"),
           },
           {
-            name: "Bild der Rückseite",
+            name: t("media.backImage.label"),
             type: "file",
             wikidataprop: "P7417",
-            placeholder: "Bild der Rückseite eingeben",
+            placeholder: t("media.backImage.placeholder"),
           },
           {
-            name: "Bild des Eingangs",
+            name: t("media.entranceImage.label"),
             type: "file",
             wikidataprop: "P9721",
-            placeholder: "Bild des Eingangs eingeben",
+            placeholder: t("media.entranceImage.placeholder"),
           },
           {
-            name: "Luftbild",
+            name: t("media.aerialView.label"),
             type: "file",
             wikidataprop: "P8592",
-            placeholder: "Luftbild eingeben",
+            placeholder: t("media.aerialView.placeholder"),
           },
           {
-            name: "Innenansicht",
+            name: t("media.interiorView.label"),
             type: "file",
             wikidataprop: "P5775",
-            placeholder: "Innenansicht eingeben",
+            placeholder: t("media.interiorView.placeholder"),
           },
           {
-            name: "Grundrissdarstellung",
+            name: t("media.floorPlan.label"),
             type: "file",
             wikidataprop: "P3311",
-            placeholder: "Grundrissdarstellung eingeben",
+            placeholder: t("media.floorPlan.placeholder"),
           },
         ],
       },
@@ -626,102 +626,113 @@ export const propgliederung: Category[] = [
   },
 ];
 
-// Bei nur einer Unterkategorie: Setze Name und Beschreibung gleich denen der Kategorie
-propgliederung.forEach((cat) => {
-  if (cat.subcategories.length == 1) {
-    cat.subcategories[0].name = cat.title;
-    cat.subcategories[0].description = cat.description;
-  }
-});
+//   // Initialize the necessary objects
+// export const categories: Record<string, Category> = {};
+// export const properties: Properties = {};
+// export const propertyInputTypes: Record<string, string> = {};
+// export const categoryNameForProperty: Record<string, string> = {};
+// export const valueNameForProperty: Record<string, string[]> = {};
+// export const choicesForProperty: Record<string, string[]> = {};
+// export const uniqueForProperty: Record<string, boolean> = {};
+// export const requiredForProperty: Record<string, boolean> = {};
+// export const PropertyByName: Record<string, Property> = {};
 
-/**
- * Given the name of a property, the function delivers the property object
- * @param propertyName Name of the property
- * @returns Property object from the propgliederung, if not exist: a default object with type text
- */
-export function getPropertyByName(propertyName: string): Property {
-  const property = PropertyByName[propertyName];
-  if (!property) {
-    return { name: propertyName, type: "text" };
-  }
-  return property;
-}
+// // Bei nur einer Unterkategorie: Setze Name und Beschreibung gleich denen der Kategorie
+// propgliederung.forEach((cat) => {
+//   if (cat.subcategories.length == 1) {
+//     cat.subcategories[0].name = cat.title;
+//     cat.subcategories[0].description = cat.description;
+//   }
+// });
 
-//generate it from the propgliederung
-propgliederung.forEach((cat) => {
-  categories[cat.title] = cat;
-  properties[cat.title] = {};
-  cat.subcategories.forEach((subcat) => {
-    properties[cat.title][subcat.name] = {
-      name: subcat.name,
-      properties: subcat.properties.map((prop) => prop.name),
-      description: subcat.description,
-    };
-    subcat.properties.forEach((prop) => {
-      propertyInputTypes[prop.name] = prop.type;
-      if (prop.name) PropertyByName[prop.name] = prop;
-      prop.category = cat.title;
-      if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
-      if (prop.required) requiredForProperty[prop.name] = prop.required;
-      if (prop.choices) choicesForProperty[prop.name] = prop.choices;
-      if (prop.value) valueNameForProperty[prop.name] = prop.value;
-      categoryNameForProperty[prop.name] = cat.title;
-    });
-  });
-});
+// /**
+//  * Given the name of a property, the function delivers the property object
+//  * @param propertyName Name of the property
+//  * @returns Property object from the propgliederung, if not exist: a default object with type text
+//  */
+// export function getPropertyByName(propertyName: string): Property {
+//   const property = PropertyByName[propertyName];
+//   if (!property) {
+//     return { name: propertyName, type: "text" };
+//   }
+//   return property;
+// }
 
-// Adjusting generateFormSchema to apply validations based on type and requirements
-export function generateFormSchema() {
-  const schemaFields: Record<string, z.ZodTypeAny> = {};
+// //generate it from the propgliederung
+// propgliederung.forEach((cat) => {
+//   categories[cat.title] = cat;
+//   properties[cat.title] = {};
+//   cat.subcategories.forEach((subcat) => {
+//     properties[cat.title][subcat.name] = {
+//       name: subcat.name,
+//       properties: subcat.properties.map((prop) => prop.name),
+//       description: subcat.description,
+//     };
+//     subcat.properties.forEach((prop) => {
+//       propertyInputTypes[prop.name] = prop.type;
+//       if (prop.name) PropertyByName[prop.name] = prop;
+//       prop.category = cat.title;
+//       if (prop.unique) uniqueForProperty[prop.name] = prop.unique;
+//       if (prop.required) requiredForProperty[prop.name] = prop.required;
+//       if (prop.choices) choicesForProperty[prop.name] = prop.choices;
+//       if (prop.value) valueNameForProperty[prop.name] = prop.value;
+//       categoryNameForProperty[prop.name] = cat.title;
+//     });
+//   });
+// });
 
-  Object.values(categories).forEach((category) => {
-    category.subcategories.forEach((subcategory) => {
-      subcategory.properties.forEach((property) => {
-        let fieldSchema;
-        switch (property.type) {
-          case "text":
-            // Apply basic string validation and check for required
-            fieldSchema = property.required
-              ? z.string().min(1, `${property.name} is required.`)
-              : z.string().optional();
-            break;
-          case "url":
-            // Validate URLs properly
-            fieldSchema = property.required
-              ? z.string().url(`${property.name} must be a valid URL.`)
-              : z.string().url().optional();
-            break;
-          case "number":
-            // Validate numbers, consider using min, max or other methods if needed
-            fieldSchema = property.required
-              ? z.number()
-              : z.number().optional();
-            break;
-          case "file":
-            // For file, ensure it's an instance of File
-            fieldSchema = property.required
-              ? z.instanceof(File)
-              : z.instanceof(File).optional();
-            break;
-          case "radio":
-            // Radio buttons must have one of the predefined choices selected
-            if (property.choices) {
-              fieldSchema = property.required
-                ? z.enum(property.choices as [string, ...string[]])
-                : z.enum(property.choices as [string, ...string[]]).optional();
-            }
-            break;
-          default:
-            fieldSchema = z.string().optional(); // Default fallback for any unspecified types
-        }
-        if (fieldSchema) {
-          schemaFields[property.name] = fieldSchema;
-        }
-      });
-    });
-  });
+// // Adjusting generateFormSchema to apply validations based on type and requirements
+// export function generateFormSchema() {
+//   const schemaFields: Record<string, z.ZodTypeAny> = {};
 
-  return z.object(schemaFields);
-}
+//   Object.values(categories).forEach((category) => {
+//     category.subcategories.forEach((subcategory) => {
+//       subcategory.properties.forEach((property) => {
+//         let fieldSchema;
+//         switch (property.type) {
+//           case "text":
+//             // Apply basic string validation and check for required
+//             fieldSchema = property.required
+//               ? z.string().min(1, `${property.name} is required.`)
+//               : z.string().optional();
+//             break;
+//           case "url":
+//             // Validate URLs properly
+//             fieldSchema = property.required
+//               ? z.string().url(`${property.name} must be a valid URL.`)
+//               : z.string().url().optional();
+//             break;
+//           case "number":
+//             // Validate numbers, consider using min, max or other methods if needed
+//             fieldSchema = property.required
+//               ? z.number()
+//               : z.number().optional();
+//             break;
+//           case "file":
+//             // For file, ensure it's an instance of File
+//             fieldSchema = property.required
+//               ? z.instanceof(File)
+//               : z.instanceof(File).optional();
+//             break;
+//           case "radio":
+//             // Radio buttons must have one of the predefined choices selected
+//             if (property.choices) {
+//               fieldSchema = property.required
+//                 ? z.enum(property.choices as [string, ...string[]])
+//                 : z.enum(property.choices as [string, ...string[]]).optional();
+//             }
+//             break;
+//           default:
+//             fieldSchema = z.string().optional(); // Default fallback for any unspecified types
+//         }
+//         if (fieldSchema) {
+//           schemaFields[property.name] = fieldSchema;
+//         }
+//       });
+//     });
+//   });
 
-export type FormSchema = z.infer<ReturnType<typeof generateFormSchema>>;
+//   return z.object(schemaFields);
+// }
+
+// export type FormSchema = z.infer<ReturnType<typeof generateFormSchema>>;

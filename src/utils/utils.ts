@@ -1,14 +1,16 @@
 import { propgliederung } from "./propgliederung";
 import { Buffer } from "buffer";
-
+import messagesDe from "../../messages/de.json";
+import messagesEn from "../../messages/en.json";
+import { Locale } from "../../i18n/routing";
+import { createTranslator } from "next-intl";
 export function getTitle(dataList: any[]): string {
   if (!dataList) {
     return "Default Title";
   }
-
   for (let i = 0; i < dataList.length; i++) {
     const data = dataList[i];
-    if (data[0] === "Offizieller Name") {
+    if (data[0] === "Offizieller Name" || data[0] === "Official Name") {
       return data[1];
     }
   }
@@ -61,17 +63,22 @@ export function simpleHtmlToMarkdown(html: string) {
  * This method returns a map, which contains all data with category and wikiproperty and dataName as key
  * @returns map (Key : DataName, Value: [Category,Wikiprop] )
  */
-export function getAllCategoryAndWikiprop() {
+export function getAllCategoryAndWikiprop(translatedPropgliederung: any) {
   const categoryAndPropertyMap = new Map();
-  propgliederung.forEach((category) => {
-    category.subcategories.forEach((subcategory) => {
-      subcategory.properties.forEach((property) => {
-        const key = property.name;
-        const value = [category.title, property.wikidataprop];
-        categoryAndPropertyMap.set(key, value);
+
+  translatedPropgliederung.forEach(
+    (category: { subcategories: any[]; title: any }) => {
+      category.subcategories.forEach((subcategory) => {
+        subcategory.properties.forEach(
+          (property: { name: any; wikidataprop: any }) => {
+            const key = property.name;
+            const value = [category.title, property.wikidataprop];
+            categoryAndPropertyMap.set(key, value);
+          }
+        );
       });
-    });
-  });
+    }
+  );
   return categoryAndPropertyMap;
 }
 
