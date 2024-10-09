@@ -20,7 +20,7 @@ export const convertDataToJson = (
     locale === "de"
       ? getTitle(dataAsMap.get("Namensangaben"))
       : getTitle(dataAsMap.get("Name Information"));
-  console.log("title", title);
+
   addTitleToJson(title, jsonOutput);
 
   // Add all Data in Map to JSON

@@ -1,9 +1,5 @@
-import { propgliederung } from "./propgliederung";
 import { Buffer } from "buffer";
-import messagesDe from "../../messages/de.json";
-import messagesEn from "../../messages/en.json";
-import { Locale } from "../../i18n/routing";
-import { createTranslator } from "next-intl";
+
 export function getTitle(dataList: any[]): string {
   if (!dataList) {
     return "Default Title";
@@ -104,11 +100,13 @@ export function removeTrailingNumber(input: any): string {
 export function setRichttextInMap(
   dataName: String,
   inputData: String,
-  resultMap: any
+  resultMap: any,
+  sources: Record<string, string>
 ) {
   const category = "Weitere Angaben als Freitext";
   const wikiprop = "richtext";
-  const dataEntry = [dataName, inputData, wikiprop];
+  const source = sources[wikiprop];
+  const dataEntry = [dataName, inputData, wikiprop, source];
   // Check if the category already exists in the map and add the data accordingly else create a new category
   if (resultMap.has(category)) {
     resultMap.get(category).push(dataEntry);
@@ -124,28 +122,38 @@ export function setRichttextInMap(
  * @param resultMap The map to store the data
  * @param allCategoryAndPropertyMap Map containing all categories and wiki properties
  */
+// Modify setNormalDataInMap function
 export function setNormalDataInMap(
   dataName: string,
   inputData: String,
+  sources: Record<string, string>,
   resultMap: any,
-  allCategoryAndPropertyMap: any
+  CATEGORY_AND_PROPERTY_MAP: any
 ) {
-  // Normal field processing
   const categoryAndWikiprop = getCategoryAndWikipropAsList(
     dataName,
-    allCategoryAndPropertyMap
+    CATEGORY_AND_PROPERTY_MAP
   );
   if (!categoryAndWikiprop) {
     console.error("No category and WikiProp found for:", dataName);
-    return; // Handle this case appropriately
+    return;
   }
-  const category = categoryAndWikiprop[0];
-  const wikiprop = categoryAndWikiprop[1];
-  const categoryExistsInMap = resultMap.has(category);
-  if (categoryExistsInMap) {
-    resultMap.get(category).push([dataName, inputData, wikiprop]);
+  const [category, wikiprop] = categoryAndWikiprop;
+  const source = sources[wikiprop];
+
+  if (!resultMap.has(category)) {
+    resultMap.set(category, []);
+  }
+
+  const categoryData = resultMap.get(category);
+  const existingEntry = categoryData.find(
+    (entry: string[]) => entry[2] === wikiprop
+  );
+
+  if (existingEntry) {
+    existingEntry[1] += `\n\t${inputData}`;
   } else {
-    resultMap.set(category, [[dataName, inputData, wikiprop]]);
+    categoryData.push([dataName, inputData, wikiprop, source]);
   }
 }
 

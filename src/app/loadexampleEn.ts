@@ -47,11 +47,7 @@ export function exampleFields(
       ["MR Castle", "Marburg Castle", "Castle"],
       getPropertyByName
     ),
-    createExampleField(
-      "Year of Construction",
-      ["11th Century"],
-      getPropertyByName
-    ),
+    createExampleField("Year Built", ["11th Century"], getPropertyByName),
     createExampleField("Key Person", ["Landgrave Philip"], getPropertyByName),
     createExampleField("Width", ["200"], getPropertyByName),
     createExampleField("Length", ["80"], getPropertyByName),
@@ -65,7 +61,7 @@ export function exampleFields(
       ["Witch's Tower", "Bücking's Garden"],
       getPropertyByName
     ),
-    createExampleField("View Direction", ["South"], getPropertyByName),
+    createExampleField("Orientation", ["South"], getPropertyByName),
     createExampleField("Wheelchair Accessible", [""], getPropertyByName),
     createExampleField(
       "Coordinates",
@@ -89,7 +85,7 @@ export function exampleFields(
     ),
     createExampleField("Number of Elevators", ["0"], getPropertyByName),
     createExampleField(
-      "Instance Of",
+      "Instance of",
       ["Building", "Castle", "Fortress"],
       getPropertyByName
     ),

@@ -16,6 +16,7 @@ export const useFormFields = () => {
         wikidataprop: "P1448",
         unique: true,
         required: true,
+        infobox: t("OfficialName.infobox"),
       },
       {
         name: t("dateOfOpening.label"),
@@ -24,12 +25,14 @@ export const useFormFields = () => {
         wikidataprop: "P1619",
         unique: true,
         required: true,
+        infobox: t("dateOfOpening.infobox"),
       },
       {
         name: t("image.label"),
         type: "file",
         wikidataprop: "P18",
         required: true,
+        infobox: t("image.infobox"),
       },
       {
         name: t("Website.label"),
@@ -37,6 +40,7 @@ export const useFormFields = () => {
         placeholder: "https://example.com",
         wikidataprop: "P856",
         required: true,
+        infobox: t("Website.infobox"),
       },
     ];
   }

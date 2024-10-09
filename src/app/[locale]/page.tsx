@@ -14,9 +14,10 @@ import { useRichTextFields } from "@/hooks/useRichTextFields";
 import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { getTitle } from "@/utils/utils";
 
-/** 
- * Define the Home components 
+/**
+ * Define the Home components
  * This component is the main page of the application.
  * It handles the form submission, resetting the page, and loading examples.
  */
@@ -43,6 +44,21 @@ export default function Home() {
   const locale = params?.locale || "de";
   const { getPropertyByName, translatedPropgliederung } =
     useTranslatedRecords();
+  const [sources, setSources] = useState<Record<string, string>>({}); // New state to hold sources
+
+  const handleSourceSubmit = (fieldName: string, source: string) => {
+    setSources((prev) => {
+      const newSources = { ...prev };
+      if (source === "") {
+        delete newSources[fieldName]; // Remove the source if it is empty
+      } else {
+        newSources[fieldName] = source; // Add or update the source
+      }
+      return newSources;
+    });
+
+    console.log("added source for ", fieldName, source);
+  };
 
   // Load examples based on the locale
   const loadExamples = async () => {
@@ -57,8 +73,8 @@ export default function Home() {
     setRichtextCounter(2);
   };
 
-  /** 
-   * Handles form submission 
+  /**
+   * Handles form submission
    * This function is called when the form is submitted.
    * It converts the form data to Markdown content and sends it to GitLab.
    */
@@ -70,7 +86,6 @@ export default function Home() {
 
     Object.keys(richTextState).forEach((fieldName) => {
       fieldsData[fieldName] = formatRichTextContent(fieldName);
-      fieldsData[fieldName] = formatRichTextContent(fieldName);
     });
 
     // Convert form data to Markdown content
@@ -78,8 +93,11 @@ export default function Home() {
       fieldsData,
       translatedPropgliederung,
       getPropertyByName,
-      locale.toString()
+      locale.toString(),
+      sources
     );
+
+    // downloadMarkdownFile(markupOutput);
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
       const fileName =
@@ -118,8 +136,8 @@ export default function Home() {
     });
   };
 
-  /** 
-   * Formats the RichText content including the title 
+  /**
+   * Formats the RichText content including the title
    * This function formats the RichText content including the title.
    */
   const formatRichTextContent = (fieldName: string): string => {
@@ -129,24 +147,21 @@ export default function Home() {
     return title + richTextState[fieldName];
   };
 
-  // /** Downloads the generated Markdown file */
-  // const downloadMarkdownFile = (
-  //   markupOutput: string,
-  //   title: FormDataEntryValue
-  // ) => {
-  //   const blob = new Blob([markupOutput], { type: "text/markdown" });
-  //   const url = URL.createObjectURL(blob);
-  //   const a = document.createElement("a");
-  //   a.href = url;
-  //   a.download = `Wikidata_${title}.md`;
-  //   a.click();
-  // };
+  /** Downloads the generated Markdown file */
+  const downloadMarkdownFile = (markupOutput: string) => {
+    const blob = new Blob([markupOutput], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Wikidata.md`;
+    a.click();
+  };
 
   // /** Groups fields by their category for rendering */
   // const fieldsByCategory = groupFieldsByCategory(fields);
 
-  /** 
-   * Groups fields by their category 
+  /**
+   * Groups fields by their category
    * This function groups the fields by their category for rendering.
    */
   function groupFieldsByCategory(
@@ -160,8 +175,8 @@ export default function Home() {
     }, {});
   }
 
-  /** 
-   * Handles resetting the whole page 
+  /**
+   * Handles resetting the whole page
    * This function handles resetting the whole page.
    */
   const handleReset = () => {
@@ -214,6 +229,7 @@ export default function Home() {
                       fields={fields}
                       removeField={removeField}
                       showWikiProps={false}
+                      onSourceSubmit={handleSourceSubmit}
                     />
                   )
                 )}
@@ -234,10 +250,14 @@ export default function Home() {
                         onChange={(e: { target: { value: string } }) =>
                           updateRichTextTitle(richtextName, e.target.value)
                         }
+                        onSourceSubmit={(source: string) =>
+                          handleSourceSubmit(richtextName, source)
+                        }
                       />
                     ))}
                   </div>
                 )}
+                {/* End of Selection */}
                 <button
                   type="button"
                   onClick={addRichTextField}

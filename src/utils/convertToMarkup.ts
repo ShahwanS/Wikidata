@@ -9,16 +9,16 @@ import { convertDataToJson } from "./JsonConversion";
  */
 export const convert2Markup = (
   data: any,
-  t: any,
+  translatedPropgliederung: any,
   getPropertyByName: any,
-  locale: string
+  locale: string,
+  sources: Record<string, string>
 ) => {
-  const dataAsMap = dataToMap(data, t); // First mapping properties to categories
-  const dataAsJson = convertDataToJson(dataAsMap, getPropertyByName, locale); // Then maped data to json
-  console.log(
-    "Final dataAsJson before markdown conversion:",
-    JSON.stringify(dataAsJson, null, 2)
-  );
-  const dataAsMd = json2md(dataAsJson); // Finally json to markdown
+  //creating a map between the categories and the properties
+  const dataAsMap = dataToMap(data, translatedPropgliederung, sources);
+  //create a json structure and fill it up with the mapped data
+  const dataAsJson = convertDataToJson(dataAsMap, getPropertyByName, locale);
+  //convert the json to markdown
+  const dataAsMd = json2md(dataAsJson);
   return dataAsMd;
 };

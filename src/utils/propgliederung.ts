@@ -15,6 +15,7 @@ export type Property = {
   choices?: string[]; // List of predefined values
   category?: string; // Category of the Property
   unit?: string; // Unit of measurement
+  infobox?: string; // information to help the user know what to write
 };
 
 /** Structure for a category */
@@ -62,6 +63,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             unique: true,
             unit: "Meter",
             placeholder: t("building.dimensions.height.placeholder"),
+            infobox: t("building.dimensions.height.infobox"),
           },
           {
             name: t("building.dimensions.length.label"),
@@ -70,6 +72,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             unique: true,
             unit: "Meter",
             placeholder: t("building.dimensions.length.placeholder"),
+            infobox: t("building.dimensions.length.infobox"),
           },
           {
             name: t("building.dimensions.width.label"),
@@ -78,6 +81,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             unique: true,
             unit: "Meter",
             placeholder: t("building.dimensions.width.placeholder"),
+            infobox: t("building.dimensions.width.infobox"),
           },
         ],
       },
@@ -92,6 +96,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             unique: true,
             unit: "Quadratmeter",
             placeholder: t("building.areas.groundArea.placeholder"),
+            infobox: t("building.areas.groundArea.infobox"),
           },
         ],
       },
@@ -105,6 +110,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P1101",
             unique: true,
             placeholder: t("building.floors.aboveGround.placeholder"),
+            infobox: t("building.floors.aboveGround.infobox"),
           },
           {
             name: t("building.floors.belowGround.label"),
@@ -112,6 +118,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P1139",
             unique: true,
             placeholder: t("building.floors.belowGround.placeholder"),
+            infobox: t("building.floors.belowGround.infobox"),
           },
           {
             name: t("building.floors.elevators.label"),
@@ -119,6 +126,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P1301",
             unique: true,
             placeholder: t("building.floors.elevators.placeholder"),
+            infobox: t("building.floors.elevators.infobox"),
           },
         ],
       },
@@ -132,18 +140,21 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P8733",
             unique: true,
             placeholder: t("building.rooms.roomCount.placeholder"),
+            infobox: t("building.rooms.roomCount.infobox"),
           },
           {
             name: t("building.rooms.partOf.label"),
             type: "text",
             wikidataprop: "P361",
             placeholder: t("building.rooms.partOf.placeholder"),
+            infobox: t("building.rooms.partOf.infobox"),
           },
           {
             name: t("building.rooms.contains.label"),
             type: "text",
             wikidataprop: "P527",
             placeholder: t("building.rooms.contains.placeholder"),
+            infobox: t("building.rooms.contains.infobox"),
           },
         ],
       },
@@ -170,6 +181,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t(
               "building.accessibility.wheelchairAccessible.placeholder"
             ),
+            infobox: t("building.accessibility.wheelchairAccessible.infobox"),
           },
         ],
       },
@@ -190,24 +202,28 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             unique: true,
             placeholder: t("nameDetails.officialName.placeholder"),
             required: true,
+            infobox: t("nameDetails.officialName.infobox"),
           },
           {
             name: t("nameDetails.shortName.label"),
             type: "text",
             wikidataprop: "P1813",
             placeholder: t("nameDetails.shortName.placeholder"),
+            infobox: t("nameDetails.shortName.infobox"),
           },
           {
             name: t("nameDetails.nickname.label"),
             type: "text",
             wikidataprop: "P1449",
             placeholder: t("nameDetails.nickname.placeholder"),
+            infobox: t("nameDetails.nickname.infobox"),
           },
           {
             name: t("nameDetails.namesake.label"),
             type: "text",
             wikidataprop: "P138",
             placeholder: t("nameDetails.namesake.placeholder"),
+            infobox: t("nameDetails.namesake.infobox"),
           },
         ],
       },
@@ -226,18 +242,21 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             type: "text",
             wikidataprop: "P149",
             placeholder: t("architectureDetails.style.placeholder"),
+            infobox: t("architectureDetails.style.infobox"),
           },
           {
             name: t("architectureDetails.inspiredBy.label"),
             type: "text",
             wikidataprop: "P941",
             placeholder: t("architectureDetails.inspiredBy.placeholder"),
+            infobox: t("architectureDetails.inspiredBy.infobox"),
           },
           {
             name: t("architectureDetails.architect.label"),
             type: "text",
             wikidataprop: "P84",
             placeholder: t("architectureDetails.architect.placeholder"),
+            infobox: t("architectureDetails.architect.infobox"),
           },
         ],
       },
@@ -256,30 +275,35 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             type: "text",
             wikidataprop: "P186",
             placeholder: t("constructionDetails.materials.placeholder"),
+            infobox: t("constructionDetails.materials.infobox"),
           },
           {
             name: t("constructionDetails.method.label"),
             type: "text",
             wikidataprop: "P2079",
             placeholder: t("constructionDetails.method.placeholder"),
+            infobox: t("constructionDetails.method.infobox"),
           },
           {
             name: t("constructionDetails.company.label"),
             type: "text",
             wikidataprop: "P193",
             placeholder: t("constructionDetails.company.placeholder"),
+            infobox: t("constructionDetails.company.infobox"),
           },
           {
             name: t("constructionDetails.developer.label"),
             type: "text",
             wikidataprop: "P6237",
             placeholder: t("constructionDetails.developer.placeholder"),
+            infobox: t("constructionDetails.developer.infobox"),
           },
           {
             name: t("constructionDetails.engineer.label"),
             type: "text",
             wikidataprop: "P631",
             placeholder: t("constructionDetails.engineer.placeholder"),
+            infobox: t("constructionDetails.engineer.infobox"),
           },
           {
             name: t("constructionDetails.cost.label"),
@@ -289,6 +313,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             unique: true,
             unit: "EUR",
             placeholder: t("constructionDetails.cost.placeholder"),
+            infobox: t("constructionDetails.cost.infobox"),
           },
         ],
       },
@@ -299,7 +324,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
     description: t("geographicDetails.description"),
     subcategories: [
       {
-        name: t("geographicDetails.location.title"),
+        name: t("geographicDetails.location.label"),
         description: t("geographicDetails.location.description"),
         properties: [
           {
@@ -309,6 +334,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t(
               "geographicDetails.location.adjacentBuildings.placeholder"
             ),
+            infobox: t("geographicDetails.location.adjacentBuildings.infobox"),
           },
           {
             name: t("geographicDetails.location.connectedTo.label"),
@@ -317,6 +343,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t(
               "geographicDetails.location.connectedTo.placeholder"
             ),
+            infobox: t("geographicDetails.location.connectedTo.infobox"),
           },
           {
             name: t("geographicDetails.location.coordinates.label"),
@@ -326,6 +353,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t(
               "geographicDetails.location.coordinates.placeholder"
             ),
+            infobox: t("geographicDetails.location.coordinates.infobox"),
           },
           {
             name: t("geographicDetails.location.timezone.label"),
@@ -334,6 +362,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P6237",
             unique: true,
             placeholder: t("geographicDetails.location.timezone.placeholder"),
+            infobox: t("geographicDetails.location.timezone.infobox"),
           },
           {
             name: t("geographicDetails.location.country.label"),
@@ -342,6 +371,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P17",
             unique: true,
             placeholder: t("geographicDetails.location.country.placeholder"),
+            infobox: t("geographicDetails.location.country.infobox"),
           },
           {
             name: t("geographicDetails.location.orientation.label"),
@@ -351,6 +381,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t(
               "geographicDetails.location.orientation.placeholder"
             ),
+            infobox: t("geographicDetails.location.orientation.infobox"),
           },
         ],
       },
@@ -364,6 +395,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P669",
             unique: true,
             placeholder: t("geographicDetails.address.street.placeholder"),
+            infobox: t("geographicDetails.address.street.infobox"),
           },
           {
             name: t("geographicDetails.address.fullAddress.label"),
@@ -371,6 +403,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P6375",
             unique: true,
             placeholder: t("geographicDetails.address.fullAddress.placeholder"),
+            infobox: t("geographicDetails.address.fullAddress.infobox"),
           },
           {
             name: t("geographicDetails.address.postalCode.label"),
@@ -378,6 +411,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P281",
             unique: true,
             placeholder: t("geographicDetails.address.postalCode.placeholder"),
+            infobox: t("geographicDetails.address.postalCode.infobox"),
           },
         ],
       },
@@ -397,6 +431,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P571",
             unique: true,
             placeholder: t("historicalData.yearBuilt.placeholder"),
+            infobox: t("historicalData.yearBuilt.infobox"),
           },
           {
             name: t("historicalData.openingDate.label"),
@@ -404,6 +439,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P1619",
             unique: true,
             placeholder: t("historicalData.openingDate.placeholder"),
+            infobox: t("historicalData.openingDate.infobox"),
           },
           {
             name: t("historicalData.closingDate.label"),
@@ -411,6 +447,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P3999",
             unique: true,
             placeholder: t("historicalData.closingDate.placeholder"),
+            infobox: t("historicalData.closingDate.infobox"),
           },
           {
             name: t("historicalData.demolitionDate.label"),
@@ -418,42 +455,49 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P576",
             unique: true,
             placeholder: t("historicalData.demolitionDate.placeholder"),
+            infobox: t("historicalData.demolitionDate.infobox"),
           },
           {
             name: t("historicalData.keyEvent.label"),
             type: "text",
             wikidataprop: "P793",
             placeholder: t("historicalData.keyEvent.placeholder"),
+            infobox: t("historicalData.keyEvent.infobox"),
           },
           {
             name: t("historicalData.keyPerson.label"),
             type: "text",
             wikidataprop: "P3342",
             placeholder: t("historicalData.keyPerson.placeholder"),
+            infobox: t("historicalData.keyPerson.infobox"),
           },
           {
             name: t("historicalData.contractor.label"),
             type: "text",
             wikidataprop: "P88",
             placeholder: t("historicalData.contractor.placeholder"),
+            infobox: t("historicalData.contractor.infobox"),
           },
           {
             name: t("historicalData.founder.label"),
             type: "text",
             wikidataprop: "P112",
             placeholder: t("historicalData.founder.placeholder"),
+            infobox: t("historicalData.founder.infobox"),
           },
           {
             name: t("historicalData.predecessor.label"),
             type: "text",
             wikidataprop: "P1398",
             placeholder: t("historicalData.predecessor.placeholder"),
+            infobox: t("historicalData.predecessor.infobox"),
           },
           {
             name: t("historicalData.successor.label"),
             type: "text",
             wikidataprop: "P167",
             placeholder: t("historicalData.successor.placeholder"),
+            infobox: t("historicalData.successor.infobox"),
           },
         ],
       },
@@ -473,6 +517,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P5817",
             unique: true,
             placeholder: t("usage.state.placeholder"),
+            infobox: t("usage.state.infobox"),
           },
           {
             name: t("usage.condition.label"),
@@ -480,42 +525,49 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: "P5816",
             unique: true,
             placeholder: t("usage.condition.placeholder"),
+            infobox: t("usage.condition.infobox"),
           },
           {
             name: t("usage.user.label"),
             type: "text",
             wikidataprop: "P466",
             placeholder: t("usage.user.placeholder"),
+            infobox: t("usage.user.infobox"),
           },
           {
             name: t("usage.purpose.label"),
             type: "text",
             wikidataprop: "P366",
             placeholder: t("usage.purpose.placeholder"),
+            infobox: t("usage.purpose.infobox"),
           },
           {
             name: t("usage.operator.label"),
             type: "text",
             wikidataprop: "P137",
             placeholder: t("usage.operator.placeholder"),
+            infobox: t("usage.operator.infobox"),
           },
           {
             name: t("usage.maintainedBy.label"),
             type: "text",
             wikidataprop: "P126",
             placeholder: t("usage.maintainedBy.placeholder"),
+            infobox: t("usage.maintainedBy.infobox"),
           },
           {
             name: t("usage.owner.label"),
             type: "text",
             wikidataprop: "P127",
             placeholder: t("usage.owner.placeholder"),
+            infobox: t("usage.owner.infobox"),
           },
           {
             name: t("usage.denomination.label"),
             type: "text",
             wikidataprop: "P140",
             placeholder: t("usage.denomination.placeholder"),
+            infobox: t("usage.denomination.infobox"),
           },
         ],
       },
@@ -535,24 +587,28 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             type: "text",
             wikidataprop: "P31",
             placeholder: t("classification.instanceOf.placeholder"),
+            infobox: t("classification.instanceOf.infobox"),
           },
           {
             name: t("classification.commonsCategory.label"),
             type: "text",
             wikidataprop: "P373",
             placeholder: t("classification.commonsCategory.placeholder"),
+            infobox: t("classification.commonsCategory.infobox"),
           },
           {
             name: t("classification.protectionCategory.label"),
             type: "text",
             wikidataprop: "P1435",
             placeholder: t("classification.protectionCategory.placeholder"),
+            infobox: t("classification.protectionCategory.infobox"),
           },
           {
             name: t("classification.monumentList.label"),
             type: "text",
             wikidataprop: "P2817",
             placeholder: t("classification.monumentList.placeholder"),
+            infobox: t("classification.monumentList.infobox"),
           },
         ],
       },
@@ -571,6 +627,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             type: "url",
             wikidataprop: "P856",
             placeholder: t("links.website.placeholder"),
+            infobox: t("links.website.infobox"),
           },
         ],
       },
@@ -589,36 +646,42 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             type: "file",
             wikidataprop: "P18",
             placeholder: t("media.image.placeholder"),
+            infobox: t("media.image.infobox"),
           },
           {
             name: t("media.backImage.label"),
             type: "file",
             wikidataprop: "P7417",
             placeholder: t("media.backImage.placeholder"),
+            infobox: t("media.backImage.infobox"),
           },
           {
             name: t("media.entranceImage.label"),
             type: "file",
             wikidataprop: "P9721",
             placeholder: t("media.entranceImage.placeholder"),
+            infobox: t("media.entranceImage.infobox"),
           },
           {
             name: t("media.aerialView.label"),
             type: "file",
             wikidataprop: "P8592",
             placeholder: t("media.aerialView.placeholder"),
+            infobox: t("media.aerialView.infobox"),
           },
           {
             name: t("media.interiorView.label"),
             type: "file",
             wikidataprop: "P5775",
             placeholder: t("media.interiorView.placeholder"),
+            infobox: t("media.interiorView.infobox"),
           },
           {
             name: t("media.floorPlan.label"),
             type: "file",
             wikidataprop: "P3311",
             placeholder: t("media.floorPlan.placeholder"),
+            infobox: t("media.floorPlan.infobox"),
           },
         ],
       },

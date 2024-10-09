@@ -7,6 +7,7 @@ interface FormFieldGroupProps {
   fields: Property[];
   removeField: (field: Property) => void;
   showWikiProps: boolean;
+  onSourceSubmit: (fieldName: string, source: string) => void;
 }
 
 const FormFieldGroup: React.FC<FormFieldGroupProps> = ({
@@ -14,6 +15,7 @@ const FormFieldGroup: React.FC<FormFieldGroupProps> = ({
   fields,
   removeField,
   showWikiProps,
+  onSourceSubmit,
 }) => {
   return (
     <div className="space-y-8">
@@ -27,6 +29,11 @@ const FormFieldGroup: React.FC<FormFieldGroupProps> = ({
             property={field}
             onDelete={() => removeField(field)}
             showWikiProp={showWikiProps}
+            onSourceSubmit={(source) => {
+              if (field.wikidataprop) {
+                onSourceSubmit(field.wikidataprop, source);
+              }
+            }}
           />
         ))}
       </div>

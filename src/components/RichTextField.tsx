@@ -55,6 +55,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
           placeholder: t("form.richTextPlaceholder"),
           value: [initTitle],
           unique: true,
+          infobox: t("form.infobox"),
         }}
         onDelete={onDelete}
         onChange={onChange}
@@ -65,7 +66,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
           theme="snow"
           value={content}
           onChange={handleChange}
-          style={{ height: "400px" }}
+          style={{ height: "400px", marginBottom: "80px", marginTop: "20px" }}
         />
       </Field>
     </div>
