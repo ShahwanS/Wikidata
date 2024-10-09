@@ -46,6 +46,7 @@ const Field: React.FC<FieldProps> = ({
   const [inputFields, setInputFields] = useState<string[]>(value || [""]);
   const [showSourcePopup, setShowSourcePopup] = useState(false);
   const [previewSource, setPreviewSource] = useState<string>("");
+  const tSourcePopup = useTranslations("SourcePopup");
 
   const baseInputClasses =
     "w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md";
@@ -84,7 +85,6 @@ const Field: React.FC<FieldProps> = ({
   const tooltipId = `tooltip-${name}`;
 
   const renderSourcePreview = () => {
-    const tSourcePopup = useTranslations("SourcePopup");
     return (
       previewSource && (
         <div className="bg-gray-200 p-2 rounded-md shadow-md my-3">
