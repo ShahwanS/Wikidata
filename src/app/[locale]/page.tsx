@@ -113,7 +113,7 @@ export default function Home() {
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);
-        await commitToGitLab(fileName.toString(), markupOutput);
+        await commitToGitLab(fileName.toString(), markupOutput, userInfo);
         handleReset();
       } catch (error) {
         console.error("Failed to send the markup file to GitLab:", error);
@@ -213,26 +213,27 @@ export default function Home() {
         return acc;
       }, {} as Record<string, string>);
 
-      // Check if userId cookie exists
       if (!cookies.userId) {
         setShowSignupModal(true);
+      } else {
+        setUserInfo({
+          userId: cookies.userId,
+          userFirstName: cookies.userFirstName,
+          userLastName: cookies.userLastName,
+          userEmail: cookies.userEmail
+        });
       }
-
-      // Only set the necessary user info
-      setUserInfo({
-        userId: cookies.userId,
-        userFirstName: cookies.userFirstName,
-        userLastName: cookies.userLastName,
-        userEmail: cookies.userEmail
-      });
     };
 
     checkUserInfo();
   }, []);
 
-  const handleSignupClose = () => {
-    setShowSignupModal(false);
-  };
+  const handleSignupClose = (newUserInfo?: Record<string, string>) => {
+    if (newUserInfo) {
+      setUserInfo(newUserInfo)
+    }
+    setShowSignupModal(false)
+  }
 
   // Render the component
   return (

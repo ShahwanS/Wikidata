@@ -27,7 +27,7 @@ const signupSchema = z.object({
 
 type SignupFormValues = z.infer<typeof signupSchema>
 
-export default function SignupForm({ onClose }: { onClose: () => void }) {
+export default function SignupForm({ onClose }: { onClose: (userInfo: Record<string, string>) => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<SignupFormValues>({
@@ -42,14 +42,21 @@ export default function SignupForm({ onClose }: { onClose: () => void }) {
   const onSubmit = async (data: SignupFormValues) => {
     setIsSubmitting(true)
     const userId = uuidv4() // Generate a unique ID for the user
-    document.cookie = `userId=${userId}; path=/; max-age=31536000`
-    document.cookie = `userFirstName=${data.firstname}; path=/; max-age=31536000`
-    document.cookie = `userLastName=${data.lastname}; path=/; max-age=31536000`
-    document.cookie = `userEmail=${data.email}; path=/; max-age=31536000`
-    onClose()
-    setIsSubmitting(false)
-  }
+    const userInfo = { 
+      userId, 
+      userFirstName: data.firstname, 
+      userLastName: data.lastname, 
+      userEmail: data.email 
+    }
+   // Set cookies
+   Object.entries(userInfo).forEach(([key, value]) => {
+    document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Strict; Secure`
+  })
 
+  // Pass userInfo back to parent
+  onClose(userInfo)
+  setIsSubmitting(false)
+}
   
 
 

@@ -3,14 +3,14 @@
 import { serverFileToBase64, formatDateForFilename } from "@/utils/utils";
 import { cookies } from "next/headers";
 
-export async function commitToGitLab(fileName: string, fileContent: string) {
+export async function commitToGitLab(fileName: string, fileContent: string, clientUserInfo: Record<string, string>) {
   try {
-    // Setting filename and path
+    // Try to get user info from cookies first
     const cookieStore = cookies()
-    const userId = cookieStore.get('userId')?.value
-    const userFirstName = cookieStore.get('userFirstName')?.value
-    const userLastName = cookieStore.get('userLastName')?.value
-    const userEmail = cookieStore.get('userEmail')?.value
+    const userId = cookieStore.get('userId')?.value || clientUserInfo.userId
+    const userFirstName = cookieStore.get('userFirstName')?.value || clientUserInfo.userFirstName
+    const userLastName = cookieStore.get('userLastName')?.value || clientUserInfo.userLastName
+    const userEmail = cookieStore.get('userEmail')?.value || clientUserInfo.userEmail
 
     if (!userId) {
       throw new Error('User ID not found')
