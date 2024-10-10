@@ -36,61 +36,78 @@ export async function addDataFromCategoryToJson(
   dataList: any,
   jsonOutput: any,
   title: string,
-  getPropertyByName: any
+  getPropertyByName: any,
 ) {
-  let previousDataWikiProperty = "";
+  let currentEntry: any = null;
+  let currentSources: string[] = [];
 
   for (const [dataName, inputData, wikiprop, source] of dataList) {
-    const isNotFromAdditionalField = previousDataWikiProperty !== wikiprop;
     const isUrl = wikiprop === "P856";
     const isRichtext = wikiprop === "richtext";
     const isImage = checkImage(inputData, wikiprop);
 
+    if (currentEntry && (wikiprop !== currentEntry.wikiprop || isImage || isUrl || isRichtext)) {
+      // Add the current entry to jsonOutput with combined sources
+      addEntryToJson(currentEntry, jsonOutput, currentSources);
+      currentEntry = null;
+      currentSources = [];
+    }
+
     if (isImage) {
-      //if inputData is not an instance of File return
-      if (inputData.size == 0) {
-        console.warn(`No image data provided for ${dataName}. Skipping.`);
-        continue;
-      }
-      // Always await async function to handle images correctly
-      if (isNotFromAdditionalField) {
-        uploadImageAndAddToJson(
-          inputData,
-          dataName,
-          jsonOutput,
-          title,
-          wikiprop,
-          source
-        );
-      } else {
-        uploadImageAndAddToJson(
-          inputData,
-          dataName,
-          jsonOutput,
-          title,
-          undefined,
-          source
-        );
-      }
+      await handleImageUpload(inputData, dataName, jsonOutput, title, wikiprop, source);
     } else if (isUrl) {
       addUrlToJson(wikiprop, dataName, inputData, jsonOutput, source);
     } else if (isRichtext) {
       addRichTextToJson(wikiprop, dataName, inputData, jsonOutput, source);
-    } else if (isNotFromAdditionalField) {
-      addNormalDataToJson(
-        wikiprop,
-        dataName,
-        source,
-        inputData,
-        jsonOutput,
-        getPropertyByName
-      );
     } else {
-      addDataFromAdditionalFieldToJson(inputData, jsonOutput, source);
+      if (!currentEntry) {
+        currentEntry = {
+          wikiprop,
+          dataName,
+          inputData,
+          unit: getPropertyByName(dataName).unit,
+          values: []
+        };
+      }
+      currentEntry.values.push(inputData);
+      if (source && !currentSources.includes(source)) {
+        currentSources.push(source);
+      }
     }
-
-    previousDataWikiProperty = wikiprop;
   }
+
+  // Add the last entry if it exists
+  if (currentEntry) {
+    addEntryToJson(currentEntry, jsonOutput, currentSources);
+  }
+}
+
+
+
+/**
+ * Adds normal data (non-URL, non-rich text) to the JSON output.
+ * @param entry Entry object containing wikiprop, dataName, unit, values, and sources
+ * @param jsonOutput JSON output array
+ *
+ */
+function addEntryToJson(entry: any, jsonOutput: any, sources: string[]) {
+  const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : "";
+  const unit = entry.unit ? " " + entry.unit : "";
+  const sourceText = sources.length > 0 ? `\nsource:\t${sources.join(', ')}` : "";
+
+  const values = entry.values.join('\n');
+  
+  jsonOutput.push({
+    p: `### \t${wikipropText}${entry.dataName}\n${values}${unit}${sourceText}`,
+  });
+}
+
+async function handleImageUpload(inputData: any, dataName: string, jsonOutput: any, title: string, wikiprop?: string, source?: string) {
+  if (inputData.size === 0) {
+    console.warn(`No image data provided for ${dataName}. Skipping.`);
+    return;
+  }
+  await uploadImageAndAddToJson(inputData, dataName, jsonOutput, title, wikiprop, source);
 }
 
 /**
@@ -135,7 +152,7 @@ async function uploadImageAndAddToJson(
   if (wikiprop !== undefined) {
     newEntry = {
       p: isShowedWikiProps
-        ? `### ${wikiprop}\t${dataName}\n![${dataName}](${rawFilePath})${sourceText}`
+        ? `### ${wikiprop} ${dataName}\n![${dataName}](${rawFilePath})${sourceText}`
         : `### ${dataName}\n![${dataName}](${rawFilePath})${sourceText}`,
     };
   } else {
@@ -191,7 +208,7 @@ function addUrlToJson(
   const sourceText = source ? `\nsource:\t${source}` : "";
   wikiprop
     ? jsonOutput.push({
-        p: `### ${wikiprop}\t${dataName}\n[${dataName}](${inputData})${sourceText}`,
+        p: `### ${wikiprop} ${dataName}\n[${dataName}](${inputData})${sourceText}`,
       })
     : jsonOutput.push({
         p: `### ${dataName}\n[${dataName}](${inputData})${sourceText}`,
@@ -236,7 +253,7 @@ function addNormalDataToJson(
   getPropertyByName: any
 ) {
   const sourceText = source ? `\nsource:\t${source}` : "";
-  const wikipropText = wikiprop ? `\t${wikiprop}` : "";
+  const wikipropText = wikiprop ? `  \t${wikiprop} ` : "";
   const unit = getPropertyByName(dataName).unit
     ? " " + getPropertyByName(dataName).unit
     : "";
@@ -258,5 +275,5 @@ function addDataFromAdditionalFieldToJson(
   source?: string
 ) {
   const sourceText = source ? `\nsource:\t${source}` : "";
-  jsonOutput.push({ p: `-\t${inputData}${sourceText}` });
+  jsonOutput.push({ p: `\t${inputData}${sourceText}` });
 }

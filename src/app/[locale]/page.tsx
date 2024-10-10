@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Popup from "@/components/Popup";
 import RichTextField from "@/components/RichTextField";
 import { convert2Markup } from "@/utils/convertToMarkup";
@@ -15,6 +15,7 @@ import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { getTitle } from "@/utils/utils";
+import SignupForm from "@/components/SignupForm";
 
 /**
  * Define the Home components
@@ -45,6 +46,9 @@ export default function Home() {
   const { getPropertyByName, translatedPropgliederung } =
     useTranslatedRecords();
   const [sources, setSources] = useState<Record<string, string>>({}); // New state to hold sources
+  const [showSignupModal, setShowSignupModal] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<Record<string, string>>({});
+
 
   const handleSourceSubmit = (fieldName: string, source: string) => {
     setSources((prev) => {
@@ -88,13 +92,15 @@ export default function Home() {
       fieldsData[fieldName] = formatRichTextContent(fieldName);
     });
 
+
     // Convert form data to Markdown content
     const markupOutput = convert2Markup(
       fieldsData,
       translatedPropgliederung,
       getPropertyByName,
       locale.toString(),
-      sources
+      sources,
+      userInfo
     );
 
     // downloadMarkdownFile(markupOutput);
@@ -195,10 +201,46 @@ export default function Home() {
     setShowResetModal(false);
   };
 
+
+
+
+
+  useEffect(() => {
+    const checkUserInfo = () => {
+      const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+        const [key, value] = cookie.trim().split('=');
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      // Check if userId cookie exists
+      if (!cookies.userId) {
+        setShowSignupModal(true);
+      }
+
+      // Only set the necessary user info
+      setUserInfo({
+        userId: cookies.userId,
+        userFirstName: cookies.userFirstName,
+        userLastName: cookies.userLastName,
+        userEmail: cookies.userEmail
+      });
+    };
+
+    checkUserInfo();
+  }, []);
+
+  const handleSignupClose = () => {
+    setShowSignupModal(false);
+  };
+
   // Render the component
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-6xl mx-auto">
+      {showSignupModal && (
+          <SignupForm onClose={handleSignupClose} />
+        )}
         <div className="flex flex-col lg:flex-row gap-8">
           {showPopup && (
             <div className="lg:w-1/3">

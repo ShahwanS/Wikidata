@@ -1,10 +1,29 @@
 "use server";
 
 import { serverFileToBase64, formatDateForFilename } from "@/utils/utils";
+import { cookies } from "next/headers";
 
 export async function commitToGitLab(fileName: string, fileContent: string) {
   try {
     // Setting filename and path
+    const cookieStore = cookies()
+    const userId = cookieStore.get('userId')?.value
+    const userFirstName = cookieStore.get('userFirstName')?.value
+    const userLastName = cookieStore.get('userLastName')?.value
+    const userEmail = cookieStore.get('userEmail')?.value
+
+    if (!userId) {
+      throw new Error('User ID not found')
+    }
+
+    const userInfo = JSON.stringify({
+      id: userId,
+      firstname: userFirstName,
+      lastname: userLastName,
+      email: userEmail,
+    });
+
+    
     const folderName = fileName;
     const formattedFileName = `${fileName}_${formatDateForFilename()}.md`;
     const filePath = `${folderName}/${formattedFileName}`;
@@ -16,6 +35,7 @@ export async function commitToGitLab(fileName: string, fileContent: string) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
+      
       body: JSON.stringify({
         branch: "main",
         commit_message: `Add ${formattedFileName} to ${folderName} via API`,
@@ -26,6 +46,9 @@ export async function commitToGitLab(fileName: string, fileContent: string) {
             content: fileContent,
           },
         ],
+        author_name: `${userFirstName} ${userLastName}`,
+        author_email: userEmail,
+        custom_data: userInfo,
       }),
     });
 

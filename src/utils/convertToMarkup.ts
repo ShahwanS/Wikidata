@@ -12,12 +12,13 @@ export const convert2Markup = (
   translatedPropgliederung: any,
   getPropertyByName: any,
   locale: string,
-  sources: Record<string, string>
+  sources: Record<string, string>,
+  userInfo: Record<string, string>
 ) => {
   //creating a map between the categories and the properties
   const dataAsMap = dataToMap(data, translatedPropgliederung, sources);
   //create a json structure and fill it up with the mapped data
-  const dataAsJson = convertDataToJson(dataAsMap, getPropertyByName, locale);
+  const dataAsJson = convertDataToJson(dataAsMap, getPropertyByName, locale, userInfo);
   //convert the json to markdown
   const dataAsMd = json2md(dataAsJson);
   return dataAsMd;

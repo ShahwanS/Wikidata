@@ -122,7 +122,6 @@ export function setRichttextInMap(
  * @param resultMap The map to store the data
  * @param allCategoryAndPropertyMap Map containing all categories and wiki properties
  */
-// Modify setNormalDataInMap function
 export function setNormalDataInMap(
   dataName: string,
   inputData: String,
@@ -139,6 +138,7 @@ export function setNormalDataInMap(
     return;
   }
   const [category, wikiprop] = categoryAndWikiprop;
+  
   const source = sources[wikiprop];
 
   if (!resultMap.has(category)) {
@@ -148,10 +148,10 @@ export function setNormalDataInMap(
   const categoryData = resultMap.get(category);
   const existingEntry = categoryData.find(
     (entry: string[]) => entry[2] === wikiprop
-  );
-
+  );  
   if (existingEntry) {
-    existingEntry[1] += `\n\t${inputData}`;
+    // For additional fields, we'll add a new entry with the same wikiprop as the existing entry
+    categoryData.push([dataName, inputData, existingEntry[2], source]);
   } else {
     categoryData.push([dataName, inputData, wikiprop, source]);
   }
