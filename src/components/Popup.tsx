@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Property } from "../utils/propgliederung";
 import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
 import { useTranslations } from "next-intl";
+import { Property } from "@/types/property";
+
 interface PopupProps {
   onAddFields: (fields: Property[]) => void;
   onClose: () => void;
