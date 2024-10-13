@@ -1,12 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import {
-  propgliederung,
-  Category,
-  Property,
-  Properties,
-} from "../utils/propgliederung";
+
+import { Form } from "@/types/form";
+import { propgliederung } from "@/utils/propgliederung";
+import { Category } from "@/types/category";
+import { Property } from "@/types/property";
 
 /**
  * Hook to use translated records from propgliederung.
@@ -16,11 +15,12 @@ import {
  */
 export const useTranslatedRecords = () => {
   const t = useTranslations("form"); // Get translations for the "form" namespace
+  const tErrors = useTranslations("errors"); // Get translations for the "errors" namespace
   const translatedPropgliederung = propgliederung(t); // Translate propgliederung using the translations
 
   // Initialize data structures to hold processed propgliederung data
   const categories: Record<string, Category> = {};
-  const properties: Properties = {};
+  const properties: Form = {};
   const propertyInputTypes: Record<string, string> = {};
   const categoryNameForProperty: Record<string, string> = {};
   const valueNameForProperty: Record<string, string[]> = {};
@@ -84,5 +84,6 @@ export const useTranslatedRecords = () => {
     properties,
     getPropertyByName,
     translatedPropgliederung,
+    tErrors
   };
 };

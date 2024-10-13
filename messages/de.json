@@ -457,5 +457,19 @@
     "referencesPlaceholder": "Zusätzliche Referenzen eingeben",
     "submit": "Speichern",
     "cancel": "Abbrechen"
+  },
+  "errors": {
+    "required": "Dieses Feld ist erforderlich",
+    "maxLength": "Text darf nicht länger als {maxLength} Zeichen sein",
+    "invalidOption": "Ungültige Option ausgewählt",
+    "emptyField": "darf nicht leer sein",
+    "invalidEmail": "Ungültiges E-Mail-Format",
+    "invalidPhone": "Ungültiges Telefonnummerformat",
+    "invalidURL": "Ungültige URL-Struktur",
+    "invalidDate": "Datum muss in YYYY-MM-DD-Format sein",
+    "invalidNumber": "Ungültiges Nummernformat",
+    "invalidRadio": "Ungültige Option ausgewählt",
+    "mustBeInteger": "Muss eine ganze Zahl sein"
   }
 }
+

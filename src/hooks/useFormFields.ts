@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Property } from "@/utils/propgliederung";
 import { useTranslations } from "next-intl";
+import { generateFormSchema } from "@/utils/utils";
+import { Property } from "@/types/property";
+import { useTranslatedRecords } from "./useTranslatedRecords";
 
 export const useFormFields = () => {
   const t = useTranslations("initial");
   const [fields, setFields] = useState<Property[]>(initialFields);
-
+  
   /** Helper function to initialize the fields */
   function initialFields(): Property[] {
     return [

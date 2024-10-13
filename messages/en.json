@@ -456,5 +456,18 @@
     "referencesPlaceholder": "Enter additional references",
     "submit": "Save",
     "cancel": "Cancel"
+  },
+  "errors": {
+    "required": "This field is required",
+    "maxLength": "Text must not exceed 10000 characters",
+    "invalidOption": "Invalid option selected",
+    "emptyField": "cannot be empty",
+    "invalidEmail": "Invalid email format",
+    "invalidPhone": "Invalid phone number format",
+    "invalidURL": "Invalid URL structure",
+    "invalidDate": "Date must be in YYYY-MM-DD format",
+    "invalidNumber": "Invalid number format",
+    "invalidRadio": "Invalid option selected",
+    "mustBeInteger": "must be an integer"
   }
 }

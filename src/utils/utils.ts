@@ -1,4 +1,7 @@
 import { Buffer } from "buffer";
+import { Property } from "@/types/property";
+import { z } from "zod";
+import { Category } from "@/types/category";
 
 export function getTitle(dataList: any[]): string {
   if (!dataList) {
@@ -138,7 +141,7 @@ export function setNormalDataInMap(
     return;
   }
   const [category, wikiprop] = categoryAndWikiprop;
-  
+
   const source = sources[wikiprop];
 
   if (!resultMap.has(category)) {
@@ -148,7 +151,7 @@ export function setNormalDataInMap(
   const categoryData = resultMap.get(category);
   const existingEntry = categoryData.find(
     (entry: string[]) => entry[2] === wikiprop
-  );  
+  );
   if (existingEntry) {
     // For additional fields, we'll add a new entry with the same wikiprop as the existing entry
     categoryData.push([dataName, inputData, existingEntry[2], source]);
@@ -184,3 +187,84 @@ export const formatDateForFilename = (): string => {
     date.getUTCMonth() + 1
   }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}`;
 };
+
+/**
+ * Formats the RichText content including the title
+ * This function formats the RichText content including the title.
+ */
+export const formatRichTextContent = (
+  fieldName: string,
+  richTextTitle: any,
+  richTextState: any
+): string => {
+  const title = richTextTitle[fieldName]
+    ? `# ${richTextTitle[fieldName]}\n`
+    : "";
+  return title + richTextState[fieldName];
+};
+
+/**
+ * Groups fields by their category
+ * This function groups the fields by their category for rendering.
+ */
+export function groupFieldsByCategory(
+  fields: Property[]
+): Record<string, Property[]> {
+  return fields.reduce<Record<string, Property[]>>((acc, field) => {
+    const category = field.category || "Main";
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(field);
+    return acc;
+  }, {});
+}
+
+export function generateFormSchema(
+  formData: Record<string, any>,
+  tErrors: any
+) {
+  const schemaFields: Record<string, z.ZodTypeAny> = {};
+
+  for (const [key, value] of Object.entries(formData)) {
+    let fieldSchema: z.ZodTypeAny;
+    const fieldName = removeTrailingNumber(key);
+    if (typeof value === "number") {
+      fieldSchema = z
+        .number()
+        .int(fieldName + ": " + tErrors("mustBeInteger"))
+        .min(1, fieldName + ": " + tErrors("min"))
+        .max(1000000, fieldName + ": " + tErrors("max"));
+    } else if (typeof value === "string") {
+      if (value.startsWith("http://") || value.startsWith("https://")) {
+        fieldSchema = z
+          .string()
+          .url(fieldName + ": " + tErrors("invalidURL"))
+          .max(2000, fieldName + ": " + tErrors("maxLength"))
+          .refine((url) => {
+            try {
+              new URL(url);
+              return true;
+            } catch {
+              return false;
+            }
+          }, fieldName + ": " + tErrors("invalidURL"));
+      } else {
+        fieldSchema = z
+          .string()
+          .min(1, fieldName + ": " + tErrors("required"))
+          .max(1000, fieldName + ": " + tErrors("maxLength"))
+          .refine(
+            (text) => !/^\s*$/.test(text),
+            fieldName + ": " + tErrors("emptyField")
+          );
+      }
+    } else if (typeof value === "boolean") {
+      fieldSchema = z.boolean();
+    } else {
+      fieldSchema = z.unknown();
+    }
+
+    schemaFields[key] = fieldSchema;
+  }
+
+  return z.object(schemaFields).strict();
+}

@@ -1,12 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Popup from "@/components/Popup";
 import RichTextField from "@/components/RichTextField";
-import { convert2Markup } from "@/utils/convertToMarkup";
-import { Property } from "@/utils/propgliederung";
-import { commitToGitLab } from "@/app/actions";
 import { Loader2 } from "lucide-react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormFieldGroup from "@/components/FormFieldGroup";
 import { useFormFields } from "@/hooks/useFormFields";
@@ -14,9 +10,12 @@ import { useRichTextFields } from "@/hooks/useRichTextFields";
 import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { getTitle } from "@/utils/utils";
 import SignupForm from "@/components/SignupForm";
-
+import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { loadExamples } from "@/utils/exampleLoader";
+import { useSource } from "@/hooks/useSource";
+import { groupFieldsByCategory } from "@/utils/utils";
 /**
  * Define the Home components
  * This component is the main page of the application.
@@ -25,8 +24,7 @@ import SignupForm from "@/components/SignupForm";
 export default function Home() {
   // Initialize hooks and state variables
   const t = useTranslations("initial");
-  const { fields, addFields, removeField, setFields, initialFields } =
-    useFormFields();
+  const { fields, addFields, removeField, setFields, initialFields } = useFormFields();
   const {
     richTextState,
     richTextTitle,
@@ -39,155 +37,18 @@ export default function Home() {
     updateRichTextTitle,
   } = useRichTextFields();
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
-  const params = useParams();
+  const params = useParams() as { locale: string };
   const locale = params?.locale || "de";
-  const { getPropertyByName, translatedPropgliederung } =
-    useTranslatedRecords();
-  const [sources, setSources] = useState<Record<string, string>>({}); // New state to hold sources
-  const [showSignupModal, setShowSignupModal] = useState<boolean>(false);
-  const [userInfo, setUserInfo] = useState<Record<string, string>>({});
-
-
-  const handleSourceSubmit = (fieldName: string, source: string) => {
-    setSources((prev) => {
-      const newSources = { ...prev };
-      if (source === "") {
-        delete newSources[fieldName]; // Remove the source if it is empty
-      } else {
-        newSources[fieldName] = source; // Add or update the source
-      }
-      return newSources;
-    });
-
-    console.log("added source for ", fieldName, source);
-  };
-
-  // Load examples based on the locale
-  const loadExamples = async () => {
-    let exampleModule;
-    if (locale === "de") {
-      exampleModule = await import("@/app/loadexampleDe");
-    } else {
-      exampleModule = await import("@/app/loadexampleEn");
-    }
-    setFields(exampleModule.exampleFields(getPropertyByName));
-    exampleModule.exampleRichtexts(setRichTextTitle, setRichTextState);
-    setRichtextCounter(2);
-  };
-
-  /**
-   * Handles form submission
-   * This function is called when the form is submitted.
-   * It converts the form data to Markdown content and sends it to GitLab.
-   */
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const formData = new FormData(event.target as HTMLFormElement);
-    let fieldsData = Object.fromEntries(formData.entries());
-
-    Object.keys(richTextState).forEach((fieldName) => {
-      fieldsData[fieldName] = formatRichTextContent(fieldName);
-    });
-
-
-    // Convert form data to Markdown content
-    const markupOutput = convert2Markup(
-      fieldsData,
-      translatedPropgliederung,
-      getPropertyByName,
-      locale.toString(),
-      sources,
-      userInfo
-    );
-
-    // downloadMarkdownFile(markupOutput);
-    if (markupOutput !== undefined) {
-      // Name the file based on a form field, or default to "output"
-      const fileName =
-        fieldsData["Offizieller Name0"] ||
-        fieldsData["Official Name0"] ||
-        "output";
-      // Send the generated Markdown file to GitLab
-      try {
-        setIsLoading(true);
-        await commitToGitLab(fileName.toString(), markupOutput, userInfo);
-        handleReset();
-      } catch (error) {
-        console.error("Failed to send the markup file to GitLab:", error);
-        toast.error(t("form.errorSending"), {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-      setIsLoading(false);
-    } else {
-    }
-
-    toast.info(t("form.formSaved"), {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-
-  /**
-   * Formats the RichText content including the title
-   * This function formats the RichText content including the title.
-   */
-  const formatRichTextContent = (fieldName: string): string => {
-    const title = richTextTitle[fieldName]
-      ? `# ${richTextTitle[fieldName]}\n`
-      : "";
-    return title + richTextState[fieldName];
-  };
-
-  /** Downloads the generated Markdown file */
-  const downloadMarkdownFile = (markupOutput: string) => {
-    const blob = new Blob([markupOutput], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Wikidata.md`;
-    a.click();
-  };
-
-  // /** Groups fields by their category for rendering */
-  // const fieldsByCategory = groupFieldsByCategory(fields);
-
-  /**
-   * Groups fields by their category
-   * This function groups the fields by their category for rendering.
-   */
-  function groupFieldsByCategory(
-    fields: Property[]
-  ): Record<string, Property[]> {
-    return fields.reduce<Record<string, Property[]>>((acc, field) => {
-      const category = field.category || "Main";
-      if (!acc[category]) acc[category] = [];
-      acc[category].push(field);
-      return acc;
-    }, {});
-  }
-
-  /**
-   * Handles resetting the whole page
-   * This function handles resetting the whole page.
-   */
-  const handleReset = () => {
-    setShowResetModal(true);
-  };
+  const { getPropertyByName } =  useTranslatedRecords();
+  const { showSignupModal, userInfo, handleSignupClose } = useUserInfo();
+  const { isLoading, handleSubmit, errors } = useFormSubmit(
+    t,
+    locale,
+    getPropertyByName
+  );
+  const { sources, handleReset, handleSourceSubmit } =
+    useSource(setShowResetModal);
 
   // Confirm the reset action
   const confirmReset = () => {
@@ -201,47 +62,11 @@ export default function Home() {
     setShowResetModal(false);
   };
 
-
-
-
-
-  useEffect(() => {
-    const checkUserInfo = () => {
-      const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-        const [key, value] = cookie.trim().split('=');
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
-
-      if (!cookies.userId) {
-        setShowSignupModal(true);
-      } else {
-        setUserInfo({
-          userId: cookies.userId,
-          userFirstName: cookies.userFirstName,
-          userLastName: cookies.userLastName,
-          userEmail: cookies.userEmail
-        });
-      }
-    };
-
-    checkUserInfo();
-  }, []);
-
-  const handleSignupClose = (newUserInfo?: Record<string, string>) => {
-    if (newUserInfo) {
-      setUserInfo(newUserInfo)
-    }
-    setShowSignupModal(false)
-  }
-
   // Render the component
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-6xl mx-auto">
-      {showSignupModal && (
-          <SignupForm onClose={handleSignupClose} />
-        )}
+        {showSignupModal && <SignupForm onClose={handleSignupClose} />}
         <div className="flex flex-col lg:flex-row gap-8">
           {showPopup && (
             <div className="lg:w-1/3">
@@ -254,7 +79,18 @@ export default function Home() {
 
           <div className={`flex-grow ${showPopup ? "lg:w-3/4" : "w-full"}`}>
             <form
-              onSubmit={handleSubmit}
+              onSubmit={(event) =>
+                handleSubmit(
+                  event,
+                  fields,
+                  richTextState,
+                  richTextTitle,
+                  sources,
+                  userInfo,
+                  handleReset,
+                  
+                )
+              }
               className="bg-white rounded-3xl shadow-2xl overflow-hidden relative"
             >
               {isLoading && (
@@ -273,6 +109,7 @@ export default function Home() {
                       removeField={removeField}
                       showWikiProps={false}
                       onSourceSubmit={handleSourceSubmit}
+                      errors={errors}
                     />
                   )
                 )}
@@ -325,7 +162,14 @@ export default function Home() {
                       setFields([]);
                       setRichTextState({});
                       setTimeout(() => {
-                        loadExamples();
+                        loadExamples(
+                          locale,
+                          setFields,
+                          setRichTextTitle,
+                          setRichTextState,
+                          setRichtextCounter,
+                          getPropertyByName
+                        );
                       }, 0);
                     }}
                     className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"

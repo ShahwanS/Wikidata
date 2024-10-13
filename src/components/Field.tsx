@@ -3,7 +3,6 @@
 import React, { ReactNode, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
-import { Property } from "../utils/propgliederung";
 import Image from "next/image";
 import { InputField } from "@/components/ui/input";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -11,7 +10,7 @@ import { LucideInfo } from "lucide-react";
 import { Button } from "./ui/button";
 import SourcePopup from "./SourcePopup";
 import { useTranslations } from "next-intl";
-
+import { Property } from "@/types/property";
 export interface FieldProps {
   property: Property;
   onDelete?: () => void;
@@ -20,6 +19,7 @@ export interface FieldProps {
   children?: ReactNode;
   showWikiProp?: boolean;
   onSourceSubmit?: (source: string) => void;
+  error?: any;
 }
 
 /**
@@ -31,6 +31,7 @@ const Field: React.FC<FieldProps> = ({
   onDelete,
   children,
   onSourceSubmit,
+  error,
 }) => {
   const {
     name,
@@ -259,7 +260,7 @@ const Field: React.FC<FieldProps> = ({
             <div key={name + "in" + index} className="flex flex-col mb-4">
               <div className="flex items-center mb-2">
                 <InputField
-                  className={`${baseInputClasses} bg-white mr-2 flex-grow`}
+                  className={`${baseInputClasses} ${error ? 'border-red-500' : 'bg-white'} mr-2 flex-grow`}
                   placeholder={placeholder}
                   type={type}
                   name={name + index}
@@ -270,7 +271,7 @@ const Field: React.FC<FieldProps> = ({
                 {property.unit && (
                   <label className="text-gray-600 ml-2">{property.unit}</label>
                 )}
-                {inputFields.length > 1 && (
+                {name != "Official Name"  && (
                   <button
                     type="button"
                     onClick={() => removeInputField(index)}
@@ -284,6 +285,9 @@ const Field: React.FC<FieldProps> = ({
               </div>
             </div>
           ))}
+          {error && (
+            <p className="text-red-500 text-sm mt-1 mb-2">{error}</p>
+          )}
         </>
       )}
       {renderSourceButtons()}
