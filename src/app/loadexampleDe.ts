@@ -1,4 +1,5 @@
-import { Property } from "@/utils/propgliederung";
+import { Property } from "@/types/property";
+
 
 function createExampleField(
   propName: string,
