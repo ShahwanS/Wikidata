@@ -1,4 +1,5 @@
 import { Property } from "@/types/property";
+
 function createExampleField(
   propName: string,
   exampleValues: string[],
@@ -40,7 +41,6 @@ export function exampleFields(
       category: "",
       required: true,
     },
-
     createExampleField(
       "Short Name",
       ["MR Castle", "Marburg Castle", "Castle"],
@@ -91,7 +91,28 @@ export function exampleFields(
     createExampleField("Preservation Status", [""], getPropertyByName)
   );
 
+  // // Add sources for the example fields
+  // sources["P1448"] = "Official city records of Marburg, 2023";
+  // sources["P1619"] = "Marburg Historical Society, 'Castle Chronicles', 2020";
+  // sources["P856"] =
+  //   "Official websites of Marburg University and City of Marburg, accessed 2023";
+  // sources["P742"] = "Local usage and tourism brochures, 2023";
+  // sources["P571"] = "Archaeological studies, University of Marburg, 2018";
+  // sources["P3342"] = "Hessian State Archives, 'Landgraves of Hesse', 2015";
+
   return example;
+}
+
+export function exampleSources(): Record<string, string> {
+  return {
+    P1448: "Official city records of Marburg, 2023",
+    P1619: "Marburg Historical Society, 'Castle Chronicles', 2020",
+    P856: "Official websites of Marburg University and City of Marburg, accessed 2023",
+    P742: "Local usage and tourism brochures, 2023",
+    P571: "Archaeological studies, University of Marburg, 2018",
+    P3342: "Hessian State Archives, 'Landgraves of Hesse', 2015",
+    // Add more example sources as needed
+  };
 }
 
 export function exampleRichtexts(
@@ -104,7 +125,10 @@ export function exampleRichtexts(
 ) {
   const exampleRichtextTitles: { [key: string]: string } = {};
   exampleRichtextTitles["Rich Text0"] = "Museum Opening Hours";
+  exampleRichtextTitles["Rich Text1"] =
+    "Historical and Current Use of the Castle";
   setRichTextTitle(exampleRichtextTitles);
+
   const exampleRichtexts: { [key: string]: string } = {};
   exampleRichtexts["Rich Text0"] =
     '<h2><u>The museum has the following opening hours</u></h2><ul><li>Closed on Mondays</li><li>April to October: Tuesday to Sunday 10–18</li><li>November to March: Tuesday to Sunday 10–16</li><li>Special regulations on holidays</li></ul><p><br></p><p><a href="https://www.marburg.de/portal/pages/landgrave-castle-900000041-23001.html" rel="noopener noreferrer" target="_blank">Read more here</a></p>';

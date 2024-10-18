@@ -7,7 +7,6 @@ interface FormFieldGroupProps {
   fields: Property[];
   removeField: (field: Property) => void;
   showWikiProps: boolean;
-  onSourceSubmit: (fieldName: string, source: string) => void;
   errors: Record<string, string>;
 }
 
@@ -16,13 +15,15 @@ const FormFieldGroup: React.FC<FormFieldGroupProps> = ({
   fields,
   removeField,
   showWikiProps,
-  onSourceSubmit,
+
   errors,
 }) => {
   // Function to find the error message for a field
   const getErrorMessage = (fieldName: string) => {
     const withoutTrailingNumber = removeTrailingNumber(fieldName);
-    return Object.entries(errors).find(([key, _]) => removeTrailingNumber(key) === withoutTrailingNumber)?.[1];
+    return Object.entries(errors).find(
+      ([key, _]) => removeTrailingNumber(key) === withoutTrailingNumber
+    )?.[1];
   };
 
   return (
@@ -37,11 +38,6 @@ const FormFieldGroup: React.FC<FormFieldGroupProps> = ({
             property={field}
             onDelete={() => removeField(field)}
             showWikiProp={showWikiProps}
-            onSourceSubmit={(source) => {
-              if (field.wikidataprop) {
-                onSourceSubmit(field.wikidataprop, source);
-              }
-            }}
             error={getErrorMessage(field.name)}
           />
         ))}

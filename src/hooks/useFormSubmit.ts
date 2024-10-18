@@ -10,7 +10,12 @@ import {
 import { z } from "zod";
 import { useTranslatedRecords } from "./useTranslatedRecords";
 
-export function useFormSubmit(t: any, locale: string, getPropertyByName: any) {
+export function useFormSubmit(
+  t: any,
+  locale: string,
+  getPropertyByName: any,
+  setShowResetModal: any
+) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { tErrors, translatedPropgliederung } = useTranslatedRecords();
@@ -86,6 +91,7 @@ export function useFormSubmit(t: any, locale: string, getPropertyByName: any) {
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);
+        console.log("sending");
         await commitToGitLab(fileName.toString(), markupOutput, userInfo);
         handleReset();
       } catch (error) {
@@ -115,5 +121,13 @@ export function useFormSubmit(t: any, locale: string, getPropertyByName: any) {
     });
   };
 
-  return { isLoading, handleSubmit, errors };
+  /**
+   * Handles resetting the whole page
+   * This function handles resetting the whole page.
+   */
+  const handleReset = () => {
+    setShowResetModal(true);
+  };
+
+  return { isLoading, handleSubmit, errors, handleReset };
 }

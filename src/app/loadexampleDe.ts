@@ -1,6 +1,5 @@
 import { Property } from "@/types/property";
 
-
 function createExampleField(
   propName: string,
   exampleValues: string[],
@@ -93,6 +92,18 @@ export function exampleFields(
   );
 
   return example;
+}
+
+export function exampleSources(): Record<string, string> {
+  return {
+    P1448: "Stadtarchiv Marburg, 2023",
+    P1619: "Marburger Burgenkunde, 2020",
+    P856: "Offizielle Websites von Marburg University und der Stadt Marburg, 2023",
+    P742: "Lokale Verwendung und Tourismusbroschüren, 2023",
+    P571: "Archäologische Studien, Universität Marburg, 2018",
+    P3342: "Hessische Landesarchiv, 'Landgrafen von Hessen', 2015",
+    // Add more example sources as needed
+  };
 }
 
 export function exampleRichtexts(

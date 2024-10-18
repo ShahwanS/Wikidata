@@ -5,6 +5,7 @@ import ToastProvider from "@/providers/ToastProvider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import Navigation from "@/components/Navigation";
+import { SourceProvider } from "@/context/SourceContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <ToastProvider>
             <Navigation />
-            {children}
+            <SourceProvider>{children}</SourceProvider>
           </ToastProvider>
         </NextIntlClientProvider>
       </body>

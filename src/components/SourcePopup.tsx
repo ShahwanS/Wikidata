@@ -12,7 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useSource } from "@/context/SourceContext";
 interface SourcePopupProps {
   onSubmit: (source: string) => void;
   isOpen: boolean;
@@ -28,7 +35,10 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
 }) => {
   const [source, setSource] = useState("");
   const [references, setReferences] = useState("");
+  const [selectedSource, setSelectedSource] = useState("");
   const t = useTranslations("SourcePopup");
+  const { uniqueSources } = useSource();
+
   useEffect(() => {
     if (isOpen) {
       if (currentSource) {
@@ -41,6 +51,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
         setSource("");
         setReferences("");
       }
+      setSelectedSource("");
     }
   }, [currentSource, isOpen]);
 
@@ -48,8 +59,20 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
     const combinedSource = `${source}\n\n${t(
       "referencesLabel"
     )}:\n${references}`.trim();
+    console.log("combinedSource", combinedSource);
+
     onSubmit(combinedSource);
     onClose();
+  };
+
+  const handleSourceSelect = (value: string) => {
+    setSelectedSource(value);
+    //seperate the source from the references
+    const [mainSource, additionalReferences] = value.split(
+      "Additional References:"
+    );
+    setSource(mainSource.trim());
+    setReferences(additionalReferences ? additionalReferences.trim() : "");
   };
 
   return (
@@ -64,6 +87,27 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
           </DrawerDescription>
         </DrawerHeader>
         <div className="p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select a source
+            </label>
+            <Select onValueChange={handleSourceSelect} value={selectedSource}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a source" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(uniqueSources).map(
+                  ([fieldName, existingSource]) => (
+                    <SelectItem key={fieldName} value={existingSource}>
+                      {existingSource.length > 50
+                        ? `${existingSource.substring(0, 50)}...`
+                        : existingSource}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
+          </div>
           <div>
             <label
               htmlFor="source"

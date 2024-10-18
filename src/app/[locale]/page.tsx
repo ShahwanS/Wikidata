@@ -14,8 +14,8 @@ import SignupForm from "@/components/SignupForm";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { useUserInfo } from "@/hooks/useUserInfo";
 import { loadExamples } from "@/utils/exampleLoader";
-import { useSource } from "@/hooks/useSource";
 import { groupFieldsByCategory } from "@/utils/utils";
+import { useSource } from "@/context/SourceContext";
 /**
  * Define the Home components
  * This component is the main page of the application.
@@ -24,7 +24,8 @@ import { groupFieldsByCategory } from "@/utils/utils";
 export default function Home() {
   // Initialize hooks and state variables
   const t = useTranslations("initial");
-  const { fields, addFields, removeField, setFields, initialFields } = useFormFields();
+  const { fields, addFields, removeField, setFields, initialFields } =
+    useFormFields();
   const {
     richTextState,
     richTextTitle,
@@ -40,15 +41,15 @@ export default function Home() {
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const params = useParams() as { locale: string };
   const locale = params?.locale || "de";
-  const { getPropertyByName } =  useTranslatedRecords();
+  const { getPropertyByName } = useTranslatedRecords();
   const { showSignupModal, userInfo, handleSignupClose } = useUserInfo();
-  const { isLoading, handleSubmit, errors } = useFormSubmit(
+  const { isLoading, handleSubmit, errors, handleReset } = useFormSubmit(
     t,
     locale,
-    getPropertyByName
+    getPropertyByName,
+    setShowResetModal
   );
-  const { sources, handleReset, handleSourceSubmit } =
-    useSource(setShowResetModal);
+  const { sources, setSources } = useSource();
 
   // Confirm the reset action
   const confirmReset = () => {
@@ -87,8 +88,7 @@ export default function Home() {
                   richTextTitle,
                   sources,
                   userInfo,
-                  handleReset,
-                  
+                  handleReset
                 )
               }
               className="bg-white rounded-3xl shadow-2xl overflow-hidden relative"
@@ -108,7 +108,6 @@ export default function Home() {
                       fields={fields}
                       removeField={removeField}
                       showWikiProps={false}
-                      onSourceSubmit={handleSourceSubmit}
                       errors={errors}
                     />
                   )
@@ -129,9 +128,6 @@ export default function Home() {
                         initTitle={richTextTitle[richtextName]}
                         onChange={(e: { target: { value: string } }) =>
                           updateRichTextTitle(richtextName, e.target.value)
-                        }
-                        onSourceSubmit={(source: string) =>
-                          handleSourceSubmit(richtextName, source)
                         }
                       />
                     ))}
@@ -168,7 +164,8 @@ export default function Home() {
                           setRichTextTitle,
                           setRichTextState,
                           setRichtextCounter,
-                          getPropertyByName
+                          getPropertyByName,
+                          setSources
                         );
                       }, 0);
                     }}

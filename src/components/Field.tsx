@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";
 import Image from "next/image";
@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import SourcePopup from "./SourcePopup";
 import { useTranslations } from "next-intl";
 import { Property } from "@/types/property";
+import { useSource } from "@/context/SourceContext";
 export interface FieldProps {
   property: Property;
   onDelete?: () => void;
@@ -18,7 +19,6 @@ export interface FieldProps {
   options?: Array<{ label: string; value: string }>;
   children?: ReactNode;
   showWikiProp?: boolean;
-  onSourceSubmit?: (source: string) => void;
   error?: any;
 }
 
@@ -30,7 +30,6 @@ const Field: React.FC<FieldProps> = ({
   onChange,
   onDelete,
   children,
-  onSourceSubmit,
   error,
 }) => {
   const {
@@ -48,9 +47,15 @@ const Field: React.FC<FieldProps> = ({
   const [showSourcePopup, setShowSourcePopup] = useState(false);
   const [previewSource, setPreviewSource] = useState<string>("");
   const tSourcePopup = useTranslations("SourcePopup");
-
+  const { handleSourceSubmit, sources } = useSource();
   const baseInputClasses =
     "w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md";
+
+  useEffect(() => {
+    if (wikidataprop && sources[wikidataprop]) {
+      setPreviewSource(sources[wikidataprop]);
+    }
+  }, [sources, wikidataprop]);
 
   const addInputField = () => setInputFields([...inputFields, ""]);
 
@@ -72,15 +77,19 @@ const Field: React.FC<FieldProps> = ({
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  const handleSourceSubmit = (source: string) => {
+  const handleSubmit = (source: string) => {
     setPreviewSource(source);
     setShowSourcePopup(false);
-    onSourceSubmit?.(source);
+    if (wikidataprop) {
+      handleSourceSubmit?.(wikidataprop, source);
+    }
   };
 
   const handleRemoveSource = () => {
     setPreviewSource("");
-    onSourceSubmit?.("");
+    if (wikidataprop) {
+      handleSourceSubmit?.(wikidataprop, "");
+    }
   };
 
   const tooltipId = `tooltip-${name}`;
@@ -89,10 +98,10 @@ const Field: React.FC<FieldProps> = ({
     return (
       previewSource && (
         <div className="bg-gray-200 p-2 rounded-md shadow-md my-3">
-          <p className="text-gray-700 font-semibold mb-2">
-            {tSourcePopup("sourceLabel")}:
-          </p>
-          <div className="text-gray-600 bg-white p-2 rounded-md max-h-48 overflow-y-auto">
+          <div className="text-gray-600 bg-white p-2 rounded-md max-h-48 overflow-y-auto flex flex-col justify-center items-center">
+            <p className="text-gray-700 font-semibold mb-2">
+              {tSourcePopup("sourceLabel")}:
+            </p>
             {previewSource
               .split("Additional References:")
               .map((part, index) => (
@@ -102,7 +111,9 @@ const Field: React.FC<FieldProps> = ({
                       {tSourcePopup("referencesLabel")}:
                     </p>
                   )}
-                  <p className="whitespace-pre-wrap">{part.trim()}</p>
+                  <p className="whitespace-pre-wrap text-center">
+                    {part.trim()}
+                  </p>
                 </div>
               ))}
           </div>
@@ -260,7 +271,9 @@ const Field: React.FC<FieldProps> = ({
             <div key={name + "in" + index} className="flex flex-col mb-4">
               <div className="flex items-center mb-2">
                 <InputField
-                  className={`${baseInputClasses} ${error ? 'border-red-500' : 'bg-white'} mr-2 flex-grow`}
+                  className={`${baseInputClasses} ${
+                    error ? "border-red-500" : "bg-white"
+                  } mr-2 flex-grow`}
                   placeholder={placeholder}
                   type={type}
                   name={name + index}
@@ -271,7 +284,7 @@ const Field: React.FC<FieldProps> = ({
                 {property.unit && (
                   <label className="text-gray-600 ml-2">{property.unit}</label>
                 )}
-                {name != "Official Name"  && (
+                {name != "Official Name" && (
                   <button
                     type="button"
                     onClick={() => removeInputField(index)}
@@ -285,15 +298,13 @@ const Field: React.FC<FieldProps> = ({
               </div>
             </div>
           ))}
-          {error && (
-            <p className="text-red-500 text-sm mt-1 mb-2">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-sm mt-1 mb-2">{error}</p>}
         </>
       )}
       {renderSourceButtons()}
       {showSourcePopup && (
         <SourcePopup
-          onSubmit={handleSourceSubmit}
+          onSubmit={handleSubmit}
           isOpen={showSourcePopup}
           onClose={() => setShowSourcePopup(false)}
           currentSource={previewSource}
