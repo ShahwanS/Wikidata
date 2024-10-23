@@ -408,11 +408,17 @@
       "resetFormDescription": "Are you sure you want to reset the form? All entered data will be deleted.",
       "cancel": "Cancel",
       "confirmReset": "Reset",
-      "FormReset": {
+      "FormSubmit": {
         "title": "Thank you",
         "description": "Your data has been successfully saved. Would you like to add additional fields to your entry?",
         "cancel": "Edit current entry",
         "confirm": "Add new entry"
+      },
+      "FormReset": {
+        "title": "Form reset",
+        "description": "Are you sure you want to reset the form? All entered data will be deleted.",
+        "cancel": "Cancel",
+        "confirm": "Start new entry"
       }
     }
   },

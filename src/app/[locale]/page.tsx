@@ -17,6 +17,7 @@ import { loadExamples } from "@/utils/exampleLoader";
 import { groupFieldsByCategory } from "@/utils/utils";
 import { useSource } from "@/context/SourceContext";
 import { Button } from "@/components/ui/button";
+import { ResetFormPopup } from "@/components/ui/resetFormPopup";
 /**
  * Define the Home components
  * This component is the main page of the application.
@@ -40,28 +41,32 @@ export default function Home() {
   } = useRichTextFields();
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
+  const [showSubmitModal, setShowSubmitModal] = useState<boolean>(false);
   const params = useParams() as { locale: string };
   const locale = params?.locale || "de";
-  const { getPropertyByName, tInitial, tForm } = useTranslatedRecords();
+  const { getPropertyByName, tInitial } = useTranslatedRecords();
   const { showSignupModal, userInfo, handleSignupClose } = useUserInfo();
   const { isLoading, handleSubmit, errors, handleReset } = useFormSubmit(
     tInitial,
     locale,
     getPropertyByName,
-    setShowResetModal
+    setShowSubmitModal
   );
   const { sources, setSources } = useSource();
 
   // Confirm the reset action
   const confirmReset = () => {
     setFields([]);
+    setSources({});
     setTimeout(() => {
       setFields(initialFields());
       setRichTextState({});
       setRichTextTitle({});
       setRichtextCounter(0);
     }, 0);
-    setShowResetModal(false);
+    {
+      showResetModal ? setShowResetModal(false) : setShowSubmitModal(false);
+    }
   };
 
   // Render the component
@@ -181,7 +186,7 @@ export default function Home() {
                 <div className="flex flex-wrap justify-between items-center gap-6">
                   <button
                     type="button"
-                    onClick={handleReset}
+                    onClick={() => setShowResetModal(true)}
                     className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
                     {tInitial("form.resetAllFields")}
@@ -200,30 +205,24 @@ export default function Home() {
         </div>
 
         {showResetModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full space-y-6">
-              <h3 className="text-xl font-semibold text-gray-800 text-center">
-                {tInitial("form.FormReset.title")}
-              </h3>
-              <p className="text-gray-600 text-center">
-                {tInitial("form.FormReset.description")}
-              </p>
-              <div className="flex justify-around space-x-4">
-                <Button
-                  onClick={() => setShowResetModal(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-200"
-                >
-                  {tInitial("form.FormReset.cancel")}
-                </Button>
-                <Button
-                  onClick={confirmReset}
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
-                >
-                  {tInitial("form.FormReset.confirm")}
-                </Button>
-              </div>
-            </div>
-          </div>
+          <ResetFormPopup
+            setShowResetModal={setShowResetModal}
+            confirmReset={confirmReset}
+            title={tInitial("form.FormReset.title")}
+            description={tInitial("form.FormReset.description")}
+            cancel={tInitial("form.FormReset.cancel")}
+            confirm={tInitial("form.FormReset.confirm")}
+          />
+        )}
+        {showSubmitModal && (
+          <ResetFormPopup
+            setShowResetModal={setShowResetModal}
+            confirmReset={confirmReset}
+            title={tInitial("form.FormSubmit.title")}
+            description={tInitial("form.FormSubmit.description")}
+            cancel={tInitial("form.FormSubmit.cancel")}
+            confirm={tInitial("form.FormSubmit.confirm")}
+          />
         )}
       </div>
     </div>

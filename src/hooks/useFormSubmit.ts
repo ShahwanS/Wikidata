@@ -14,7 +14,7 @@ export function useFormSubmit(
   t: any,
   locale: string,
   getPropertyByName: any,
-  setShowResetModal: any
+  setShowSubmittedModal: any
 ) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -126,7 +126,7 @@ export function useFormSubmit(
    * This function handles resetting the whole page.
    */
   const handleReset = () => {
-    setShowResetModal(true);
+    setShowSubmittedModal(true);
   };
 
   return { isLoading, handleSubmit, errors, handleReset };

@@ -409,11 +409,17 @@
       "resetFormDescription": "Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle eingegebenen Daten werden gelöscht.",
       "cancel": "Abbrechen",
       "confirmReset": "Zurücksetzen",
-      "FormReset": {
+      "FormSubmit": {
         "title": "Vielen Dank",
         "description": "Ihre Daten wurden erfolgreich gespeichert. Möchten Sie weitere Felder zu Ihrem Eintrag hinzufügen?",
         "cancel": "Aktuellen Eintrag bearbeiten",
         "confirm": "Neuen Eintrag hinzufügen"
+      },
+      "FormReset": {
+        "title": "Formular zurücksetzen",
+        "description": "Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle eingegebenen Daten werden gelöscht.",
+        "cancel": "Abbrechen",
+        "confirm": "Zurücksetzen"
       }
     }
   },
