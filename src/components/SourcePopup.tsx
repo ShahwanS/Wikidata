@@ -43,7 +43,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
     if (isOpen) {
       if (currentSource) {
         const [mainSource, additionalReferences] = currentSource.split(
-          "Additional References:"
+          t("referencesLabel") + ":"
         );
         setSource(mainSource.trim());
         setReferences(additionalReferences ? additionalReferences.trim() : "");
@@ -53,14 +53,12 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
       }
       setSelectedSource("");
     }
-  }, [currentSource, isOpen]);
+  }, [currentSource, isOpen, t]);
 
   const handleSubmit = () => {
     const combinedSource = `${source}\n\n${t(
       "referencesLabel"
     )}:\n${references}`.trim();
-    console.log("combinedSource", combinedSource);
-
     onSubmit(combinedSource);
     onClose();
   };
@@ -69,7 +67,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
     setSelectedSource(value);
     //seperate the source from the references
     const [mainSource, additionalReferences] = value.split(
-      "Additional References:"
+      `${t("referencesLabel")}:`
     );
     setSource(mainSource.trim());
     setReferences(additionalReferences ? additionalReferences.trim() : "");
@@ -97,13 +95,26 @@ const SourcePopup: React.FC<SourcePopupProps> = ({
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(uniqueSources).map(
-                  ([fieldName, existingSource]) => (
-                    <SelectItem key={fieldName} value={existingSource}>
-                      {existingSource.length > 50
-                        ? `${existingSource.substring(0, 50)}...`
-                        : existingSource}
-                    </SelectItem>
-                  )
+                  ([fieldName, existingSource]) => {
+                    const [mainSource, additionalReferences] =
+                      existingSource.split(`${t("referencesLabel")}:`);
+                    const displayText = `${mainSource.trim().substring(0, 50)}${
+                      mainSource.length > 50 ? "..." : ""
+                    }\n${
+                      additionalReferences
+                        ? `${t("referencesLabel")}: ${additionalReferences
+                            .trim()
+                            .substring(0, 50)}${
+                            additionalReferences.length > 50 ? "..." : ""
+                          }`
+                        : ""
+                    }`;
+                    return (
+                      <SelectItem key={fieldName} value={existingSource}>
+                        <div className="whitespace-pre-wrap">{displayText}</div>
+                      </SelectItem>
+                    );
+                  }
                 )}
               </SelectContent>
             </Select>

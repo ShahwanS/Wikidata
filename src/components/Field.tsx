@@ -103,7 +103,7 @@ const Field: React.FC<FieldProps> = ({
               {tSourcePopup("sourceLabel")}:
             </p>
             {previewSource
-              .split("Additional References:")
+              .split(`${tSourcePopup("referencesLabel")}:`)
               .map((part, index) => (
                 <div key={index} className={index === 1 ? "mt-3" : ""}>
                   {index === 1 && (
