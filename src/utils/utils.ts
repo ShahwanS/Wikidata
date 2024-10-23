@@ -208,10 +208,11 @@ export const formatRichTextContent = (
  * This function groups the fields by their category for rendering.
  */
 export function groupFieldsByCategory(
-  fields: Property[]
+  fields: Property[],
+  tInitial: any
 ): Record<string, Property[]> {
   return fields.reduce<Record<string, Property[]>>((acc, field) => {
-    const category = field.category || "Main";
+    const category = field.category || tInitial("form.mainCategory");
     if (!acc[category]) acc[category] = [];
     acc[category].push(field);
     return acc;

@@ -390,27 +390,9 @@
     }
   },
   "initial": {
-    "OfficialName": {
-      "label": "Official Name",
-      "placeholder": "Enter the official name",
-      "infobox": "The official name of the subject in its official language(s)."
-    },
-    "dateOfOpening": {
-      "label": "Opening Date",
-      "placeholder": "Enter date: MM/YY or year",
-      "infobox": "The date or point in time a museum, theater etc. officially opened"
-    },
-    "image": {
-      "label": "Image",
-      "infobox": "image of relevant illustration of the subject"
-    },
-    "Website": {
-      "label": "Website",
-      "placeholder": "Https://google.com",
-      "infobox": "URL of the official page of an item (current or former)"
-    },
     "form": {
       "title": "Wikidata Form",
+      "mainCategory": "Core Data",
       "addFields": "Add more fields",
       "closeSidebar": "Close sidebar",
       "loadExampleData": "Load example data",
@@ -427,10 +409,10 @@
       "cancel": "Cancel",
       "confirmReset": "Reset",
       "FormReset": {
-        "title": "Reset form",
-        "description": "Are you sure you want to reset the form? All entered data will be deleted.",
-        "cancel": "Cancel",
-        "confirm": "Reset"
+        "title": "Thank you",
+        "description": "Your data has been successfully saved. Would you like to add additional fields to your entry?",
+        "cancel": "Edit current entry",
+        "confirm": "Add new entry"
       }
     }
   },

@@ -16,6 +16,7 @@ import { useUserInfo } from "@/hooks/useUserInfo";
 import { loadExamples } from "@/utils/exampleLoader";
 import { groupFieldsByCategory } from "@/utils/utils";
 import { useSource } from "@/context/SourceContext";
+import { Button } from "@/components/ui/button";
 /**
  * Define the Home components
  * This component is the main page of the application.
@@ -23,7 +24,7 @@ import { useSource } from "@/context/SourceContext";
  */
 export default function Home() {
   // Initialize hooks and state variables
-  const t = useTranslations("initial");
+  // const t = useTranslations("initial");
   const { fields, addFields, removeField, setFields, initialFields } =
     useFormFields();
   const {
@@ -41,10 +42,10 @@ export default function Home() {
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const params = useParams() as { locale: string };
   const locale = params?.locale || "de";
-  const { getPropertyByName } = useTranslatedRecords();
+  const { getPropertyByName, tInitial, tForm } = useTranslatedRecords();
   const { showSignupModal, userInfo, handleSignupClose } = useUserInfo();
   const { isLoading, handleSubmit, errors, handleReset } = useFormSubmit(
-    t,
+    tInitial,
     locale,
     getPropertyByName,
     setShowResetModal
@@ -100,7 +101,7 @@ export default function Home() {
               )}
               {/* Form fields */}
               <div className="p-8 space-y-12">
-                {Object.entries(groupFieldsByCategory(fields)).map(
+                {Object.entries(groupFieldsByCategory(fields, tInitial)).map(
                   ([category, fields], index) => (
                     <FormFieldGroup
                       key={index}
@@ -116,7 +117,7 @@ export default function Home() {
                 {Object.keys(richTextState).length > 0 && (
                   <div className="space-y-8">
                     <h2 className="text-3xl font-bold text-gray-700 border-b-2 border-gray-200 pb-3">
-                      {t("form.additionalText")}
+                      {tInitial("form.additionalText")}
                     </h2>
                     {Object.keys(richTextState).map((richtextName, index) => (
                       <RichTextField
@@ -139,7 +140,7 @@ export default function Home() {
                   onClick={addRichTextField}
                   className="py-3 w-full bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                 >
-                  {t("form.addRichText")}
+                  {tInitial("form.addRichText")}
                 </button>
               </div>
               <div className="bg-gray-100 px-8 py-8 space-y-8">
@@ -149,7 +150,9 @@ export default function Home() {
                     onClick={() => setShowPopup(!showPopup)}
                     className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    {showPopup ? t("form.closeSidebar") : t("form.addFields")}
+                    {showPopup
+                      ? tInitial("form.closeSidebar")
+                      : tInitial("form.addFields")}
                   </button>
 
                   <button
@@ -171,7 +174,7 @@ export default function Home() {
                     }}
                     className="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    {t("form.loadExampleData")}
+                    {tInitial("form.loadExampleData")}
                   </button>
                 </div>
 
@@ -181,14 +184,14 @@ export default function Home() {
                     onClick={handleReset}
                     className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    {t("form.resetAllFields")}
+                    {tInitial("form.resetAllFields")}
                   </button>
 
                   <button
                     type="submit"
                     className="px-8 py-4 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
                   >
-                    {t("form.submit")}
+                    {tInitial("form.submit")}
                   </button>
                 </div>
               </div>
@@ -198,24 +201,26 @@ export default function Home() {
 
         {showResetModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
-              <h3 className="text-lg font-bold mb-4">
-                {t("form.FormReset.title")}
+            <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full space-y-6">
+              <h3 className="text-xl font-semibold text-gray-800 text-center">
+                {tInitial("form.FormReset.title")}
               </h3>
-              <p className="mb-6">{t("form.FormReset.description")}</p>
-              <div className="flex justify-start space-x-4">
-                <button
+              <p className="text-gray-600 text-center">
+                {tInitial("form.FormReset.description")}
+              </p>
+              <div className="flex justify-around space-x-4">
+                <Button
                   onClick={() => setShowResetModal(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-200"
                 >
-                  {t("form.FormReset.cancel")}
-                </button>
-                <button
+                  {tInitial("form.FormReset.cancel")}
+                </Button>
+                <Button
                   onClick={confirmReset}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
                 >
-                  {t("form.FormReset.confirm")}
-                </button>
+                  {tInitial("form.FormReset.confirm")}
+                </Button>
               </div>
             </div>
           </div>

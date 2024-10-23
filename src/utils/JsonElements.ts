@@ -7,7 +7,6 @@ import {
   formatDateForFilename,
 } from "./utils";
 import { uploadImage } from "@/app/actions";
-import { useTranslatedRecords } from "@/hooks/useTranslatedRecords";
 /**
  * Adds the title from "Namensangaben" to the JSON output.
  * @param dataAsMap Map containing the data categorized by name

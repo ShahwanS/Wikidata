@@ -391,27 +391,9 @@
   },
 
   "initial": {
-    "OfficialName": {
-      "label": "Offizieller Name",
-      "placeholder": "Geben Sie den offiziellen Namen ein",
-      "infobox": "Der offizielle Name des Gebäudes."
-    },
-    "dateOfOpening": {
-      "label": "Eröffnungsdatum",
-      "placeholder": "Geben Sie das Datum ein: MM/JJ oder Jahr",
-      "infobox": "Das Eröffnungsdatum des Gebäudes."
-    },
-    "image": {
-      "label": "Bild",
-      "infobox": "Ein Bild des Gebäudes."
-    },
-    "Website": {
-      "label": "Website",
-      "placeholder": "Https://www.google.de",
-      "infobox": "Die offizielle Website des Gebäudes."
-    },
     "form": {
       "title": "Wikidata Formular",
+      "mainCategory": "Kerndaten",
       "addFields": "Weitere Felder hinzufügen",
       "closeSidebar": "Sidebar schließen",
       "loadExampleData": "Lade Beispieldaten",
@@ -428,10 +410,10 @@
       "cancel": "Abbrechen",
       "confirmReset": "Zurücksetzen",
       "FormReset": {
-        "title": "Formular zurücksetzen",
-        "description": "Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle eingegebenen Daten werden gelöscht.",
-        "cancel": "Abbrechen",
-        "confirm": "Zurücksetzen"
+        "title": "Vielen Dank",
+        "description": "Ihre Daten wurden erfolgreich gespeichert. Möchten Sie weitere Felder zu Ihrem Eintrag hinzufügen?",
+        "cancel": "Aktuellen Eintrag bearbeiten",
+        "confirm": "Neuen Eintrag hinzufügen"
       }
     }
   },

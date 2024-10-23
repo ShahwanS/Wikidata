@@ -10,13 +10,14 @@ import { Property } from "@/types/property";
 /**
  * Hook to use translated records from propgliederung.
  * It initializes and processes the propgliederung data for use in the application.
- * 
+ *
  * @returns An object containing categories, properties, a function to get a property by name, and the translated propgliederung.
  */
 export const useTranslatedRecords = () => {
-  const t = useTranslations("form"); // Get translations for the "form" namespace
+  const tForm = useTranslations("form"); // Get translations for the "form" namespace
   const tErrors = useTranslations("errors"); // Get translations for the "errors" namespace
-  const translatedPropgliederung = propgliederung(t); // Translate propgliederung using the translations
+  const tInitial = useTranslations("initial"); // Get translations for the "initial" namespace
+  const translatedPropgliederung = propgliederung(tForm); // Translate propgliederung using the translations
 
   // Initialize data structures to hold processed propgliederung data
   const categories: Record<string, Category> = {};
@@ -66,7 +67,7 @@ export const useTranslatedRecords = () => {
   /**
    * Function to get a property by its name.
    * If the property is not found, it returns a default property with the given name and type "text".
-   * 
+   *
    * @param propertyName The name of the property to retrieve.
    * @returns The property object or a default property if not found.
    */
@@ -84,6 +85,8 @@ export const useTranslatedRecords = () => {
     properties,
     getPropertyByName,
     translatedPropgliederung,
-    tErrors
+    tErrors,
+    tInitial,
+    tForm,
   };
 };

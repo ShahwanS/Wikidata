@@ -15,7 +15,6 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
   const { categories, properties, getPropertyByName } = useTranslatedRecords();
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
-    setSelectedProperties([]);
   };
 
   const handlePropertyToggle = (propertyName: string) => {
@@ -34,31 +33,37 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
     setSelectedProperties([]);
   };
 
-
-  const handleSubCategoryToggle = (subCategory: string, selectedCategory: string) => {
+  const handleSubCategoryToggle = (
+    subCategory: string,
+    selectedCategory: string
+  ) => {
     // Get properties for the selected category
     const categoryProperties = properties[selectedCategory];
-    
+
     // Get properties for the specific subcategory, or an empty array if none exist
-    const subCategoryProperties = categoryProperties[subCategory].properties || [];
-    
-    setSelectedProperties(prev => {
+    const subCategoryProperties =
+      categoryProperties[subCategory].properties || [];
+
+    setSelectedProperties((prev) => {
       // Check if all subcategory properties are currently selected
-      const allSelected = subCategoryProperties.every(property => prev.includes(property));
-      
+      const allSelected = subCategoryProperties.every((property) =>
+        prev.includes(property)
+      );
+
       let newSelection;
       if (allSelected) {
         // If all are selected, remove them from the selection
-        newSelection = prev.filter(name => !subCategoryProperties.includes(name));
+        newSelection = prev.filter(
+          (name) => !subCategoryProperties.includes(name)
+        );
       } else {
         // If not all are selected, add the missing ones
         newSelection = [...new Set([...prev, ...subCategoryProperties])];
       }
-      
+
       return newSelection;
     });
   };
-
 
   if (!categories || !properties) {
     return <div>Loading...</div>;
@@ -121,12 +126,18 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
                       type="checkbox"
                       id={`add-${subCategory}`}
                       name={`add-${subCategory}`}
-                      checked={info.properties.every(property => selectedProperties.includes(property))}
-
-                      onChange={() => handleSubCategoryToggle(subCategory, selectedCategory)}
+                      checked={info.properties.every((property) =>
+                        selectedProperties.includes(property)
+                      )}
+                      onChange={() =>
+                        handleSubCategoryToggle(subCategory, selectedCategory)
+                      }
                       className="form-checkbox h-5 w-5 text-gray-600 transition duration-150 ease-in-out"
                     />
-                    <label htmlFor={`add-${subCategory}`} className="ml-3 block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`add-${subCategory}`}
+                      className="ml-3 block text-sm font-medium text-gray-700"
+                    >
                       {subCategory}
                     </label>
                   </div>
@@ -141,7 +152,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
                         }`}
                         onClick={() => handlePropertyToggle(property)}
                       >
-                        <span className="font-medium text-gray-800"> 
+                        <span className="font-medium text-gray-800">
                           {property}
                         </span>
                       </li>

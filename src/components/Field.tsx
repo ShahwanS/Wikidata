@@ -42,7 +42,7 @@ const Field: React.FC<FieldProps> = ({
     unique,
     infobox,
   } = property;
-  const t = useTranslations("form");
+  const tForm = useTranslations("form");
   const [inputFields, setInputFields] = useState<string[]>(value || [""]);
   const [showSourcePopup, setShowSourcePopup] = useState(false);
   const [previewSource, setPreviewSource] = useState<string>("");
@@ -229,8 +229,9 @@ const Field: React.FC<FieldProps> = ({
                     type="radio"
                     id={choice + index}
                     name={
-                      t("building.accessibility.wheelchairAccessible.label") +
-                      index
+                      tForm(
+                        "building.accessibility.wheelchairAccessible.label"
+                      ) + index
                     }
                     value={choice}
                   />
@@ -284,7 +285,7 @@ const Field: React.FC<FieldProps> = ({
                 {property.unit && (
                   <label className="text-gray-600 ml-2">{property.unit}</label>
                 )}
-                {name != "Official Name" && (
+                {name !== tForm("nameDetails.officialName.label") && (
                   <button
                     type="button"
                     onClick={() => removeInputField(index)}

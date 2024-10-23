@@ -5,44 +5,44 @@ import { Property } from "@/types/property";
 import { useTranslatedRecords } from "./useTranslatedRecords";
 
 export const useFormFields = () => {
-  const t = useTranslations("initial");
+  const t = useTranslations("form");
   const [fields, setFields] = useState<Property[]>(initialFields);
-  
+
   /** Helper function to initialize the fields */
   function initialFields(): Property[] {
     return [
       {
-        name: t("OfficialName.label"),
+        name: t("nameDetails.officialName.label"),
         type: "text",
-        placeholder: t("OfficialName.placeholder"),
+        placeholder: t("nameDetails.officialName.placeholder"),
         wikidataprop: "P1448",
         unique: true,
         required: true,
-        infobox: t("OfficialName.infobox"),
+        infobox: t("nameDetails.officialName.infobox"),
       },
       {
-        name: t("dateOfOpening.label"),
+        name: t("historicalData.openingDate.label"),
         type: "text",
-        placeholder: t("dateOfOpening.placeholder"),
+        placeholder: t("historicalData.openingDate.placeholder"),
         wikidataprop: "P1619",
         unique: true,
         required: true,
-        infobox: t("dateOfOpening.infobox"),
+        infobox: t("historicalData.openingDate.infobox"),
       },
       {
-        name: t("image.label"),
+        name: t("media.image.label"),
         type: "file",
         wikidataprop: "P18",
         required: true,
-        infobox: t("image.infobox"),
+        infobox: t("media.image.infobox"),
       },
       {
-        name: t("Website.label"),
+        name: t("links.website.label"),
         type: "text",
         placeholder: "https://example.com",
         wikidataprop: "P856",
         required: true,
-        infobox: t("Website.infobox"),
+        infobox: t("media.image.infobox"),
       },
     ];
   }
