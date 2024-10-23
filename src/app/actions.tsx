@@ -3,17 +3,24 @@
 import { serverFileToBase64, formatDateForFilename } from "@/utils/utils";
 import { cookies } from "next/headers";
 
-export async function commitToGitLab(fileName: string, fileContent: string, clientUserInfo: Record<string, string>) {
+export async function commitToGitLab(
+  fileName: string,
+  fileContent: string,
+  clientUserInfo: Record<string, string>
+) {
   try {
     // Try to get user info from cookies first
-    const cookieStore = cookies()
-    const userId = cookieStore.get('userId')?.value || clientUserInfo.userId
-    const userFirstName = cookieStore.get('userFirstName')?.value || clientUserInfo.userFirstName
-    const userLastName = cookieStore.get('userLastName')?.value || clientUserInfo.userLastName
-    const userEmail = cookieStore.get('userEmail')?.value || clientUserInfo.userEmail
+    const cookieStore = cookies();
+    const userId = cookieStore.get("userId")?.value || clientUserInfo.userId;
+    const userFirstName =
+      cookieStore.get("userFirstName")?.value || clientUserInfo.userFirstName;
+    const userLastName =
+      cookieStore.get("userLastName")?.value || clientUserInfo.userLastName;
+    const userEmail =
+      cookieStore.get("userEmail")?.value || clientUserInfo.userEmail;
 
     if (!userId) {
-      throw new Error('User ID not found')
+      throw new Error("User ID not found");
     }
 
     const userInfo = JSON.stringify({
@@ -23,9 +30,8 @@ export async function commitToGitLab(fileName: string, fileContent: string, clie
       email: userEmail,
     });
 
-    
     const folderName = fileName;
-    const formattedFileName = `${fileName}_${formatDateForFilename()}.md`;
+    const formattedFileName = `${fileName}_${formatDateForFilename()}_.md`;
     const filePath = `${folderName}/${formattedFileName}`;
     const apiUrl = process.env.API_URL || "";
 
@@ -35,7 +41,7 @@ export async function commitToGitLab(fileName: string, fileContent: string, clie
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
-      
+
       body: JSON.stringify({
         branch: "main",
         commit_message: `Add ${formattedFileName} to ${folderName} via API`,

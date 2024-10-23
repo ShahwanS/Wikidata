@@ -185,7 +185,7 @@ export const formatDateForFilename = (): string => {
   const date = new Date();
   return `${date.getUTCFullYear()}-${
     date.getUTCMonth() + 1
-  }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}`;
+  }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}-${date.getUTCSeconds()}`;
 };
 
 /**
