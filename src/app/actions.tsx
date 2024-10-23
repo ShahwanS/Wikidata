@@ -31,7 +31,7 @@ export async function commitToGitLab(
     });
 
     const folderName = fileName;
-    const formattedFileName = `${fileName}_${formatDateForFilename()}_.md`;
+    const formattedFileName = `${fileName}_${formatDateForFilename(true)}_.md`;
     const filePath = `${folderName}/${formattedFileName}`;
     const apiUrl = process.env.API_URL || "";
 
