@@ -460,7 +460,7 @@
   },
   "errors": {
     "required": "Dieses Feld ist erforderlich",
-    "maxLength": "Text darf nicht länger als {maxLength} Zeichen sein",
+    "maxLength": "Text darf nicht länger als 10000 Zeichen sein",
     "invalidOption": "Ungültige Option ausgewählt",
     "emptyField": "darf nicht leer sein",
     "invalidEmail": "Ungültiges E-Mail-Format",
@@ -472,4 +472,3 @@
     "mustBeInteger": "Muss eine ganze Zahl sein"
   }
 }
-

@@ -36,17 +36,21 @@ export async function addDataFromCategoryToJson(
   dataList: any,
   jsonOutput: any,
   title: string,
-  getPropertyByName: any,
+  getPropertyByName: any
 ) {
   let currentEntry: any = null;
   let currentSources: string[] = [];
+  let pendingPromises: Promise<void>[] = [];
 
   for (const [dataName, inputData, wikiprop, source] of dataList) {
     const isUrl = wikiprop === "P856";
     const isRichtext = wikiprop === "richtext";
     const isImage = checkImage(inputData, wikiprop);
 
-    if (currentEntry && (wikiprop !== currentEntry.wikiprop || isImage || isUrl || isRichtext)) {
+    if (
+      currentEntry &&
+      (wikiprop !== currentEntry.wikiprop || isImage || isUrl || isRichtext)
+    ) {
       // Add the current entry to jsonOutput with combined sources
       addEntryToJson(currentEntry, jsonOutput, currentSources);
       currentEntry = null;
@@ -54,7 +58,20 @@ export async function addDataFromCategoryToJson(
     }
 
     if (isImage) {
-      await handleImageUpload(inputData, dataName, jsonOutput, title, wikiprop, source);
+      if (inputData.size === 0) {
+        console.warn(`No image data provided for ${dataName}. Skipping.`);
+        return;
+      } else {
+        const imagePromise = uploadImageAndAddToJson(
+          inputData,
+          dataName,
+          jsonOutput,
+          title,
+          wikiprop,
+          source
+        );
+        pendingPromises.push(imagePromise);
+      }
     } else if (isUrl) {
       addUrlToJson(wikiprop, dataName, inputData, jsonOutput, source);
     } else if (isRichtext) {
@@ -66,7 +83,7 @@ export async function addDataFromCategoryToJson(
           dataName,
           inputData,
           unit: getPropertyByName(dataName).unit,
-          values: []
+          values: [],
         };
       }
       currentEntry.values.push(inputData);
@@ -80,9 +97,9 @@ export async function addDataFromCategoryToJson(
   if (currentEntry) {
     addEntryToJson(currentEntry, jsonOutput, currentSources);
   }
+
+  await Promise.all(pendingPromises);
 }
-
-
 
 /**
  * Adds normal data (non-URL, non-rich text) to the JSON output.
@@ -93,21 +110,14 @@ export async function addDataFromCategoryToJson(
 function addEntryToJson(entry: any, jsonOutput: any, sources: string[]) {
   const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : "";
   const unit = entry.unit ? " " + entry.unit : "";
-  const sourceText = sources.length > 0 ? `\nsource:\t${sources.join(', ')}` : "";
+  const sourceText =
+    sources.length > 0 ? `\nsource:\t${sources.join(", ")}` : "";
 
-  const values = entry.values.join('\n');
-  
+  const values = entry.values.join("\n");
+
   jsonOutput.push({
     p: `### \t${wikipropText}${entry.dataName}\n${values}${unit}${sourceText}`,
   });
-}
-
-async function handleImageUpload(inputData: any, dataName: string, jsonOutput: any, title: string, wikiprop?: string, source?: string) {
-  if (inputData.size === 0) {
-    console.warn(`No image data provided for ${dataName}. Skipping.`);
-    return;
-  }
-  await uploadImageAndAddToJson(inputData, dataName, jsonOutput, title, wikiprop, source);
 }
 
 /**
@@ -164,6 +174,7 @@ async function uploadImageAndAddToJson(
   // Optimistically push to jsonOutput
   console.log("Optimistically pushing new entry to jsonOutput:");
   jsonOutput.push(newEntry);
+  console.log(jsonOutput);
   const entryIndex = jsonOutput.length - 1; // Store the index of the new entry
 
   const formData = new FormData();
@@ -172,7 +183,7 @@ async function uploadImageAndAddToJson(
 
   try {
     // Attempt to upload image with retries
-    const success = await uploadImage(formData);
+    const success = await uploadImage(formData, formattedFileName);
     if (!success) {
       console.warn(
         `Failed to upload image for ${dataName}. Reverting jsonOutput.`
@@ -208,10 +219,10 @@ function addUrlToJson(
   const sourceText = source ? `\nsource:\t${source}` : "";
   wikiprop
     ? jsonOutput.push({
-        p: `### ${wikiprop} ${dataName}\n[${dataName}](${inputData})${sourceText}`,
+        p: `### ${wikiprop} ${dataName}\n[${inputData}](${inputData})${sourceText}`,
       })
     : jsonOutput.push({
-        p: `### ${dataName}\n[${dataName}](${inputData})${sourceText}`,
+        p: `### ${dataName}\n[${inputData}](${inputData})${sourceText}`,
       });
 }
 

@@ -31,7 +31,7 @@ export async function commitToGitLab(
     });
 
     const folderName = fileName;
-    const formattedFileName = `${fileName}_${formatDateForFilename(true)}_.md`;
+    const formattedFileName = `${fileName}_${formatDateForFilename()}_.md`;
     const filePath = `${folderName}/${formattedFileName}`;
     const apiUrl = process.env.API_URL || "";
 
@@ -69,7 +69,10 @@ export async function commitToGitLab(
   }
 }
 
-export async function uploadImage(formData: FormData): Promise<boolean> {
+export async function uploadImage(
+  formData: FormData,
+  formattedFileName: any
+): Promise<boolean> {
   const fileName = formData.get("fileName") as string;
   const fileContent = formData.get("fileContent") as File;
 
@@ -80,10 +83,6 @@ export async function uploadImage(formData: FormData): Promise<boolean> {
     }
 
     const folderName = fileName;
-    const fileExtension = fileContent.name.split(".").pop() || "jpg";
-    const formattedFileName = `${
-      fileContent.name
-    }_${formatDateForFilename()}.${fileExtension}`;
     const filePath = `./${folderName}/images/${formattedFileName}`;
     const apiUrl = process.env.API_URL;
 

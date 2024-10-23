@@ -181,16 +181,11 @@ export async function serverFileToBase64(
 }
 
 //helper function to format date for filename
-export const formatDateForFilename = (seconds?: boolean): string => {
+export const formatDateForFilename = (): string => {
   const date = new Date();
-  if (seconds)
-    return `${date.getUTCFullYear()}-${
-      date.getUTCMonth() + 1
-    }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}-${date.getUTCSeconds()}`;
-  else
-    return `${date.getUTCFullYear()}-${
-      date.getUTCMonth() + 1
-    }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}`;
+  return `${date.getUTCFullYear()}-${
+    date.getUTCMonth() + 1
+  }-${date.getUTCDate()}_${date.getUTCHours()}-${date.getUTCMinutes()}-${date.getUTCSeconds()}`;
 };
 
 /**
