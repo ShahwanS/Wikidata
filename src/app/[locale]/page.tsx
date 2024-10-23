@@ -216,7 +216,7 @@ export default function Home() {
         )}
         {showSubmitModal && (
           <ResetFormPopup
-            setShowResetModal={setShowResetModal}
+            setShowResetModal={setShowSubmitModal}
             confirmReset={confirmReset}
             title={tInitial("form.FormSubmit.title")}
             description={tInitial("form.FormSubmit.description")}
