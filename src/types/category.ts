@@ -1,4 +1,4 @@
-import { SubCategory } from "./subcategory";
+import { SubCategory } from './subcategory';
 
 /** Structure for a category */
 export type Category = {

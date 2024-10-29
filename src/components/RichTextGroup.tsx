@@ -1,5 +1,5 @@
-import React from "react";
-import RichTextField from "@/components/RichTextField";
+import React from 'react';
+import RichTextField from '@/components/RichTextField';
 
 interface RichTextGroupProps {
   richTextState: Record<string, string>;
@@ -18,13 +18,13 @@ const RichTextGroup: React.FC<RichTextGroupProps> = ({
 }) => {
   return (
     <div className="space-y-8">
-      <h2 className="text-3xl font-bold text-gray-700 border-b-2 border-gray-200 pb-3">
+      <h2 className="border-b-2 border-gray-200 pb-3 text-3xl font-bold text-gray-700">
         Weitere Angaben als Freitext
       </h2>
       {Object.keys(richTextState).map((richtextName, index) => (
         <RichTextField
           key={richtextName}
-          property={{ name: richtextName, type: "richie" }}
+          property={{ name: richtextName, type: 'richie' }}
           updateContent={updateRichTextContent}
           onDelete={() => removeRichTextField(richtextName)}
           initContent={richTextState[richtextName]}

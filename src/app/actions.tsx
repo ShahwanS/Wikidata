@@ -1,26 +1,23 @@
-"use server";
+'use server';
 
-import { serverFileToBase64, formatDateForFilename } from "@/utils/utils";
-import { cookies } from "next/headers";
+import { serverFileToBase64, formatDateForFilename } from '@/utils/utils';
+import { cookies } from 'next/headers';
 
 export async function commitToGitLab(
   fileName: string,
   fileContent: string,
-  clientUserInfo: Record<string, string>
+  clientUserInfo: Record<string, string>,
 ) {
   try {
     // Try to get user info from cookies first
     const cookieStore = cookies();
-    const userId = cookieStore.get("userId")?.value || clientUserInfo.userId;
-    const userFirstName =
-      cookieStore.get("userFirstName")?.value || clientUserInfo.userFirstName;
-    const userLastName =
-      cookieStore.get("userLastName")?.value || clientUserInfo.userLastName;
-    const userEmail =
-      cookieStore.get("userEmail")?.value || clientUserInfo.userEmail;
+    const userId = cookieStore.get('userId')?.value || clientUserInfo.userId;
+    const userFirstName = cookieStore.get('userFirstName')?.value || clientUserInfo.userFirstName;
+    const userLastName = cookieStore.get('userLastName')?.value || clientUserInfo.userLastName;
+    const userEmail = cookieStore.get('userEmail')?.value || clientUserInfo.userEmail;
 
     if (!userId) {
-      throw new Error("User ID not found");
+      throw new Error('User ID not found');
     }
 
     const userInfo = JSON.stringify({
@@ -33,21 +30,21 @@ export async function commitToGitLab(
     const folderName = fileName;
     const formattedFileName = `${fileName}_${formatDateForFilename()}_.md`;
     const filePath = `${folderName}/${formattedFileName}`;
-    const apiUrl = process.env.API_URL || "";
+    const apiUrl = process.env.API_URL || '';
 
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
 
       body: JSON.stringify({
-        branch: "main",
+        branch: 'main',
         commit_message: `Add ${formattedFileName} to ${folderName} via API`,
         actions: [
           {
-            action: "create",
+            action: 'create',
             file_path: filePath,
             content: fileContent,
           },
@@ -63,18 +60,15 @@ export async function commitToGitLab(
     }
 
     const result = await response.json();
-    console.log("Commit created:", result);
+    console.log('Commit created:', result);
   } catch (error) {
-    console.error("Error handling the POST request:", error);
+    console.error('Error handling the POST request:', error);
   }
 }
 
-export async function uploadImage(
-  formData: FormData,
-  formattedFileName: any
-): Promise<boolean> {
-  const fileName = formData.get("fileName") as string;
-  const fileContent = formData.get("fileContent") as File;
+export async function uploadImage(formData: FormData, formattedFileName: any): Promise<boolean> {
+  const fileName = formData.get('fileName') as string;
+  const fileContent = formData.get('fileContent') as File;
 
   try {
     if (!(fileContent instanceof File)) {
@@ -87,7 +81,7 @@ export async function uploadImage(
     const apiUrl = process.env.API_URL;
 
     if (!apiUrl) {
-      console.error("API_URL is not defined in environment variables");
+      console.error('API_URL is not defined in environment variables');
       return false;
     }
 
@@ -95,19 +89,19 @@ export async function uploadImage(
     const base64Content = await serverFileToBase64(arrayBuffer);
 
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
       body: JSON.stringify({
-        branch: "main",
+        branch: 'main',
         commit_message: `Add ${formattedFileName} to ${folderName} via API`,
         actions: [
           {
-            action: "create",
+            action: 'create',
             file_path: filePath,
-            encoding: "base64",
+            encoding: 'base64',
             content: base64Content,
           },
         ],
@@ -116,9 +110,7 @@ export async function uploadImage(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(
-        `GitLab API responded with status ${response.status}: ${errorText}`
-      );
+      console.error(`GitLab API responded with status ${response.status}: ${errorText}`);
       return false;
     }
 

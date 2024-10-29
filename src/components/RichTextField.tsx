@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import Field, { FieldProps } from "./Field";
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Field, { FieldProps } from './Field';
 // Import the CSS directly; Next.js handles this for both server and client-side
-import "react-quill/dist/quill.snow.css";
-import { useTranslations } from "next-intl";
+import 'react-quill/dist/quill.snow.css';
+import { useTranslations } from 'next-intl';
 
-const ReactQuill = dynamic(() => import("react-quill"), {
+const ReactQuill = dynamic(() => import('react-quill'), {
   loading: () => <p>Loading editor...</p>,
 });
 
@@ -35,7 +35,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
   initContent,
   initTitle,
 }) => {
-  const t = useTranslations("initial");
+  const t = useTranslations('initial');
   const [content, setContent] = useState(initContent);
   /**
    * Method for handling changes of the richtext
@@ -50,12 +50,12 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
     <div className="my-10 py-2" key={property.name}>
       <Field
         property={{
-          name: "",
-          type: "richtext",
-          placeholder: t("form.richTextPlaceholder"),
+          name: '',
+          type: 'richtext',
+          placeholder: t('form.richTextPlaceholder'),
           value: [initTitle],
           unique: true,
-          infobox: t("form.infobox"),
+          infobox: t('form.infobox'),
         }}
         onDelete={onDelete}
         onChange={onChange}
@@ -66,7 +66,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
           theme="snow"
           value={content}
           onChange={handleChange}
-          style={{ height: "400px", marginBottom: "80px", marginTop: "20px" }}
+          style={{ height: '400px', marginBottom: '80px', marginTop: '20px' }}
         />
       </Field>
     </div>

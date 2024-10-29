@@ -1,4 +1,4 @@
-import { Property } from "./property";
+import { Property } from './property';
 
 /** Structure for a subcategory */
 export type SubCategory = {

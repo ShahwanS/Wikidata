@@ -6,11 +6,14 @@ export function useUserInfo() {
 
   useEffect(() => {
     const checkUserInfo = () => {
-      const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-        const [key, value] = cookie.trim().split('=');
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
+      const cookies = document.cookie.split(';').reduce(
+        (acc, cookie) => {
+          const [key, value] = cookie.trim().split('=');
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
       if (!cookies.userId) {
         setShowSignupModal(true);
@@ -19,22 +22,20 @@ export function useUserInfo() {
           userId: cookies.userId,
           userFirstName: cookies.userFirstName,
           userLastName: cookies.userLastName,
-          userEmail: cookies.userEmail
+          userEmail: cookies.userEmail,
         });
       }
     };
 
-
     checkUserInfo();
   }, []);
 
- 
   const handleSignupClose = (newUserInfo?: Record<string, string>) => {
     if (newUserInfo) {
-      setUserInfo(newUserInfo)
+      setUserInfo(newUserInfo);
     }
-    setShowSignupModal(false)
-  }
+    setShowSignupModal(false);
+  };
 
   return { showSignupModal, userInfo, handleSignupClose };
 }

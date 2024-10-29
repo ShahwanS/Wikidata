@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useTranslations } from "next-intl";
+import { useTranslations } from 'next-intl';
 
-import { Form } from "@/types/form";
-import { propgliederung } from "@/utils/propgliederung";
-import { Category } from "@/types/category";
-import { Property } from "@/types/property";
+import { Form } from '@/types/form';
+import { propgliederung } from '@/utils/propgliederung';
+import { Category } from '@/types/category';
+import { Property } from '@/types/property';
 
 /**
  * Hook to use translated records from propgliederung.
@@ -14,9 +14,9 @@ import { Property } from "@/types/property";
  * @returns An object containing categories, properties, a function to get a property by name, and the translated propgliederung.
  */
 export const useTranslatedRecords = () => {
-  const tForm = useTranslations("form"); // Get translations for the "form" namespace
-  const tErrors = useTranslations("errors"); // Get translations for the "errors" namespace
-  const tInitial = useTranslations("initial"); // Get translations for the "initial" namespace
+  const tForm = useTranslations('form'); // Get translations for the "form" namespace
+  const tErrors = useTranslations('errors'); // Get translations for the "errors" namespace
+  const tInitial = useTranslations('initial'); // Get translations for the "initial" namespace
   const translatedPropgliederung = propgliederung(tForm); // Translate propgliederung using the translations
 
   // Initialize data structures to hold processed propgliederung data
@@ -74,7 +74,7 @@ export const useTranslatedRecords = () => {
   const getPropertyByName = (propertyName: string): Property => {
     const property = PropertyByName[propertyName];
     if (!property) {
-      return { name: propertyName, type: "text" };
+      return { name: propertyName, type: 'text' };
     }
     return property;
   };

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Slide, ToastContainer } from "react-toastify";
+import { Slide, ToastContainer } from 'react-toastify';
 
 interface ToastProviderProps {
   children: React.ReactNode;

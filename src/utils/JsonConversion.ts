@@ -2,8 +2,8 @@ import {
   addTitleToJson,
   addCategoryAsSubtitleToJson,
   addDataFromCategoryToJson,
-} from "@/utils/JsonElements";
-import { getTitle } from "./utils";
+} from '@/utils/JsonElements';
+import { getTitle } from './utils';
 
 /**
  * Convert data to JSON
@@ -14,20 +14,20 @@ export const convertDataToJson = (
   dataAsMap: Map<any, any>,
   getPropertyByName: any,
   locale: string,
-  userInfo: Record<string, string>
+  userInfo: Record<string, string>,
 ) => {
   const jsonOutput: { h1?: string; h2?: string; p?: string }[] = [];
   const title =
-    locale === "de"
-      ? getTitle(dataAsMap.get("Namensangaben"))
-      : getTitle(dataAsMap.get("Name Information"));
+    locale === 'de'
+      ? getTitle(dataAsMap.get('Namensangaben'))
+      : getTitle(dataAsMap.get('Name Information'));
 
   addTitleToJson(title, jsonOutput);
   const userInfoSection = [
-    { h2: "User Information" },
+    { h2: 'User Information' },
     { p: `User ID: ${userInfo.userId}` },
     { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
-    { p: `Email: ${userInfo.userEmail}` }
+    { p: `Email: ${userInfo.userEmail}` },
   ];
   jsonOutput.push(...userInfoSection);
   // Add all Data in Map to JSON

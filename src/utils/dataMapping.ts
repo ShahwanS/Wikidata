@@ -1,10 +1,10 @@
-import { MdSwapVerticalCircle } from "react-icons/md";
+import { MdSwapVerticalCircle } from 'react-icons/md';
 import {
   getAllCategoryAndWikiprop,
   removeTrailingNumber,
   setRichttextInMap,
   setNormalDataInMap,
-} from "./utils";
+} from './utils';
 
 /**
  * Method to map data to categories based on wikiData-props
@@ -14,33 +14,24 @@ import {
 export const dataToMap = (
   data: any,
   translatedPropgliederung: any,
-  sources: Record<string, string>
+  sources: Record<string, string>,
 ) => {
   const resultMap = new Map();
-  const CATEGORY_AND_PROPERTY_MAP = getAllCategoryAndWikiprop(
-    translatedPropgliederung
-  );
+  const CATEGORY_AND_PROPERTY_MAP = getAllCategoryAndWikiprop(translatedPropgliederung);
 
   for (let dataName in data) {
     const inputData = data[dataName]; // Fetch data from page.tsx/fieldsdata
 
     dataName = removeTrailingNumber(dataName); // Remove trailing numbers from dataName (e.g., spitzName1 -> spitzName)
 
-    if (inputData !== "") {
+    if (inputData !== '') {
       // Handle rich text fields differently
       const isRichtext =
-        dataName.startsWith("Rich Text") ||
-        dataName.startsWith("Enter section title");
+        dataName.startsWith('Rich Text') || dataName.startsWith('Enter section title');
       if (isRichtext) {
         setRichttextInMap(dataName, inputData, resultMap, sources);
       } else {
-        setNormalDataInMap(
-          dataName,
-          inputData,
-          sources,
-          resultMap,
-          CATEGORY_AND_PROPERTY_MAP
-        );
+        setNormalDataInMap(dataName, inputData, sources, resultMap, CATEGORY_AND_PROPERTY_MAP);
       }
     }
   }

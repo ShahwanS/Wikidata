@@ -1,20 +1,16 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { convert2Markup } from "@/utils/convertToMarkup";
-import { commitToGitLab } from "@/app/actions";
-import {
-  formatRichTextContent,
-  generateFormSchema,
-  removeTrailingNumber,
-} from "@/utils/utils";
-import { z } from "zod";
-import { useTranslatedRecords } from "./useTranslatedRecords";
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { convert2Markup } from '@/utils/convertToMarkup';
+import { commitToGitLab } from '@/app/actions';
+import { formatRichTextContent, generateFormSchema, removeTrailingNumber } from '@/utils/utils';
+import { z } from 'zod';
+import { useTranslatedRecords } from './useTranslatedRecords';
 
 export function useFormSubmit(
   t: any,
   locale: string,
   getPropertyByName: any,
-  setShowSubmittedModal: any
+  setShowSubmittedModal: any,
 ) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -26,7 +22,7 @@ export function useFormSubmit(
     richTextTitle: any,
     sources: any,
     userInfo: any,
-    handleReset: () => void
+    handleReset: () => void,
   ) => {
     event.preventDefault();
 
@@ -50,7 +46,7 @@ export function useFormSubmit(
 
         Object.entries(formattedErrors).forEach(([key, value]) => {
           toast.error(`${value}`, {
-            position: "top-right",
+            position: 'top-right',
             autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -64,11 +60,7 @@ export function useFormSubmit(
       }
     }
     Object.keys(richTextState).forEach((fieldName) => {
-      fieldsData[fieldName] = formatRichTextContent(
-        fieldName,
-        richTextTitle,
-        richTextState
-      );
+      fieldsData[fieldName] = formatRichTextContent(fieldName, richTextTitle, richTextState);
     });
 
     // Convert form data to Markdown content
@@ -78,26 +70,23 @@ export function useFormSubmit(
       getPropertyByName,
       locale.toString(),
       sources,
-      userInfo
+      userInfo,
     );
 
     // downloadMarkdownFile(markupOutput);
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
-      const fileName =
-        fieldsData["Offizieller Name0"] ||
-        fieldsData["Official Name0"] ||
-        "output";
+      const fileName = fieldsData['Offizieller Name0'] || fieldsData['Official Name0'] || 'output';
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);
-        console.log("sending");
+        console.log('sending');
         await commitToGitLab(fileName.toString(), markupOutput, userInfo);
         handleReset();
       } catch (error) {
-        console.error("Failed to send the markup file to GitLab:", error);
-        toast.error(t("form.errorSending"), {
-          position: "top-right",
+        console.error('Failed to send the markup file to GitLab:', error);
+        toast.error(t('form.errorSending'), {
+          position: 'top-right',
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -110,8 +99,8 @@ export function useFormSubmit(
     } else {
     }
 
-    toast.info(t("form.formSaved"), {
-      position: "top-right",
+    toast.info(t('form.formSaved'), {
+      position: 'top-right',
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,

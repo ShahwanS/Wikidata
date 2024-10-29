@@ -1,18 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export const useRichTextFields = () => {
-  const [richTextState, setRichTextState] = useState<Record<string, string>>(
-    {}
-  );
-  const [richTextTitle, setRichTextTitle] = useState<Record<string, string>>(
-    {}
-  );
+  const [richTextState, setRichTextState] = useState<Record<string, string>>({});
+  const [richTextTitle, setRichTextTitle] = useState<Record<string, string>>({});
   const [richtextCounter, setRichtextCounter] = useState<number>(0);
 
   const addRichTextField = () => {
     const richTextKey = `Rich Text${richtextCounter}`;
-    setRichTextState((prevState) => ({ ...prevState, [richTextKey]: "" }));
-    setRichTextTitle((prevState) => ({ ...prevState, [richTextKey]: "" }));
+    setRichTextState((prevState) => ({ ...prevState, [richTextKey]: '' }));
+    setRichTextTitle((prevState) => ({ ...prevState, [richTextKey]: '' }));
     setRichtextCounter((prevCounter) => prevCounter + 1);
   };
 

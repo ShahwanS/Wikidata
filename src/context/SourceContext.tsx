@@ -1,12 +1,6 @@
-"use client";
+'use client';
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 type SourceContextType = {
   sources: Record<string, string>;
@@ -18,9 +12,7 @@ type SourceContextType = {
 
 const SourceContext = createContext<SourceContextType | undefined>(undefined);
 
-export const SourceProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const SourceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [sources, setSources] = useState<Record<string, string>>({});
   const [uniqueSources, setUniqueSources] = useState<string[]>([]);
 
@@ -33,7 +25,7 @@ export const SourceProvider: React.FC<{ children: React.ReactNode }> = ({
   const handleSourceSubmit = (fieldName: string, source: string) => {
     setSources((prev) => {
       const newSources = { ...prev };
-      if (source === "") {
+      if (source === '') {
         delete newSources[fieldName];
       } else {
         newSources[fieldName] = source;
@@ -69,7 +61,7 @@ export const SourceProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useSource = () => {
   const context = useContext(SourceContext);
   if (context === undefined) {
-    throw new Error("useSource must be used within a SourceProvider");
+    throw new Error('useSource must be used within a SourceProvider');
   }
   return context;
 };

@@ -1,12 +1,7 @@
-"use client";
+'use client';
 
-import {
-  getTitle,
-  checkImage,
-  simpleHtmlToMarkdown,
-  formatDateForFilename,
-} from "./utils";
-import { uploadImage } from "@/app/actions";
+import { getTitle, checkImage, simpleHtmlToMarkdown, formatDateForFilename } from './utils';
+import { uploadImage } from '@/app/actions';
 /**
  * Adds the title from "Namensangaben" to the JSON output.
  * @param dataAsMap Map containing the data categorized by name
@@ -35,21 +30,18 @@ export async function addDataFromCategoryToJson(
   dataList: any,
   jsonOutput: any,
   title: string,
-  getPropertyByName: any
+  getPropertyByName: any,
 ) {
   let currentEntry: any = null;
   let currentSources: string[] = [];
   let pendingPromises: Promise<void>[] = [];
 
   for (const [dataName, inputData, wikiprop, source] of dataList) {
-    const isUrl = wikiprop === "P856";
-    const isRichtext = wikiprop === "richtext";
+    const isUrl = wikiprop === 'P856';
+    const isRichtext = wikiprop === 'richtext';
     const isImage = checkImage(inputData, wikiprop);
 
-    if (
-      currentEntry &&
-      (wikiprop !== currentEntry.wikiprop || isImage || isUrl || isRichtext)
-    ) {
+    if (currentEntry && (wikiprop !== currentEntry.wikiprop || isImage || isUrl || isRichtext)) {
       // Add the current entry to jsonOutput with combined sources
       addEntryToJson(currentEntry, jsonOutput, currentSources);
       currentEntry = null;
@@ -67,7 +59,7 @@ export async function addDataFromCategoryToJson(
           jsonOutput,
           title,
           wikiprop,
-          source
+          source,
         );
         pendingPromises.push(imagePromise);
       }
@@ -107,12 +99,11 @@ export async function addDataFromCategoryToJson(
  *
  */
 function addEntryToJson(entry: any, jsonOutput: any, sources: string[]) {
-  const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : "";
-  const unit = entry.unit ? " " + entry.unit : "";
-  const sourceText =
-    sources.length > 0 ? `\nsource:\t${sources.join(", ")}` : "";
+  const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : '';
+  const unit = entry.unit ? ' ' + entry.unit : '';
+  const sourceText = sources.length > 0 ? `\nsource:\t${sources.join(', ')}` : '';
 
-  const values = entry.values.join("\n");
+  const values = entry.values.join('\n');
 
   jsonOutput.push({
     p: `### \t${wikipropText}${entry.dataName}\n${values}${unit}${sourceText}`,
@@ -137,26 +128,22 @@ async function uploadImageAndAddToJson(
   title: string,
   wikiprop?: string,
   source?: string,
-  isShowedWikiProps?: boolean
+  isShowedWikiProps?: boolean,
 ): Promise<void> {
   if (!inputData || !title) {
-    console.warn(
-      `Input data or title is missing for ${dataName}. Skipping image upload.`
-    );
+    console.warn(`Input data or title is missing for ${dataName}. Skipping image upload.`);
     return;
   }
 
-  const fileExtension = inputData.name.split(".").pop() || "jpg";
-  const formattedFileName = `${
-    inputData.name
-  }_${formatDateForFilename()}.${fileExtension}`;
+  const fileExtension = inputData.name.split('.').pop() || 'jpg';
+  const formattedFileName = `${inputData.name}_${formatDateForFilename()}.${fileExtension}`;
   const rawFilePath =
     `https://gitlab.uni-marburg.de/shahwan/project-wissensraeume-demo/-/raw/main/${title}/images/${formattedFileName}`.replace(
       / /g,
-      "%20"
+      '%20',
     );
 
-  const sourceText = source ? `\nsource:\t${source}` : "";
+  const sourceText = source ? `\nsource:\t${source}` : '';
   let newEntry;
   if (wikiprop !== undefined) {
     newEntry = {
@@ -171,32 +158,30 @@ async function uploadImageAndAddToJson(
   }
 
   // Optimistically push to jsonOutput
-  console.log("Optimistically pushing new entry to jsonOutput:");
+  console.log('Optimistically pushing new entry to jsonOutput:');
   jsonOutput.push(newEntry);
   console.log(jsonOutput);
   const entryIndex = jsonOutput.length - 1; // Store the index of the new entry
 
   const formData = new FormData();
-  formData.append("fileName", title);
-  formData.append("fileContent", inputData);
+  formData.append('fileName', title);
+  formData.append('fileContent', inputData);
 
   try {
     // Attempt to upload image with retries
     const success = await uploadImage(formData, formattedFileName);
     if (!success) {
-      console.warn(
-        `Failed to upload image for ${dataName}. Reverting jsonOutput.`
-      );
+      console.warn(`Failed to upload image for ${dataName}. Reverting jsonOutput.`);
       jsonOutput.splice(entryIndex, 1); // Remove the specific entry on error
-      console.log("popped entry from jsonOutput:", newEntry);
+      console.log('popped entry from jsonOutput:', newEntry);
     }
   } catch (error: any) {
     console.error(
       `Error in uploadImageAndAddToJson for ${dataName}:`,
-      error instanceof Error ? error.message : String(error)
+      error instanceof Error ? error.message : String(error),
     );
     jsonOutput.splice(entryIndex, 1); // Remove the specific entry on error
-    console.log("popped entry from jsonOutput:", newEntry);
+    console.log('popped entry from jsonOutput:', newEntry);
   }
 }
 
@@ -213,9 +198,9 @@ function addUrlToJson(
   dataName: string,
   inputData: any,
   jsonOutput: any,
-  source?: string
+  source?: string,
 ) {
-  const sourceText = source ? `\nsource:\t${source}` : "";
+  const sourceText = source ? `\nsource:\t${source}` : '';
   wikiprop
     ? jsonOutput.push({
         p: `### ${wikiprop} ${dataName}\n[${inputData}](${inputData})${sourceText}`,
@@ -238,10 +223,10 @@ function addRichTextToJson(
   dataName: string,
   inputData: any,
   jsonOutput: any,
-  source?: string
+  source?: string,
 ) {
   const markdown = simpleHtmlToMarkdown(inputData);
-  const sourceText = source ? `\nsource:\t${source}` : "";
+  const sourceText = source ? `\nsource:\t${source}` : '';
   jsonOutput.push({ p: `${markdown}${sourceText}` });
 }
 
@@ -260,13 +245,11 @@ function addNormalDataToJson(
   source: string | undefined,
   inputData: any,
   jsonOutput: any,
-  getPropertyByName: any
+  getPropertyByName: any,
 ) {
-  const sourceText = source ? `\nsource:\t${source}` : "";
-  const wikipropText = wikiprop ? `  \t${wikiprop} ` : "";
-  const unit = getPropertyByName(dataName).unit
-    ? " " + getPropertyByName(dataName).unit
-    : "";
+  const sourceText = source ? `\nsource:\t${source}` : '';
+  const wikipropText = wikiprop ? `  \t${wikiprop} ` : '';
+  const unit = getPropertyByName(dataName).unit ? ' ' + getPropertyByName(dataName).unit : '';
 
   jsonOutput.push({
     p: `### \t${wikipropText}${dataName}\n${inputData}${unit}${sourceText}`,
@@ -279,11 +262,7 @@ function addNormalDataToJson(
  * @param jsonOutput JSON output array
  * @param source Source of the data
  */
-function addDataFromAdditionalFieldToJson(
-  inputData: any,
-  jsonOutput: any,
-  source?: string
-) {
-  const sourceText = source ? `\nsource:\t${source}` : "";
+function addDataFromAdditionalFieldToJson(inputData: any, jsonOutput: any, source?: string) {
+  const sourceText = source ? `\nsource:\t${source}` : '';
   jsonOutput.push({ p: `\t${inputData}${sourceText}` });
 }

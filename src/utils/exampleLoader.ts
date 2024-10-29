@@ -5,16 +5,16 @@ export async function loadExamples(
   setRichTextState: any,
   setRichtextCounter: any,
   getPropertyByName: any,
-  setSources: any
+  setSources: any,
 ) {
   let exampleModule;
   let exampleSources;
-  if (locale === "de") {
-    exampleModule = await import("@/app/loadexampleDe");
-    exampleSources = await import("@/app/loadexampleDe");
+  if (locale === 'de') {
+    exampleModule = await import('@/app/loadexampleDe');
+    exampleSources = await import('@/app/loadexampleDe');
   } else {
-    exampleModule = await import("@/app/loadexampleEn");
-    exampleSources = await import("@/app/loadexampleEn");
+    exampleModule = await import('@/app/loadexampleEn');
+    exampleSources = await import('@/app/loadexampleEn');
   }
   setFields(exampleModule.exampleFields(getPropertyByName));
   exampleModule.exampleRichtexts(setRichTextTitle, setRichTextState);
