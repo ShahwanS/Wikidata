@@ -57,8 +57,6 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
     createExampleField('Orientation', ['South'], getPropertyByName),
     createExampleField('Wheelchair Accessible', [''], getPropertyByName),
     createExampleField('Coordinates', ['50°48\'36.7"N, 8°46\'1.2"E'], getPropertyByName),
-    getPropertyByName('Country'),
-    getPropertyByName('Time Zone'),
     getPropertyByName('Building Materials'),
     createExampleField('Full Address', ['Castle 1'], getPropertyByName),
     createExampleField('Postal Code', ['35037'], getPropertyByName),
@@ -68,15 +66,6 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
     createExampleField('Instance of', ['Building', 'Castle', 'Fortress'], getPropertyByName),
     createExampleField('Preservation Status', [''], getPropertyByName),
   );
-
-  // // Add sources for the example fields
-  // sources["P1448"] = "Official city records of Marburg, 2023";
-  // sources["P1619"] = "Marburg Historical Society, 'Castle Chronicles', 2020";
-  // sources["P856"] =
-  //   "Official websites of Marburg University and City of Marburg, accessed 2023";
-  // sources["P742"] = "Local usage and tourism brochures, 2023";
-  // sources["P571"] = "Archaeological studies, University of Marburg, 2018";
-  // sources["P3342"] = "Hessian State Archives, 'Landgraves of Hesse', 2015";
 
   return example;
 }

@@ -6,9 +6,10 @@ import { Property } from '@/types/property';
 interface PopupProps {
   onAddFields: (fields: Property[]) => void;
   onClose: () => void;
+  fields: Property[];
 }
 
-const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
+const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
   const t = useTranslations('PropertyPopup');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
@@ -31,6 +32,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
       .filter((field): field is Property => field !== undefined);
     onAddFields(fields);
     setSelectedProperties([]);
+    onClose();
   };
 
   const handleSubCategoryToggle = (subCategory: string, selectedCategory: string) => {
@@ -55,6 +57,10 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
 
       return newSelection;
     });
+  };
+
+  const isPropertyInFields = (propertyName: string) => {
+    return fields.some((field) => field.name === propertyName);
   };
 
   if (!categories || !properties) {
@@ -130,7 +136,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose }) => {
                       className={`cursor-pointer rounded-lg p-3 shadow-sm transition-shadow duration-200 hover:shadow-md ${
                         selectedProperties.includes(property)
                           ? 'border-2 border-sky-500 bg-sky-100'
-                          : 'bg-gray-100'
+                          : isPropertyInFields(property)
+                            ? 'border-2 border-red-500 bg-red-50'
+                            : 'bg-gray-100'
                       }`}
                       onClick={() => handlePropertyToggle(property)}
                     >

@@ -47,7 +47,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
   };
 
   return (
-    <div className="my-10 py-2" key={property.name}>
+    <div className="my-10 py-2" key={property.name} id={`richtext-${initTitle}`}>
       <Field
         property={{
           name: '',

@@ -184,18 +184,7 @@
           "placeholder": "Längen- / Breitengrad eingeben",
           "infobox": "Die geografischen Koordinaten des Gebäudes."
         },
-        "timezone": {
-          "label": "Zeitzone",
-          "value": "MEZ",
-          "placeholder": "Zeitzone eingeben",
-          "infobox": "Die Zeitzone des Gebäudes."
-        },
-        "country": {
-          "label": "Land",
-          "value": "Deutschland",
-          "placeholder": "Land eingeben",
-          "infobox": "Das Land, in dem das Gebäude steht."
-        },
+
         "orientation": {
           "label": "Blickrichtung",
           "placeholder": "Blickrichtung eingeben",
@@ -313,11 +302,6 @@
         "label": "Eigentümer",
         "placeholder": "Eigentümer des Gebäudes eingeben",
         "infobox": "Der Eigentümer des Gebäudes."
-      },
-      "denomination": {
-        "label": "Konfessionszugehörigkeit",
-        "placeholder": "Falls Zugehörigkeit gegeben",
-        "infobox": "Die Konfessionszugehörigkeit des Gebäudes."
       }
     },
     "classification": {
@@ -420,7 +404,8 @@
         "description": "Sind Sie sicher, dass Sie das Formular zurücksetzen wollen? Alle eingegebenen Daten werden gelöscht.",
         "cancel": "Abbrechen",
         "confirm": "Zurücksetzen"
-      }
+      },
+      "fieldNavigator": "Feldnavigator"
     }
   },
   "LocaleSwitcher": {

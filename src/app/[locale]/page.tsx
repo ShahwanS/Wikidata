@@ -1,14 +1,13 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Popup from '@/components/Popup';
 import RichTextField from '@/components/RichTextField';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronRight, Loader2, ChevronUp } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 import FormFieldGroup from '@/components/FormFieldGroup';
 import { useFormFields } from '@/hooks/useFormFields';
 import { useRichTextFields } from '@/hooks/useRichTextFields';
 import { useTranslatedRecords } from '@/hooks/useTranslatedRecords';
-import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import SignupForm from '@/components/SignupForm';
 import { useFormSubmit } from '@/hooks/useFormSubmit';
@@ -16,8 +15,8 @@ import { useUserInfo } from '@/hooks/useUserInfo';
 import { loadExamples } from '@/utils/exampleLoader';
 import { groupFieldsByCategory } from '@/utils/utils';
 import { useSource } from '@/context/SourceContext';
-import { Menu } from 'lucide-react';
 import { ResetFormPopup } from '@/components/ui/resetFormPopup';
+import FieldNavigator from '@/components/FieldNavigator';
 /**
  * Define the Home components
  * This component is the main page of the application.
@@ -25,7 +24,6 @@ import { ResetFormPopup } from '@/components/ui/resetFormPopup';
  */
 export default function Home() {
   // Initialize hooks and state variables
-  // const t = useTranslations("initial");
   const { fields, addFields, removeField, setFields, initialFields } = useFormFields();
   const {
     richTextState,
@@ -41,6 +39,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [showResetModal, setShowResetModal] = useState<boolean>(false);
   const [showSubmitModal, setShowSubmitModal] = useState<boolean>(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const params = useParams() as { locale: string };
   const locale = params?.locale || 'de';
   const { getPropertyByName, tInitial } = useTranslatedRecords();
@@ -52,6 +51,23 @@ export default function Home() {
     setShowSubmitModal,
   );
   const { sources, setSources } = useSource();
+
+  // Handle scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   // Confirm the reset action
   const confirmReset = () => {
@@ -71,32 +87,44 @@ export default function Home() {
   // Render the component
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-4 sm:p-6 lg:p-8">
-      <div>
+      {/* Scroll to top button */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 z-50 rounded-full bg-gray-600 p-3 text-white shadow-lg transition-all hover:bg-gray-500"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="h-6 w-6" />
+        </button>
+      )}
+
+      <div className="group">
         <button
           onClick={() => setShowPopup(!showPopup)}
-          className={`group fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-3 rounded-r-2xl bg-white px-3 py-6 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-xl ${
+          className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-3 rounded-r-2xl bg-white px-3 py-6 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-xl group-hover:translate-x-1 ${
             showPopup ? 'translate-x-[-100%] opacity-0' : 'translate-x-0 opacity-100'
           }`}
           aria-label="Toggle Property Selector"
         >
-          <div className="flex transform flex-col items-center gap-3 transition-transform duration-300 group-hover:translate-x-1">
-            <ChevronRight className="h-6 w-6 text-gray-700 group-hover:text-gray-900" />
-            <span className="rotate-180 font-medium tracking-wider text-gray-700 [writing-mode:vertical-lr] group-hover:text-gray-900">
-              {tInitial('form.addFields')}
-            </span>
-          </div>
+          <ChevronRight className="h-6 w-6 text-gray-700 group-hover:text-gray-900" />
+          <span className="rotate-180 font-medium tracking-wider text-gray-700 [writing-mode:vertical-lr] group-hover:text-gray-900">
+            {tInitial('form.addFields')}
+          </span>
         </button>
       </div>
-      <div className="mx-auto w-full max-w-6xl">
+
+      <div className="mx-auto w-full max-w-[80rem]">
         {showSignupModal && <SignupForm onClose={handleSignupClose} />}
-        <div className="flex flex-col gap-8 lg:flex-row">
+        <div className="flex gap-8">
+          {/* Left Sidebar - Property Selector */}
           {showPopup && (
-            <div className="lg:w-1/3">
-              <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} />
+            <div className="w-[400px] shrink-0">
+              <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} fields={fields} />
             </div>
           )}
 
-          <div className={`flex-grow ${showPopup ? 'lg:w-3/4' : 'w-full'}`}>
+          {/* Main Form Content */}
+          <div className={`min-w-0 flex-1 transition-all duration-300`}>
             <form
               onSubmit={(event) =>
                 handleSubmit(
@@ -212,6 +240,20 @@ export default function Home() {
               </div>
             </form>
           </div>
+
+          {/* Right Sidebar - Field Navigator */}
+          {fields.length > 0 && !showPopup && (
+            <div className="hidden w-[300px] shrink-0 lg:block">
+              <FieldNavigator
+                fields={fields}
+                tInitial={tInitial}
+                richTextFields={{
+                  titles: richTextTitle,
+                  contents: richTextState,
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {showResetModal && (

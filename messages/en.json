@@ -184,18 +184,7 @@
           "placeholder": "Enter latitude and longitude",
           "infobox": "The coordinates of the building."
         },
-        "timezone": {
-          "label": "Time Zone",
-          "value": "CET",
-          "placeholder": "Enter time zone",
-          "infobox": "The time zone of the building."
-        },
-        "country": {
-          "label": "Country",
-          "value": "Germany",
-          "placeholder": "Enter country",
-          "infobox": "The country of the building."
-        },
+
         "orientation": {
           "label": "Orientation",
           "placeholder": "Enter orientation",
@@ -313,11 +302,6 @@
         "label": "Owner",
         "placeholder": "Enter owner of the building",
         "infobox": "The owner of the building."
-      },
-      "denomination": {
-        "label": "Denomination",
-        "placeholder": "Enter denomination if applicable",
-        "infobox": "The denomination of the building."
       }
     },
     "classification": {
@@ -419,7 +403,8 @@
         "description": "Are you sure you want to reset the form? All entered data will be deleted.",
         "cancel": "Cancel",
         "confirm": "Start new entry"
-      }
+      },
+      "fieldNavigator": "Field Navigator"
     }
   },
   "LocaleSwitcher": {

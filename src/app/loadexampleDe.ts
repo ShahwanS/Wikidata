@@ -53,8 +53,7 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
     createExampleField('Blickrichtung', ['Süden'], getPropertyByName),
     createExampleField('Rollstuhl geeignet', [''], getPropertyByName),
     createExampleField('Koordinaten', ['50°48\'36.7"N, 8°46\'1.2"E'], getPropertyByName),
-    getPropertyByName('Land'),
-    getPropertyByName('Zeitzone'),
+
     getPropertyByName('Baumaterial'),
     createExampleField('Komplette Adresse', ['Schloss 1'], getPropertyByName),
     createExampleField('Postleitzahl', ['35037'], getPropertyByName),
@@ -80,7 +79,6 @@ export function exampleSources(): Record<string, string> {
     P742: 'Lokale Verwendung und Tourismusbroschüren, 2023',
     P571: 'Archäologische Studien, Universität Marburg, 2018',
     P3342: "Hessische Landesarchiv, 'Landgrafen von Hessen', 2015",
-    // Add more example sources as needed
   };
 }
 
@@ -90,6 +88,7 @@ export function exampleRichtexts(
 ) {
   const exampleRichtextTitles: { [key: string]: string } = {};
   exampleRichtextTitles['Rich Text0'] = 'Öffnungszeiten des Museums';
+  exampleRichtextTitles['Rich Text1'] = 'Bedeutung und heutige Nutzung der Anlage';
   setRichTextTitle(exampleRichtextTitles);
   const exampleRichtexts: { [key: string]: string } = {};
   exampleRichtexts['Rich Text0'] =

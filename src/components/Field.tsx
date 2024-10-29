@@ -114,7 +114,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   );
 
   return (
-    <div className="mb-6">
+    <div className="mb-6" id={`${name}`}>
       <div className="mb-2 flex items-center justify-between">
         <label className="flex items-center text-sm font-medium text-gray-700">
           {name}
@@ -154,6 +154,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
           <div key={name + 'in' + index} className="mb-4 flex items-center">
             <div className="mr-2 flex-grow">
               <input
+                key={name + 'in' + index} // Add key to force re-render
                 className={`${baseInputClasses} file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100`}
                 placeholder={placeholder}
                 type={type}
@@ -172,13 +173,9 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                 }}
               />
               {data && (
-                <Image
-                  alt={`Ausgewähltes ${name}`}
-                  src={data}
-                  width={500}
-                  height={300}
-                  className="mt-2"
-                />
+                <div className="relative mt-2">
+                  <Image alt={`Ausgewähltes ${name}`} src={data} width={500} height={300} />
+                </div>
               )}
             </div>
             {inputFields.length > 1 && (
