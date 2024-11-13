@@ -23,12 +23,20 @@ export const convertDataToJson = (
       : getTitle(dataAsMap.get('Name Information'));
 
   addTitleToJson(title, jsonOutput);
-  const userInfoSection = [
-    { h2: 'User Information' },
-    { p: `User ID: ${userInfo.userId}` },
-    { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
-    { p: `Email: ${userInfo.userEmail}` },
-  ];
+  const userInfoSection =
+    locale === 'de'
+      ? [
+          { h2: 'Benutzerinformationen' },
+          { p: `Benutzer-ID: ${userInfo.userId}` },
+          { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
+          { p: `E-Mail: ${userInfo.userEmail}` },
+        ]
+      : [
+          { h2: 'User Information' },
+          { p: `User ID: ${userInfo.userId}` },
+          { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
+          { p: `Email: ${userInfo.userEmail}` },
+        ];
   jsonOutput.push(...userInfoSection);
   // Add all Data in Map to JSON
   dataAsMap.forEach((dataList, category) => {

@@ -384,6 +384,7 @@
       "additionalText": "Zusätzlicher Text",
       "richTextPlaceholder": "Text eingeben",
       "infobox": "Nützliche Informationen über das Gebäude, die nicht durch andere Felder abgedeckt werden.",
+      "success": "Informationen erfolgreich gespeichert",
       "addRichText": "Freitext hinzufügen",
       "resetAllFields": "Alle Felder zurücksetzen",
       "submit": "Speichern",
@@ -405,7 +406,12 @@
         "cancel": "Abbrechen",
         "confirm": "Zurücksetzen"
       },
-      "fieldNavigator": "Feldnavigator"
+      "fieldNavigator": "Feldnavigator",
+      "preview": {
+        "title": "Überprüfung der Einreichung",
+        "confirm": "Einreichen",
+        "cancel": "Abbrechen"
+      }
     }
   },
   "LocaleSwitcher": {

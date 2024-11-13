@@ -73,14 +73,12 @@ export function useFormSubmit(
       userInfo,
     );
 
-    // downloadMarkdownFile(markupOutput);
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
       const fileName = fieldsData['Offizieller Name0'] || fieldsData['Official Name0'] || 'output';
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);
-        console.log('sending');
         await commitToGitLab(fileName.toString(), markupOutput, userInfo);
         handleReset();
       } catch (error) {

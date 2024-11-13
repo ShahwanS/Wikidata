@@ -387,6 +387,7 @@
       "resetAllFields": "Reset all fields",
       "submit": "Save",
       "formSaved": "Form saved",
+      "succes:": "Information submitted successfully.",
       "errorSending": "Error sending the markup file to GitLab.",
       "resetFormTitle": "Reset form",
       "resetFormDescription": "Are you sure you want to reset the form? All entered data will be deleted.",
@@ -404,7 +405,12 @@
         "cancel": "Cancel",
         "confirm": "Start new entry"
       },
-      "fieldNavigator": "Field Navigator"
+      "fieldNavigator": "Field Navigator",
+      "preview": {
+        "title": "Submission review",
+        "confirm": "Submit",
+        "cancel": "Cancel"
+      }
     }
   },
   "LocaleSwitcher": {
