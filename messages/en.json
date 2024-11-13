@@ -371,6 +371,10 @@
         "placeholder": "Upload floor plan",
         "infobox": "A floor plan of the building."
       }
+    },
+    "copyright": {
+      "label": "Copyright",
+      "placeholder": "Enter copyright"
     }
   },
   "initial": {

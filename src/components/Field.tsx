@@ -33,6 +33,8 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const [previewSource, setPreviewSource] = useState<string>('');
   const tSourcePopup = useTranslations('SourcePopup');
   const { handleSourceSubmit, sources } = useSource();
+  const [copyrightFields, setCopyrightFields] = useState<string[]>(Array(inputFields.length).fill(''));
+
   const baseInputClasses =
     'w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md';
 
@@ -42,14 +44,30 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     }
   }, [sources, wikidataprop]);
 
-  const addInputField = () => setInputFields([...inputFields, '']);
+ 
+  const addInputField = () => {
+    setInputFields([...inputFields, '']);
+    setCopyrightFields([...copyrightFields, '']);
+  };
 
   const removeInputField = (index: number) => {
     if (inputFields.length > 1) {
       setInputFields(inputFields.filter((_, i) => i !== index));
+      setCopyrightFields(copyrightFields.filter((_, i) => i !== index));
     } else {
       onDelete?.();
     }
+  };
+
+  
+  const handleCopyrightChange = (index: number, value: string) => {
+    const newCopyrightFields = [...copyrightFields];
+    newCopyrightFields[index] = value;
+    setCopyrightFields(newCopyrightFields);
+
+    onChange?.({
+      target: { name: `copyright_${name}${index}`, value },
+    } as React.ChangeEvent<HTMLInputElement>);
   };
 
   const handleInputChange = (index: number, value: string) => {
@@ -151,47 +169,62 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
       {renderSourcePreview()}
       {type === 'file' ? (
         inputFields.map((data, index) => (
-          <div key={name + 'in' + index} className="mb-4 flex items-center">
-            <div className="mr-2 flex-grow">
-              <input
-                key={name + 'in' + index} // Add key to force re-render
-                className={`${baseInputClasses} file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100`}
-                placeholder={placeholder}
-                type={type}
-                name={name + index}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                      const updatedData = [...inputFields];
-                      updatedData[index] = reader.result?.toString() || '';
-                      setInputFields(updatedData);
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
-              />
-              {data && (
-                <div className="relative mt-2">
-                  <Image alt={`Ausgewähltes ${name}`} src={data} width={500} height={300} />
-                </div>
-              )}
+          <div key={name + 'in' + index} className="mb-4">
+            <div className="flex items-center">
+              <div className="mr-2 flex-grow">
+                <input
+                  key={name + 'in' + index}
+                  className={`${baseInputClasses} file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100`}
+                  placeholder={placeholder}
+                  type={type}
+                  name={name + index}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const updatedData = [...inputFields];
+                        updatedData[index] = reader.result?.toString() || '';
+                        setInputFields(updatedData);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </div>
+            
+                <button
+                  type="button"
+                  onClick={() => removeInputField(index)}
+                  className="p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
+                  aria-label={`Delete ${name}`}
+                  tabIndex={-1}
+                >
+                  <MdDeleteOutline size="20px" />
+                </button>
+            
             </div>
-            {inputFields.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeInputField(index)}
-                className="p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
-                aria-label={`Delete ${name}`}
-                tabIndex={-1}
-              >
-                <MdDeleteOutline size="20px" />
-              </button>
+            {/* Add copyright input field */}
+            
+            {data && (
+              <div className="relative mt-2">
+                <Image alt={`Ausgewähltes ${name}`} src={data} width={500} height={300} />
+                <div className="mt-2">
+              <InputField
+                className={`${baseInputClasses} bg-white`}
+                placeholder={tForm('copyright.placeholder')}
+                type="text"
+                name={`copyright_${name}${index}`}
+                value={copyrightFields[index]}
+                onChange={(e) => handleCopyrightChange(index, e.target.value)}
+                required
+              />
+            </div>
+              </div>
             )}
           </div>
         ))
-      ) : type === 'radio' ? (
+      )  : type === 'radio' ? (
         inputFields.map((d, index) => (
           <div key={name + index} className="mb-2 flex items-center">
             <div className="flex-grow">

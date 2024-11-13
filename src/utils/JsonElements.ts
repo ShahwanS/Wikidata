@@ -36,13 +36,12 @@ export async function addDataFromCategoryToJson(
   let currentSources: string[] = [];
   let pendingPromises: Promise<void>[] = [];
 
-  for (const [dataName, inputData, wikiprop, source] of dataList) {
+  for (const [dataName, inputData, wikiprop, source, copyright] of dataList) {
     const isUrl = wikiprop === 'P856';
     const isRichtext = wikiprop === 'richtext';
     const isImage = checkImage(inputData, wikiprop);
 
     if (currentEntry && (wikiprop !== currentEntry.wikiprop || isImage || isUrl || isRichtext)) {
-      // Add the current entry to jsonOutput with combined sources
       addEntryToJson(currentEntry, jsonOutput, currentSources);
       currentEntry = null;
       currentSources = [];
@@ -53,8 +52,11 @@ export async function addDataFromCategoryToJson(
         console.warn(`No image data provided for ${dataName}. Skipping.`);
         return;
       } else {
+        // Pass the copyright information with the input data
+        const imageData = inputData;
+        imageData[4] = copyright; // Add copyright as the fifth element
         const imagePromise = uploadImageAndAddToJson(
-          inputData,
+          imageData,
           dataName,
           jsonOutput,
           title,
@@ -84,14 +86,12 @@ export async function addDataFromCategoryToJson(
     }
   }
 
-  // Add the last entry if it exists
   if (currentEntry) {
     addEntryToJson(currentEntry, jsonOutput, currentSources);
   }
 
   await Promise.all(pendingPromises);
 }
-
 /**
  * Adds normal data (non-URL, non-rich text) to the JSON output.
  * @param entry Entry object containing wikiprop, dataName, unit, values, and sources
@@ -144,18 +144,21 @@ async function uploadImageAndAddToJson(
     );
 
   const sourceText = source ? `\nsource:\t${source}` : '';
+  const copyright = inputData[4] ? `\ncopyright:\t${inputData[4]}` : '';
+
   let newEntry;
   if (wikiprop !== undefined) {
     newEntry = {
       p: isShowedWikiProps
-        ? `### ${wikiprop} ${dataName}\n![${dataName}](${rawFilePath})${sourceText}`
-        : `### ${dataName}\n![${dataName}](${rawFilePath})${sourceText}`,
+        ? `### ${wikiprop} ${dataName}\n![${dataName}](${rawFilePath})${sourceText}${copyright}`
+        : `### ${dataName}\n![${dataName}](${rawFilePath})${sourceText}${copyright}`,
     };
   } else {
     newEntry = {
-      p: `### ${dataName}\n![${dataName}](${rawFilePath})${sourceText}`,
+      p: `### ${dataName}\n![${dataName}](${rawFilePath})${sourceText}${copyright}`,
     };
   }
+
 
   // Optimistically push to jsonOutput
   console.log('Optimistically pushing new entry to jsonOutput:');

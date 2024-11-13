@@ -371,6 +371,10 @@
         "placeholder": "Grundrissdarstellung hochladen",
         "infobox": "Ein Grundriss des Gebäudes."
       }
+    },
+    "copyright": {
+      "label": "Copyright",
+      "placeholder": "Copyright eingeben"
     }
   },
 

@@ -127,29 +127,46 @@ export function setNormalDataInMap(
   resultMap: any,
   CATEGORY_AND_PROPERTY_MAP: any,
 ) {
+  // For copyright fields, get the original field name and category
+  if (dataName.startsWith('copyright_')) {
+    const originalFieldName = dataName.replace('copyright_', '').replace(/\d+$/, '');
+    const categoryAndWikiprop = getCategoryAndWikipropAsList(originalFieldName, CATEGORY_AND_PROPERTY_MAP);
+    if (!categoryAndWikiprop) return;
+
+    const [category] = categoryAndWikiprop;
+    if (!resultMap.has(category)) return;
+
+    const categoryData = resultMap.get(category);
+    // Find the corresponding image entry and add copyright
+    const imageEntry = categoryData.find((entry: any[]) => entry[0] === originalFieldName);
+    if (imageEntry) {
+      imageEntry[4] = inputData; // Add copyright as the 5th element
+    }
+    return;
+  }
+
+  // Regular field handling
   const categoryAndWikiprop = getCategoryAndWikipropAsList(dataName, CATEGORY_AND_PROPERTY_MAP);
   if (!categoryAndWikiprop) {
     console.error('No category and WikiProp found for:', dataName);
     return;
   }
-  const [category, wikiprop] = categoryAndWikiprop;
 
+  const [category, wikiprop] = categoryAndWikiprop;
   const source = sources[wikiprop];
 
   if (!resultMap.has(category)) {
     resultMap.set(category, []);
   }
-
   const categoryData = resultMap.get(category);
   const existingEntry = categoryData.find((entry: string[]) => entry[2] === wikiprop);
+  
   if (existingEntry) {
-    // For additional fields, we'll add a new entry with the same wikiprop as the existing entry
     categoryData.push([dataName, inputData, existingEntry[2], source]);
   } else {
     categoryData.push([dataName, inputData, wikiprop, source]);
   }
 }
-
 /**
  * Get the category and wiki property as a list for the given dataName
  * @param dataName The name of the data
