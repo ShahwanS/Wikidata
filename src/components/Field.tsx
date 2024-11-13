@@ -209,17 +209,16 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                 </div>
               ))}
             </div>
-            {inputFields.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeInputField(index)}
-                className="ml-2 p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
-                aria-label={`Delete ${name}`}
-                tabIndex={-1}
-              >
-                <MdDeleteOutline size="20px" />
-              </button>
-            )}
+
+            <button
+              type="button"
+              onClick={() => removeInputField(index)}
+              className="ml-2 p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
+              aria-label={`Delete ${name}`}
+              tabIndex={-1}
+            >
+              <MdDeleteOutline size="20px" />
+            </button>
           </div>
         ))
       ) : type === 'richtext' ? (
