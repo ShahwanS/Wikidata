@@ -12,6 +12,7 @@ import SourcePopup from './SourcePopup';
 import { useTranslations } from 'next-intl';
 import { Property } from '@/types/property';
 import { useSource } from '@/context/SourceContext';
+import Link from 'next/link';
 export interface FieldProps {
   property: Property;
   onDelete?: () => void;
@@ -38,7 +39,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   );
 
   const baseInputClasses =
-    'w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md';
+    'w-full px-4 py-2 border border-primary-light/30 rounded-lg transition duration-300 ease-in-out focus:border-primary-medium focus:ring-1 focus:ring-primary-medium focus:outline-none shadow-sm text-primary-dark focus:shadow-md';
 
   useEffect(() => {
     if (wikidataprop && sources[wikidataprop]) {
@@ -100,19 +101,19 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const renderSourcePreview = () => {
     return (
       previewSource && (
-        <div className="my-2 rounded-md bg-gray-200 p-1 shadow-md sm:my-3 sm:p-2">
-          <div className="flex max-h-36 flex-col items-center justify-center overflow-y-auto rounded-md bg-white p-1 text-gray-600 sm:max-h-48 sm:p-2">
-            <p className="mb-1 text-sm font-semibold text-gray-700 sm:mb-2 sm:text-base">
+        <div className="my-2 rounded-md bg-primary-light/10 p-1 shadow-md sm:my-3 sm:p-2">
+          <div className="flex max-h-36 flex-col items-center justify-center overflow-y-auto rounded-md bg-accent p-1 text-primary-medium sm:max-h-48 sm:p-2">
+            <p className="mb-1 text-sm font-semibold text-primary-dark sm:mb-2 sm:text-base">
               {tSourcePopup('sourceLabel')}:
             </p>
             {previewSource.split(`${tSourcePopup('referencesLabel')}:`).map((part, index) => (
               <div key={index} className={index === 1 ? 'mt-2 sm:mt-3' : ''}>
                 {index === 1 && (
-                  <p className="mb-1 text-sm font-semibold text-gray-700 sm:mb-2 sm:text-base">
+                  <p className="mb-1 text-sm font-semibold text-primary-dark sm:mb-2 sm:text-base">
                     {tSourcePopup('referencesLabel')}:
                   </p>
                 )}
-                <p className="whitespace-pre-wrap text-center text-sm sm:text-base">
+                <p className="whitespace-pre-wrap text-center text-sm text-primary-medium sm:text-base">
                   {part.trim()}
                 </p>
               </div>
@@ -122,7 +123,6 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
       )
     );
   };
-
   const renderSourceButtons = () => (
     <div className="mt-2 sm:mt-4">
       {type !== 'richtext' && (
@@ -138,31 +138,20 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   return (
     <div className="mb-4 sm:mb-6" id={`${name}`}>
       <div className="mb-1 flex items-center justify-between sm:mb-2">
-        <label className="flex items-center text-xs font-medium text-gray-700 sm:text-sm">
+        <label className="text-primary-dark flex items-center text-xs font-medium sm:text-sm">
           {name}
           {wikidataprop && (
-            <span className="ml-1 text-xs text-gray-500 sm:ml-2">
+            <span className="text-primary-medium/70 ml-1 text-xs sm:ml-2">
               (
-              <a
+              <Link
                 href={`https://www.wikidata.org/wiki/Property:${wikidataprop}`}
                 target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 transition-colors duration-200 hover:text-blue-800"
+                className="text-primary-medium hover:text-primary-dark"
               >
                 {wikidataprop}
-              </a>
+              </Link>
               )
             </span>
-          )}
-          {!unique && (
-            <button
-              type="button"
-              onClick={addInputField}
-              className="ml-1 p-0.5 text-green-600 transition-colors duration-200 hover:text-green-800 sm:ml-2 sm:p-1"
-              tabIndex={-1}
-            >
-              <CiCirclePlus className="h-4 w-4 sm:h-5 sm:w-5 text-green-700" />
-            </button>
           )}
         </label>
         <div className="flex flex-col items-center">
@@ -202,8 +191,8 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
               <button
                 type="button"
-                onClick={() => removeInputField(index)}
-                className="p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:p-2"
+                onClick={onDelete}
+                className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
                 aria-label={`Delete ${name}`}
                 tabIndex={-1}
               >
@@ -256,8 +245,8 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
             <button
               type="button"
-              onClick={() => removeInputField(index)}
-              className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-2"
+              onClick={onDelete}
+              className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
               aria-label={`Delete ${name}`}
               tabIndex={-1}
             >
@@ -267,55 +256,62 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
         ))
       ) : type === 'richtext' ? (
         <div className="flex items-center">
-          <div className="flex-grow">
-            <input
-              key={name}
-              className={`${baseInputClasses} bg-white text-sm sm:text-base`}
-              placeholder={placeholder}
-              type="text"
-              defaultValue={value || ''}
-              onChange={onChange}
-            />
+        <div className="flex-grow">
+          <input
+            key={name}
+            className={`${baseInputClasses} ${
+              error 
+                ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-primary-medium/70' 
+                : 'bg-accent'
+            } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}            placeholder={placeholder}
+            type="text"
+            defaultValue={value || ''}
+            onChange={onChange}
+          />
+          <div className="mt-2 bg-accent text-primary-dark">
             {children}
           </div>
-          {onDelete && (
-            <button
-              type="button"
-              onClick={onDelete}
-              className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-1"
-              aria-label={`Delete ${name}`}
-              tabIndex={-1}
-            >
-              <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
-            </button>
-          )}
         </div>
+        {onDelete && (
+          <button
+            type="button"
+            onClick={onDelete}
+            className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
+            aria-label={`Delete ${name}`}
+            tabIndex={-1}
+          >
+            <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+        )}
+      </div>
       ) : (
         <>
           {inputFields.map((d, index) => (
-            <div key={name + 'in' + index} className="mb-2 flex flex-col sm:mb-4">
-              <div className="mb-1 flex items-center sm:mb-2">
-                <InputField
-                  className={`${baseInputClasses} ${
-                    error ? 'border-red-500' : 'bg-white'
-                  } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
-                  placeholder={placeholder}
-                  type={type}
-                  name={name + index}
-                  value={d}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  {...(type === 'number' ? { min: '0' } : {})}
-                />
+        <div key={name + 'in' + index} className="mb-2 flex flex-col sm:mb-4">
+        <div className="mb-1 flex items-center sm:mb-2">
+          <InputField
+            className={`${baseInputClasses} ${
+              error 
+                ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-primary-medium/70' 
+                : 'bg-accent'
+            } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
+            placeholder={placeholder}
+            type={type}
+            name={name + index}
+            value={d}
+            onChange={(e) => handleInputChange(index, e.target.value)}
+            {...(type === 'number' ? { min: '0' } : {})}
+          />
                 {property.unit && (
-                  <label className="ml-1 text-sm text-gray-600 sm:ml-2 sm:text-base">
+                  <label className="text-primary-medium ml-1 text-sm sm:ml-2 sm:text-base">
                     {property.unit}
                   </label>
                 )}
                 {name !== tForm('nameDetails.officialName.label') && (
                   <button
                     type="button"
-                    onClick={() => removeInputField(index)}
-                    className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-[7px]"
+                    onClick={onDelete}
+                    className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
                     aria-label={`Delete ${name}`}
                     tabIndex={-1}
                   >
@@ -326,7 +322,9 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
             </div>
           ))}
           {error && (
-            <p className="mb-1 mt-0.5 text-xs text-red-500 sm:mb-2 sm:mt-1 sm:text-sm">{error}</p>
+            <p className="mb-1 mt-0.5 text-xs text-destructive sm:mb-2 sm:mt-1 sm:text-sm">
+              {error}
+            </p>
           )}
         </>
       )}

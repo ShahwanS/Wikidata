@@ -42,27 +42,24 @@ export default function SignupForm({
 
   const onSubmit = async (data: SignupFormValues) => {
     setIsSubmitting(true);
-    const userId = uuidv4(); // Generate a unique ID for the user
+    const userId = uuidv4();
     const userInfo = {
       userId,
       userFirstName: data.firstname,
       userLastName: data.lastname,
       userEmail: data.email,
     };
-    // Set cookies
     Object.entries(userInfo).forEach(([key, value]) => {
       document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Strict; Secure`;
     });
-
-    // Pass userInfo back to parent
     onClose(userInfo);
     setIsSubmitting(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-xl">
-        <h2 className="mb-6 text-center text-2xl font-bold">Sign Up</h2>
+    <div className="bg-primary-dark/50 fixed inset-0 z-50 flex items-center justify-center">
+      <div className="w-full max-w-md rounded-lg bg-accent p-8 shadow-xl">
+        <h2 className="text-primary-dark mb-6 text-center text-2xl font-bold">Sign Up</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -70,11 +67,14 @@ export default function SignupForm({
               name="firstname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel className="text-primary-dark">First Name</FormLabel>
                   <FormControl>
-                    <InputField {...field} className="w-full" />
+                    <InputField
+                      {...field}
+                      className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium w-full bg-accent"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-destructive" />
                 </FormItem>
               )}
             />
@@ -83,11 +83,14 @@ export default function SignupForm({
               name="lastname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel className="text-primary-dark">Last Name</FormLabel>
                   <FormControl>
-                    <InputField {...field} className="w-full" />
+                    <InputField
+                      {...field}
+                      className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium w-full bg-accent"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-destructive" />
                 </FormItem>
               )}
             />
@@ -96,17 +99,36 @@ export default function SignupForm({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-primary-dark">Email</FormLabel>
                   <FormControl>
-                    <InputField {...field} type="email" className="w-full" />
+                    <InputField
+                      {...field}
+                      type="email"
+                      className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium w-full bg-accent"
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-destructive" />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full text-white" disabled={isSubmitting}>
-              {isSubmitting ? 'Submitting...' : 'Sign Up'}
-            </Button>
+        <div className="flex gap-4">
+  <Button 
+    type="button" 
+    variant="outline"
+    onClick={() => onClose({})}
+    className="flex-1 border border-primary-light/30 bg-accent text-primary-dark transition-colors hover:bg-primary-light/10"
+    disabled={isSubmitting}
+  >
+    Cancel
+  </Button>
+  <Button 
+    type="submit" 
+    className="flex-1 bg-primary-medium text-accent transition-colors hover:bg-primary-dark" 
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? 'Submitting...' : 'Sign Up'}
+  </Button>
+</div>
           </form>
         </Form>
       </div>

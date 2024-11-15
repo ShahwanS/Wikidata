@@ -19,12 +19,11 @@ const config = {
     extend: {
       colors: {
         // Your new color palette
-        'primary-dark': '#1E201E',
-        'primary-medium': '#3C3D37',
-        'primary-light': '#697565',
-        'accent': '#ECDFCC',
+        'primary-dark': '#27374D',
+        'primary-medium': '#526D82',
+        'primary-light': '#9DB2BF',
         
-        // Keep existing system colors but update their values
+        // System colors with updated values
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -46,7 +45,10 @@ const config = {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
-      
+        accent: {
+          DEFAULT: '#DDE6ED', 
+          foreground: 'hsl(var(--accent-foreground))',
+        },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
@@ -55,25 +57,6 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-      },
-      animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },

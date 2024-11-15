@@ -85,12 +85,12 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
   }
 
   return (
-    <div className="fixed left-0 top-0 flex h-full w-full flex-col overflow-hidden bg-white shadow-xl sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
-      <div className="flex items-center justify-between border-b p-2 sm:p-2.5 md:p-3">
-        <h2 className="text-base font-semibold text-gray-800 sm:text-lg md:text-xl">
+    <div className="fixed left-0 top-0 flex h-full w-full flex-col overflow-hidden bg-accent shadow-xl sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
+      <div className="flex items-center justify-between border-b border-primary-light/20 p-2 sm:p-2.5 md:p-3">
+        <h2 className="text-base font-semibold text-primary-dark sm:text-lg md:text-xl">
           {t('categories')}
         </h2>
-        <button onClick={onClose} className="text-gray-600 transition-colors hover:text-gray-800">
+        <button onClick={onClose} className="text-primary-medium transition-colors hover:text-primary-dark">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5"
@@ -107,33 +107,33 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
           </svg>
         </button>
       </div>
-
+  
       <div className="flex flex-1 overflow-hidden">
         {/* Category List */}
-        <div className="w-full overflow-y-auto border-r bg-gray-50 sm:w-1/2">
+        <div className="w-full overflow-y-auto border-r border-primary-light/20 bg-primary-light/5 sm:w-1/2">
           {Object.values(categories).map((category) => (
             <div
               key={category.title}
-              className={`cursor-pointer p-2 transition-colors hover:bg-gray-200 sm:p-2.5 md:p-3 ${
-                selectedCategory === category.title ? 'border-l-4 border-sky-500 bg-gray-200' : ''
+              className={`cursor-pointer p-2 transition-colors hover:bg-primary-light/10 sm:p-2.5 md:p-3 ${
+                selectedCategory === category.title ? 'border-l-4 border-primary-medium bg-primary-light/20' : ''
               }`}
               onClick={() => handleCategorySelect(category.title)}
             >
-              <h3 className="text-sm font-semibold text-gray-800 sm:text-sm md:text-base">
+              <h3 className="text-sm font-semibold text-primary-dark sm:text-sm md:text-base">
                 {category.title}
               </h3>
-              <p className="text-xs text-gray-600 sm:text-xs md:text-sm">
+              <p className="text-xs text-primary-medium sm:text-xs md:text-sm">
                 {category.description}
               </p>
             </div>
           ))}
         </div>
-
+  
         {/* Property List */}
-        <div className="w-full overflow-y-auto bg-white sm:w-1/2">
+        <div className="w-full overflow-y-auto bg-accent sm:w-1/2">
           {selectedCategory &&
             Object.entries(properties[selectedCategory]).map(([subCategory, info]) => (
-              <div key={subCategory} className="border-b p-2 sm:p-2.5 md:p-3">
+              <div key={subCategory} className="border-b border-primary-light/20 p-2 sm:p-2.5 md:p-3">
                 <div className="flex items-center">
                   <Checkbox 
                     id={`add-${subCategory}`}
@@ -145,7 +145,7 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
                   />
                   <label
                     htmlFor={`add-${subCategory}`}
-                    className="ml-2 block text-xs font-medium text-gray-700 sm:text-xs md:text-sm"
+                    className="ml-2 block text-xs font-medium text-primary-dark sm:text-xs md:text-sm"
                   >
                     {t('selectAll')}
                     {subCategory}
@@ -157,14 +157,14 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
                       key={property}
                       className={`cursor-pointer rounded-lg p-2 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-2.5 ${
                         selectedProperties.includes(property)
-                          ? 'border-2 border-sky-500 bg-sky-100'
+                          ? 'border-2 border-primary-medium bg-primary-light/20'
                           : isPropertyInFields(property)
-                            ? 'border-2 border-red-500 bg-red-50'
-                            : 'bg-gray-100'
+                            ? 'border-2 border-destructive bg-destructive/10'
+                            : 'bg-primary-light/5'
                       }`}
                       onClick={() => handlePropertyToggle(property)}
                     >
-                      <span className="text-xs font-medium text-gray-800 sm:text-xs md:text-sm">
+                      <span className="text-xs font-medium text-primary-dark sm:text-xs md:text-sm">
                         {property}
                       </span>
                     </li>
@@ -174,24 +174,25 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
             ))}
         </div>
       </div>
-
+  
       {/* Footer */}
-      <div className="border-t bg-gray-100 p-2 sm:p-2.5 md:p-3">
+      <div className="border-t border-primary-light/20 bg-primary-light/5 p-2 sm:p-2.5 md:p-3">
         <div className="flex flex-col space-y-2">
           <button
             onClick={handleAddSelectedFields}
-            className="rounded bg-gray-600 px-3 py-1.5 text-xs font-bold text-white transition duration-300 hover:bg-gray-700 sm:text-sm md:text-base"
+            className="rounded bg-primary-medium px-3 py-1.5 text-xs font-bold text-accent transition duration-300 hover:bg-primary-dark sm:text-sm md:text-base"
             disabled={selectedProperties.length === 0}
           >
             {t('addSelected', { count: selectedProperties.length })}
           </button>
-          <span className="mt-1 text-center text-xs text-gray-600 sm:text-xs md:text-sm">
+          <span className="mt-1 text-center text-xs text-primary-medium sm:text-xs md:text-sm">
             {t('selectProperties')}
           </span>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default Popup;
