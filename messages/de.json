@@ -415,6 +415,48 @@
         "title": "Überprüfung der Einreichung",
         "confirm": "Einreichen",
         "cancel": "Abbrechen"
+      },
+      "LoadExample": {
+        "title": "Beispieldaten laden",
+        "description": "Sind Sie sicher, dass Sie die Beispieldaten laden wollen? Alle eingegebenen Daten werden gelöscht.",
+        "cancel": "Abbrechen",
+        "confirm": "Laden"
+      }
+     
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "dataSubmission": {
+        "question": "Was passiert, wenn ich meine Daten einreiche?",
+        "answer": "Wenn Sie Ihre Daten einreichen, werden diese in eine strukturierte Markdown-Datei umgewandelt. Diese Datei wird dann in unsere Datenbank zur Moderationsprüfung hochgeladen, bevor sie in das System integriert wird."
+      },
+      "sourceManagement": {
+        "question": "Wie füge ich Quellen zu meinen Einträgen hinzu?",
+        "answer": "Jedes Feld hat die Möglichkeit, Quellen hinzuzufügen. Klicken Sie auf die Schaltfläche 'Quelle hinzufügen' neben einem Feld, um Quelleninformationen und zusätzliche Referenzen hinzuzufügen."
+      },
+      "fieldNavigation": {
+        "question": "Wie kann ich durch viele Felder navigieren?",
+        "answer": "Nutzen Sie den Feldnavigator auf der rechten Seite des Bildschirms. Er bietet einen schnellen Überblick über alle Ihre Felder und ermöglicht es Ihnen, durch Klicken direkt zu jedem Abschnitt zu springen."
+      },
+      "imageUpload": {
+        "question": "Was sollte ich beim Hochladen von Bildern beachten?",
+        "answer": "Beim Hochladen von Bildern müssen Sie für jedes Bild Urheberrechtsinformationen angeben. Das System akzeptiert gängige Bildformate, und Sie können mehrere Bilder für verschiedene Ansichten des Gebäudes hinzufügen."
+      },
+      "addFields": {
+        "question": "Wie füge ich neue Felder hinzu?",
+        "answer": "Klicken Sie auf die Schaltfläche 'Weitere Felder hinzufügen' auf der linken Seite des Bildschirms, um die Eigenschaftsauswahl zu öffnen. Wählen Sie die gewünschten Felder aus und klicken Sie auf 'Ausgewählte Eigenschaften hinzufügen'."
+      },
+      "saveChanges": {
+        "question": "Wie speichere ich meine Änderungen?",
+        "answer": "Klicken Sie auf die grüne 'Speichern'-Schaltfläche am unteren Rand des Formulars. Ihre Daten werden gespeichert und Sie können mit der Bearbeitung fortfahren oder einen neuen Eintrag beginnen."
+      },
+      "resetForm": {
+        "question": "Kann ich das Formular zurücksetzen?",
+        "answer": "Ja, Sie können auf die Schaltfläche 'Alle Felder zurücksetzen' am unteren Rand des Formulars klicken. Dies löscht nach Bestätigung alle eingegebenen Daten."
+      },
+      "richText": {
+        "question": "Was sind Freitext-Felder?",
+        "answer": "Freitext-Felder ermöglichen es Ihnen, formatierten Text mit zusätzlichen Details einzugeben, die nicht in die Standardfelder passen. Sie können sie über die Schaltfläche 'Freitext hinzufügen' hinzufügen."
       }
     }
   },
@@ -425,7 +467,8 @@
   "PropertyPopup": {
     "categories": "Kategorien und Eigenschaften",
     "addSelected": "Füge {count} ausgewählte Eigenschaften hinzu",
-    "selectProperties": "Eigenschaften auswählen, die hinzugefügt werden sollen"
+    "selectProperties": "Eigenschaften auswählen, die hinzugefügt werden sollen",
+    "selectAll": "Alle Eigenschaften auswählen für "
   },
   "SourcePopup": {
     "title": "Quellen hinzufügen",
@@ -439,7 +482,8 @@
     "sourcePlaceholder": "Quelleninformationen eingeben",
     "referencesPlaceholder": "Zusätzliche Referenzen eingeben",
     "submit": "Speichern",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "selectSource": "Quelle auswählen"
   },
   "errors": {
     "required": "Dieses Feld ist erforderlich",

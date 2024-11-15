@@ -414,8 +414,50 @@
         "title": "Submission review",
         "confirm": "Submit",
         "cancel": "Cancel"
+      },
+      "LoadExample": {
+        "title": "Load example data",
+        "description": "Are you sure you want to load example data? All entered data will be deleted.",
+        "cancel": "Cancel",
+        "confirm": "Load"
       }
-    }
+      
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "dataSubmission": {
+        "question": "What happens when I submit my data?",
+        "answer": "When you submit your data, it gets transformed into a structured markdown file. This file is then uploaded to our database for moderation review before being integrated into the system."
+      },
+      "sourceManagement": {
+        "question": "How do I add sources to my entries?",
+        "answer": "Each field has an option to add sources. Click the 'Add Source' button next to a field to add source information and additional references that support your entry."
+      },
+      "fieldNavigation": {
+        "question": "How can I navigate through many fields?",
+        "answer": "Use the Field Navigator on the right side of the screen. It provides a quick overview of all your fields and allows you to jump directly to any section by clicking on it."
+      },
+      "imageUpload": {
+        "question": "What should I know about uploading images?",
+        "answer": "When uploading images, you must provide copyright information for each image. The system accepts common image formats, and you can add multiple images for different views of the building."
+      },
+        "addFields": {
+          "question": "How do I add new fields?",
+          "answer": "Click the 'Add Fields' button on the left side of the screen to open the property selector. Select the fields you want to add and click 'Add Selected Properties'."
+        },
+        "saveChanges": {
+          "question": "How do I save my changes?",
+          "answer": "Click the green 'Save' button at the bottom of the form. Your data will be saved and you can continue editing or start a new entry."
+        },
+        "resetForm": {
+          "question": "Can I reset the form?",
+          "answer": "Yes, you can click the 'Reset All Fields' button at the bottom of the form. This will clear all entered data after confirmation."
+        },
+        "richText": {
+          "question": "What are rich text fields?",
+          "answer": "Rich text fields allow you to enter formatted text with additional details that don't fit into the standard fields. You can add them using the 'Add Rich Text' button."
+        }
+      }
   },
   "LocaleSwitcher": {
     "label": "Change language",
@@ -424,7 +466,8 @@
   "PropertyPopup": {
     "categories": "Categories and properties",
     "addSelected": "Add {count} selected properties",
-    "selectProperties": "Select properties to add"
+    "selectProperties": "Select properties to add",
+    "selectAll": "Select all properties for "
   },
   "SourcePopup": {
     "title": "Add Source",
@@ -438,7 +481,8 @@
     "sourcePlaceholder": "Enter source information",
     "referencesPlaceholder": "Enter additional references",
     "submit": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "selectSource": "Select a source"
   },
   "errors": {
     "required": "This field is required",

@@ -33,7 +33,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
   const [selectedSource, setSelectedSource] = useState('');
   const t = useTranslations('SourcePopup');
   const { uniqueSources } = useSource();
-
+  
   useEffect(() => {
     if (isOpen) {
       if (currentSource) {
@@ -74,11 +74,12 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
           </DrawerDescription>
         </DrawerHeader>
         <div className="space-y-4 p-4">
+          {Object.keys(uniqueSources).length > 0 && (
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">Select a source</label>
-            <Select onValueChange={handleSourceSelect} value={selectedSource}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a source" />
+            <label className="mb-2 block text-sm font-medium text-gray-700">{t('selectSource')}</label>
+              <Select onValueChange={handleSourceSelect} value={selectedSource}>
+                <SelectTrigger className="w-full">
+                <SelectValue placeholder={t('selectSource')} />
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(uniqueSources).map(([fieldName, existingSource]) => {
@@ -96,13 +97,14 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
                   }`;
                   return (
                     <SelectItem key={fieldName} value={existingSource}>
-                      <div className="whitespace-pre-wrap">{displayText}</div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+                        <div className="whitespace-pre-wrap">{displayText}</div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
           </div>
+            )}
           <div>
             <label htmlFor="source" className="block text-sm font-medium text-gray-700">
               {t('sourceLabel')}

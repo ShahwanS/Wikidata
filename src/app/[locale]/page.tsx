@@ -51,6 +51,8 @@ export default function Home() {
     setShowSubmitModal,
   );
   const { sources, setSources } = useSource();
+  const [showLoadExampleModal, setShowLoadExampleModal] = useState<boolean>(false);
+
 
   // Handle scroll to top button visibility
   useEffect(() => {
@@ -84,30 +86,47 @@ export default function Home() {
     }
   };
 
+  const handleLoadExamples = () => {
+    setFields([]);
+    setRichTextState({});
+    setTimeout(() => {
+      loadExamples(
+        locale,
+        setFields,
+        setRichTextTitle,
+        setRichTextState,
+        setRichtextCounter,
+        getPropertyByName,
+        setSources,
+      );
+    }, 0);
+    setShowLoadExampleModal(false);
+  };
+
   // Render the component
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-200 p-2 sm:p-4 md:p-6 lg:p-8">
       {/* Scroll to top button */}
       {showScrollButton && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 rounded-full bg-gray-600 p-3 text-white shadow-lg transition-all hover:bg-gray-500"
+          className="fixed bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 z-50 rounded-full bg-gray-600 p-2 sm:p-3 text-white shadow-lg transition-all hover:bg-gray-500"
           aria-label="Scroll to top"
         >
-          <ChevronUp className="h-6 w-6" />
+          <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
         </button>
       )}
 
       <div className="group">
         <button
           onClick={() => setShowPopup(!showPopup)}
-          className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-3 rounded-r-2xl bg-white px-3 py-6 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-xl group-hover:translate-x-1 ${
+          className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-2 sm:gap-3 rounded-r-xl sm:rounded-r-2xl bg-white px-2 sm:px-3 py-4 sm:py-6 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-xl group-hover:translate-x-1 ${
             showPopup ? 'translate-x-[-100%] opacity-0' : 'translate-x-0 opacity-100'
           }`}
           aria-label="Toggle Property Selector"
         >
-          <ChevronRight className="h-6 w-6 text-gray-700 group-hover:text-gray-900" />
-          <span className="rotate-180 font-medium tracking-wider text-gray-700 [writing-mode:vertical-lr] group-hover:text-gray-900">
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-700 group-hover:text-gray-900" />
+          <span className="rotate-180 text-sm sm:text-base font-medium tracking-wider text-gray-700 [writing-mode:vertical-lr] group-hover:text-gray-900">
             {tInitial('form.addFields')}
           </span>
         </button>
@@ -115,10 +134,10 @@ export default function Home() {
 
       <div className="mx-auto w-full max-w-[80rem]">
         {showSignupModal && <SignupForm onClose={handleSignupClose} />}
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-6 md:gap-8">
           {/* Left Sidebar - Property Selector */}
           {showPopup && (
-            <div className="w-[400px] shrink-0">
+            <div className="w-[280px] sm:w-[320px] md:w-[360px] lg:w-[400px] shrink-0">
               <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} fields={fields} />
             </div>
           )}
@@ -137,15 +156,15 @@ export default function Home() {
                   handleReset,
                 )
               }
-              className="relative overflow-hidden rounded-3xl bg-white shadow-2xl"
+              className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-xl sm:shadow-2xl"
             >
               {isLoading && (
                 <div className="fixed inset-0 z-50 m-auto flex items-center justify-center bg-slate-500/20">
-                  <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
+                  <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 animate-spin text-sky-700" />
                 </div>
               )}
               {/* Form fields */}
-              <div className="space-y-12 p-8">
+              <div className="space-y-8 sm:space-y-10 md:space-y-12 p-4 sm:p-6 md:p-8">
                 {Object.entries(groupFieldsByCategory(fields, tInitial)).map(
                   ([category, fields], index) => (
                     <FormFieldGroup
@@ -160,8 +179,8 @@ export default function Home() {
                 )}
                 {/* Render RichText fields */}
                 {Object.keys(richTextState).length > 0 && (
-                  <div className="space-y-8">
-                    <h2 className="border-b-2 border-gray-200 pb-3 text-3xl font-bold text-gray-700">
+                  <div className="space-y-6 sm:space-y-7 md:space-y-8">
+                    <h2 className="border-b-2 border-gray-200 pb-2 sm:pb-3 text-xl sm:text-2xl md:text-3xl font-bold text-gray-700">
                       {tInitial('form.additionalText')}
                     </h2>
                     {Object.keys(richTextState).map((richtextName, index) => (
@@ -183,56 +202,42 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={addRichTextField}
-                  className="w-full rounded-lg bg-gray-600 py-3 font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+                  className="w-full rounded-lg bg-gray-600 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
                 >
                   {tInitial('form.addRichText')}
                 </button>
               </div>
-              <div className="space-y-8 bg-gray-100 px-8 py-8">
-                <div className="flex flex-wrap items-center justify-between gap-6">
+              <div className="space-y-6 sm:space-y-7 md:space-y-8 bg-gray-100 px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+                <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5 md:gap-6">
                   <button
                     type="button"
                     onClick={() => setShowPopup(!showPopup)}
-                    className="rounded-lg bg-gray-600 px-6 py-3 font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+                    className="rounded-lg bg-gray-600 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
                   >
                     {showPopup ? tInitial('form.closeSidebar') : tInitial('form.addFields')}
                   </button>
 
                   <button
-                    type="button"
-                    onClick={() => {
-                      setFields([]);
-                      setRichTextState({});
-                      setTimeout(() => {
-                        loadExamples(
-                          locale,
-                          setFields,
-                          setRichTextTitle,
-                          setRichTextState,
-                          setRichtextCounter,
-                          getPropertyByName,
-                          setSources,
-                        );
-                      }, 0);
-                    }}
-                    className="rounded-lg bg-gray-600 px-6 py-3 font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
-                  >
-                    {tInitial('form.loadExampleData')}
-                  </button>
+  type="button"
+  onClick={() => setShowLoadExampleModal(true)}
+  className="rounded-lg bg-gray-600 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+>
+  {tInitial('form.loadExampleData')}
+</button>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-6">
+                <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5 md:gap-6">
                   <button
                     type="button"
                     onClick={() => setShowResetModal(true)}
-                    className="rounded-lg bg-red-600 px-6 py-3 font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75"
+                    className="rounded-lg bg-red-600 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75"
                   >
                     {tInitial('form.resetAllFields')}
                   </button>
 
                   <button
                     type="submit"
-                    className="rounded-lg bg-green-600 px-8 py-4 font-bold text-white shadow-md transition duration-300 ease-in-out hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+                    className="rounded-lg bg-green-600 px-6 sm:px-7 md:px-8 py-3 sm:py-3.5 md:py-4 text-sm sm:text-base font-bold text-white shadow-md transition duration-300 ease-in-out hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
                   >
                     {tInitial('form.submit')}
                   </button>
@@ -243,7 +248,7 @@ export default function Home() {
 
           {/* Right Sidebar - Field Navigator */}
           {fields.length > 0 && !showPopup && (
-            <div className="hidden w-[300px] shrink-0 lg:block">
+            <div className="hidden lg:block w-[240px] xl:w-[300px] shrink-0">
               <FieldNavigator
                 fields={fields}
                 tInitial={tInitial}
@@ -274,6 +279,16 @@ export default function Home() {
             description={tInitial('form.FormSubmit.description')}
             cancel={tInitial('form.FormSubmit.cancel')}
             confirm={tInitial('form.FormSubmit.confirm')}
+          />
+        )}
+        {showLoadExampleModal && (
+  <ResetFormPopup
+    setShowResetModal={setShowLoadExampleModal}
+    confirmReset={handleLoadExamples}
+    title={tInitial('form.LoadExample.title')}
+    description={tInitial('form.LoadExample.description')}
+    cancel={tInitial('form.LoadExample.cancel')}
+    confirm={tInitial('form.LoadExample.confirm')}
           />
         )}
       </div>
