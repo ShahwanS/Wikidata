@@ -11,7 +11,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { ResetFormPopup } from './ui/resetFormPopup';
-
+import Image from 'next/image';
+import logo from '../public/logo.png';
 interface NavigationProps {
   onLoadExamples?: () => void;
 }
@@ -59,6 +60,9 @@ export default function Navigation({ onLoadExamples }: NavigationProps) {
   return (
     <header className="from-primary-dark to-primary-medium bg-gradient-to-r shadow-lg">
       <nav className="container mx-auto flex items-center justify-between p-4">
+        <div className="bg-accent rounded-full p-1">
+          <Image src={logo} alt="Logo" width={48} height={48} className="h-12 w-12" />
+        </div>
         <h1 className="text-3xl font-extrabold tracking-wide text-accent">{t('form.title')}</h1>
         <div className="flex items-center gap-4">
           <button
