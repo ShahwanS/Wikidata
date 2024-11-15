@@ -5,6 +5,27 @@ import {
 } from '@/utils/JsonElements';
 import { getTitle } from './utils';
 
+
+
+
+
+type JsonOutputElement = {
+  h1?: string;
+  h2?: string;
+  p?: string;
+};
+
+type UserInfo = {
+  userId: string;
+  userFirstName: string;
+  userLastName: string;
+  userEmail: string;
+};
+
+type DataMapValue = [string, any, string?, string?, string?][]; // [dataName, inputData, wikiprop?, source?, copyright?]
+
+
+
 /**
  * Convert data to JSON
  * @param dataAsMap (map with category and data)
@@ -17,33 +38,46 @@ export const convertDataToJson = (
   userInfo: Record<string, string>,
 ) => {
   const jsonOutput: { h1?: string; h2?: string; p?: string }[] = [];
-  const title =
-    locale === 'de'
-      ? getTitle(dataAsMap.get('Namensangaben'))
-      : getTitle(dataAsMap.get('Name Information'));
+ // Get title based on locale
+  const titleCategory = locale === 'de' ? 'Namensangaben' : 'Name Information';
+  const title = getTitle(dataAsMap.get(titleCategory));
 
   addTitleToJson(title, jsonOutput);
-  const userInfoSection =
-    locale === 'de'
-      ? [
-          { h2: 'Benutzerinformationen' },
-          { p: `Benutzer-ID: ${userInfo.userId}` },
-          { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
-          { p: `E-Mail: ${userInfo.userEmail}` },
-        ]
-      : [
-          { h2: 'User Information' },
-          { p: `User ID: ${userInfo.userId}` },
-          { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
-          { p: `Email: ${userInfo.userEmail}` },
-        ];
+  // Create and add user info section
+  const userInfoSection: JsonOutputElement[] = locale === 'de' 
+    ? [
+        { h2: 'Benutzerinformationen' },
+        { p: `Benutzer-ID: ${userInfo.userId}` },
+        { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
+        { p: `E-Mail: ${userInfo.userEmail}` },
+      ]
+    : [
+        { h2: 'User Information' },
+        { p: `User ID: ${userInfo.userId}` },
+        { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
+        { p: `Email: ${userInfo.userEmail}` },
+      ];
   jsonOutput.push(...userInfoSection);
-  // Add all Data in Map to JSON
-  dataAsMap.forEach((dataList, category) => {
-    let hasValidData = dataList.length > 0; // Flag to check if the category has valid data
+  // Process each category in the data map
+  dataAsMap.forEach((dataList: DataMapValue, category: string) => {
+    const hasValidData = dataList.some(([_, inputData, , ,]: DataMapValue[number]) => {
+      if (Array.isArray(inputData)) {
+        return inputData.some((item: any) =>
+          item !== null &&
+          item !== undefined &&
+          item !== '' && 
+          !(item instanceof File && item.size === 0)
+        );
+      }
+      return inputData !== null && 
+             inputData !== undefined && 
+             inputData !== '' &&
+             !(inputData instanceof File && inputData.size === 0);
+    });
+
     if (hasValidData) {
-      addCategoryAsSubtitleToJson(category, jsonOutput); // Add category name as Subtitle
-      addDataFromCategoryToJson(dataList, jsonOutput, title, getPropertyByName); // Add input in each category to JSON
+      addCategoryAsSubtitleToJson(category, jsonOutput);
+      addDataFromCategoryToJson(dataList, jsonOutput, title, getPropertyByName);
     }
   });
 
