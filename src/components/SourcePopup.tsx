@@ -65,21 +65,21 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="mx-auto max-w-[425px] bg-accent p-6">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-2xl font-bold text-primary-dark">
+          <DialogTitle className="text-primary-dark text-2xl font-bold">
             {currentSource ? t('editSource') : t('addSource')}
           </DialogTitle>
-          <DialogDescription className="mt-2 text-primary-medium">
+          <DialogDescription className="text-primary-medium mt-2">
             {currentSource ? t('editDescription') : t('addDescription')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           {Object.keys(uniqueSources).length > 0 && (
             <div>
-              <label className="mb-2 block text-sm font-medium text-primary-dark">
+              <label className="text-primary-dark mb-2 block text-sm font-medium">
                 {t('selectSource')}
               </label>
               <Select onValueChange={handleSourceSelect} value={selectedSource}>
-                <SelectTrigger className="w-full border-primary-light/30 bg-accent text-primary-dark">
+                <SelectTrigger className="border-primary-light/30 text-primary-dark w-full bg-accent">
                   <SelectValue placeholder={t('selectSource')} />
                 </SelectTrigger>
                 <SelectContent className="bg-accent">
@@ -89,7 +89,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
             </div>
           )}
           <div>
-            <label htmlFor="source" className="block text-sm font-medium text-primary-dark">
+            <label htmlFor="source" className="text-primary-dark block text-sm font-medium">
               {t('sourceLabel')}
             </label>
             <input
@@ -98,11 +98,11 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
               value={source}
               onChange={(e) => setSource(e.target.value)}
               placeholder={t('sourcePlaceholder')}
-              className="mt-1 block w-full rounded-md border border-primary-light/30 bg-accent px-3 py-2 text-primary-dark shadow-sm placeholder:text-primary-medium/70 focus:border-primary-medium focus:outline-none focus:ring-1 focus:ring-primary-medium"
+              className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium mt-1 block w-full rounded-md border bg-accent px-3 py-2 shadow-sm focus:outline-none focus:ring-1"
             />
           </div>
           <div>
-            <label htmlFor="references" className="block text-sm font-medium text-primary-dark">
+            <label htmlFor="references" className="text-primary-dark block text-sm font-medium">
               {t('referencesLabel')}
             </label>
             <textarea
@@ -111,22 +111,22 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
               value={references}
               onChange={(e) => setReferences(e.target.value)}
               placeholder={t('referencesPlaceholder')}
-              className="mt-1 block w-full rounded-md border border-primary-light/30 bg-accent px-3 py-2 text-primary-dark shadow-sm placeholder:text-primary-medium/70 focus:border-primary-medium focus:outline-none focus:ring-1 focus:ring-primary-medium"
+              className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium mt-1 block w-full rounded-md border bg-accent px-3 py-2 shadow-sm focus:outline-none focus:ring-1"
             ></textarea>
           </div>
         </div>
         <DialogFooter className="flex-col space-y-2 sm:space-x-2">
           <div className="flex w-full justify-between gap-4">
-            <Button 
-              variant="outline" 
-              onClick={onClose} 
-              className="flex-1 border-primary-light/30 text-primary-dark hover:bg-primary-light/10"
+            <Button
+              variant="outline"
+              onClick={onClose}
+              className="border-primary-dark/30 text-primary-dark hover:bg-primary-light/10 flex-1 border bg-accent"
             >
               {t('cancel')}
             </Button>
-            <Button 
-              onClick={handleSubmit} 
-              className="flex-1 bg-primary-medium text-accent hover:bg-primary-dark"
+            <Button
+              onClick={handleSubmit}
+              className="bg-primary-medium hover:bg-primary-dark flex-1 text-accent transition-colors"
             >
               {t('submit')}
             </Button>
