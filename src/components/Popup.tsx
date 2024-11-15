@@ -70,7 +70,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
   return (
     <div className="fixed left-0 top-0 flex h-full w-full flex-col overflow-hidden bg-white shadow-xl sm:w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
       <div className="flex items-center justify-between border-b p-2 sm:p-3 md:p-4">
-        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">{t('categories')}</h2>
+        <h2 className="text-lg font-semibold text-gray-800 sm:text-xl md:text-2xl">
+          {t('categories')}
+        </h2>
         <button onClick={onClose} className="text-gray-600 transition-colors hover:text-gray-800">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -95,13 +97,17 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
           {Object.values(categories).map((category) => (
             <div
               key={category.title}
-              className={`cursor-pointer p-2 sm:p-3 md:p-4 transition-colors hover:bg-gray-200 ${
+              className={`cursor-pointer p-2 transition-colors hover:bg-gray-200 sm:p-3 md:p-4 ${
                 selectedCategory === category.title ? 'border-l-4 border-sky-500 bg-gray-200' : ''
               }`}
               onClick={() => handleCategorySelect(category.title)}
             >
-              <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800">{category.title}</h3>
-              <p className="text-xs sm:text-sm md:text-base text-gray-600">{category.description}</p>
+              <h3 className="text-sm font-semibold text-gray-800 sm:text-base md:text-lg">
+                {category.title}
+              </h3>
+              <p className="text-xs text-gray-600 sm:text-sm md:text-base">
+                {category.description}
+              </p>
             </div>
           ))}
         </div>
@@ -120,20 +126,21 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
                       selectedProperties.includes(property),
                     )}
                     onChange={() => handleSubCategoryToggle(subCategory, selectedCategory)}
-                    className="form-checkbox h-4 w-4 sm:h-5 sm:w-5 text-gray-600 transition duration-150 ease-in-out"
+                    className="form-checkbox h-4 w-4 text-gray-600 transition duration-150 ease-in-out sm:h-5 sm:w-5"
                   />
                   <label
                     htmlFor={`add-${subCategory}`}
-                    className="ml-2 sm:ml-3 block text-xs sm:text-sm md:text-base font-medium text-gray-700"
+                    className="ml-2 block text-xs font-medium text-gray-700 sm:ml-3 sm:text-sm md:text-base"
                   >
-                    {t('selectAll')}{subCategory}
+                    {t('selectAll')}
+                    {subCategory}
                   </label>
                 </div>
-                <ul className="space-y-1 sm:space-y-2 p-1 sm:p-2">
+                <ul className="space-y-1 p-1 sm:space-y-2 sm:p-2">
                   {info.properties.map((property) => (
                     <li
                       key={property}
-                      className={`cursor-pointer rounded-lg p-2 sm:p-3 shadow-sm transition-shadow duration-200 hover:shadow-md ${
+                      className={`cursor-pointer rounded-lg p-2 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-3 ${
                         selectedProperties.includes(property)
                           ? 'border-2 border-sky-500 bg-sky-100'
                           : isPropertyInFields(property)
@@ -142,7 +149,9 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
                       }`}
                       onClick={() => handlePropertyToggle(property)}
                     >
-                      <span className="text-xs sm:text-sm md:text-base font-medium text-gray-800">{property}</span>
+                      <span className="text-xs font-medium text-gray-800 sm:text-sm md:text-base">
+                        {property}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -156,12 +165,14 @@ const Popup: React.FC<PopupProps> = ({ onAddFields, onClose, fields }) => {
         <div className="flex flex-col space-y-2 sm:space-y-3 md:space-y-4">
           <button
             onClick={handleAddSelectedFields}
-            className="rounded bg-gray-600 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base md:text-lg font-bold text-white transition duration-300 hover:bg-gray-700"
+            className="rounded bg-gray-600 px-3 py-1.5 text-sm font-bold text-white transition duration-300 hover:bg-gray-700 sm:px-4 sm:py-2 sm:text-base md:text-lg"
             disabled={selectedProperties.length === 0}
           >
             {t('addSelected', { count: selectedProperties.length })}
           </button>
-          <span className="mt-1 sm:mt-2 text-center text-xs sm:text-sm md:text-base text-gray-600">{t('selectProperties')}</span>
+          <span className="mt-1 text-center text-xs text-gray-600 sm:mt-2 sm:text-sm md:text-base">
+            {t('selectProperties')}
+          </span>
         </div>
       </div>
     </div>

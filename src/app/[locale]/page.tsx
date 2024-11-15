@@ -53,7 +53,6 @@ export default function Home() {
   const { sources, setSources } = useSource();
   const [showLoadExampleModal, setShowLoadExampleModal] = useState<boolean>(false);
 
-
   // Handle scroll to top button visibility
   useEffect(() => {
     const handleScroll = () => {
@@ -110,7 +109,7 @@ export default function Home() {
       {showScrollButton && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 z-50 rounded-full bg-gray-600 p-2 sm:p-3 text-white shadow-lg transition-all hover:bg-gray-500"
+          className="fixed bottom-4 right-4 z-50 rounded-full bg-gray-600 p-2 text-white shadow-lg transition-all hover:bg-gray-500 sm:bottom-6 sm:right-6 sm:p-3 md:bottom-8 md:right-8"
           aria-label="Scroll to top"
         >
           <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
@@ -120,13 +119,13 @@ export default function Home() {
       <div className="group">
         <button
           onClick={() => setShowPopup(!showPopup)}
-          className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-2 sm:gap-3 rounded-r-xl sm:rounded-r-2xl bg-white px-2 sm:px-3 py-4 sm:py-6 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-xl group-hover:translate-x-1 ${
+          className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-2 rounded-r-xl bg-white px-2 py-4 shadow-lg transition-all duration-300 ease-in-out hover:bg-gray-50 hover:shadow-xl group-hover:translate-x-1 sm:gap-3 sm:rounded-r-2xl sm:px-3 sm:py-6 ${
             showPopup ? 'translate-x-[-100%] opacity-0' : 'translate-x-0 opacity-100'
           }`}
           aria-label="Toggle Property Selector"
         >
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-700 group-hover:text-gray-900" />
-          <span className="rotate-180 text-sm sm:text-base font-medium tracking-wider text-gray-700 [writing-mode:vertical-lr] group-hover:text-gray-900">
+          <ChevronRight className="h-4 w-4 text-gray-700 group-hover:text-gray-900 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+          <span className="rotate-180 text-sm font-medium tracking-wider text-gray-700 [writing-mode:vertical-lr] group-hover:text-gray-900 sm:text-base">
             {tInitial('form.addFields')}
           </span>
         </button>
@@ -137,13 +136,21 @@ export default function Home() {
         <div className="flex gap-4 sm:gap-6 md:gap-8">
           {/* Left Sidebar - Property Selector */}
           {showPopup && (
-            <div className="w-[280px] sm:w-[320px] md:w-[360px] lg:w-[400px] shrink-0">
-              <Popup onAddFields={addFields} onClose={() => setShowPopup(false)} fields={fields} />
+            <div className="fixed inset-0 z-50 bg-white lg:relative lg:inset-auto lg:block lg:bg-transparent">
+              <div className="h-full w-full lg:h-auto lg:w-[320px] xl:w-[400px]">
+                <Popup
+                  onAddFields={addFields}
+                  onClose={() => setShowPopup(false)}
+                  fields={fields}
+                />
+              </div>
             </div>
           )}
 
           {/* Main Form Content */}
-          <div className={`min-w-0 flex-1 transition-all duration-300`}>
+          <div
+            className={`min-w-0 flex-1 transition-all duration-300 ${showPopup ? 'lg:ml-4' : ''}`}
+          >
             <form
               onSubmit={(event) =>
                 handleSubmit(
@@ -156,15 +163,15 @@ export default function Home() {
                   handleReset,
                 )
               }
-              className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-white shadow-xl sm:shadow-2xl"
+              className="relative overflow-hidden rounded-2xl bg-white shadow-xl sm:rounded-3xl sm:shadow-2xl"
             >
               {isLoading && (
                 <div className="fixed inset-0 z-50 m-auto flex items-center justify-center bg-slate-500/20">
-                  <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 animate-spin text-sky-700" />
+                  <Loader2 className="h-4 w-4 animate-spin text-sky-700 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                 </div>
               )}
               {/* Form fields */}
-              <div className="space-y-8 sm:space-y-10 md:space-y-12 p-4 sm:p-6 md:p-8">
+              <div className="space-y-8 p-4 sm:space-y-10 sm:p-6 md:space-y-12 md:p-8">
                 {Object.entries(groupFieldsByCategory(fields, tInitial)).map(
                   ([category, fields], index) => (
                     <FormFieldGroup
@@ -180,7 +187,7 @@ export default function Home() {
                 {/* Render RichText fields */}
                 {Object.keys(richTextState).length > 0 && (
                   <div className="space-y-6 sm:space-y-7 md:space-y-8">
-                    <h2 className="border-b-2 border-gray-200 pb-2 sm:pb-3 text-xl sm:text-2xl md:text-3xl font-bold text-gray-700">
+                    <h2 className="border-b-2 border-gray-200 pb-2 text-xl font-bold text-gray-700 sm:pb-3 sm:text-2xl md:text-3xl">
                       {tInitial('form.additionalText')}
                     </h2>
                     {Object.keys(richTextState).map((richtextName, index) => (
@@ -202,42 +209,42 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={addRichTextField}
-                  className="w-full rounded-lg bg-gray-600 py-2 sm:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+                  className="w-full rounded-lg bg-gray-600 py-2 text-sm font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 sm:py-3 sm:text-base"
                 >
                   {tInitial('form.addRichText')}
                 </button>
               </div>
-              <div className="space-y-6 sm:space-y-7 md:space-y-8 bg-gray-100 px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
+              <div className="space-y-6 bg-gray-100 px-4 py-4 sm:space-y-7 sm:px-6 sm:py-6 md:space-y-8 md:px-8 md:py-8">
                 <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5 md:gap-6">
                   <button
                     type="button"
                     onClick={() => setShowPopup(!showPopup)}
-                    className="rounded-lg bg-gray-600 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
+                    className="rounded-lg bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3"
                   >
                     {showPopup ? tInitial('form.closeSidebar') : tInitial('form.addFields')}
                   </button>
 
                   <button
-  type="button"
-  onClick={() => setShowLoadExampleModal(true)}
-  className="rounded-lg bg-gray-600 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75"
->
-  {tInitial('form.loadExampleData')}
-</button>
+                    type="button"
+                    onClick={() => setShowLoadExampleModal(true)}
+                    className="rounded-lg bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3"
+                  >
+                    {tInitial('form.loadExampleData')}
+                  </button>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5 md:gap-6">
                   <button
                     type="button"
                     onClick={() => setShowResetModal(true)}
-                    className="rounded-lg bg-red-600 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 text-sm sm:text-base font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75"
+                    className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition duration-300 ease-in-out hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 sm:px-5 sm:py-2.5 sm:text-base md:px-6 md:py-3"
                   >
                     {tInitial('form.resetAllFields')}
                   </button>
 
                   <button
                     type="submit"
-                    className="rounded-lg bg-green-600 px-6 sm:px-7 md:px-8 py-3 sm:py-3.5 md:py-4 text-sm sm:text-base font-bold text-white shadow-md transition duration-300 ease-in-out hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+                    className="rounded-lg bg-green-600 px-6 py-3 text-sm font-bold text-white shadow-md transition duration-300 ease-in-out hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 sm:px-7 sm:py-3.5 sm:text-base md:px-8 md:py-4"
                   >
                     {tInitial('form.submit')}
                   </button>
@@ -248,7 +255,7 @@ export default function Home() {
 
           {/* Right Sidebar - Field Navigator */}
           {fields.length > 0 && !showPopup && (
-            <div className="hidden lg:block w-[240px] xl:w-[300px] shrink-0">
+            <div className="hidden w-[240px] shrink-0 lg:block xl:w-[300px]">
               <FieldNavigator
                 fields={fields}
                 tInitial={tInitial}
@@ -282,13 +289,13 @@ export default function Home() {
           />
         )}
         {showLoadExampleModal && (
-  <ResetFormPopup
-    setShowResetModal={setShowLoadExampleModal}
-    confirmReset={handleLoadExamples}
-    title={tInitial('form.LoadExample.title')}
-    description={tInitial('form.LoadExample.description')}
-    cancel={tInitial('form.LoadExample.cancel')}
-    confirm={tInitial('form.LoadExample.confirm')}
+          <ResetFormPopup
+            setShowResetModal={setShowLoadExampleModal}
+            confirmReset={handleLoadExamples}
+            title={tInitial('form.LoadExample.title')}
+            description={tInitial('form.LoadExample.description')}
+            cancel={tInitial('form.LoadExample.cancel')}
+            confirm={tInitial('form.LoadExample.confirm')}
           />
         )}
       </div>

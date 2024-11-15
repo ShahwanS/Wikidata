@@ -33,7 +33,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
   const [selectedSource, setSelectedSource] = useState('');
   const t = useTranslations('SourcePopup');
   const { uniqueSources } = useSource();
-  
+
   useEffect(() => {
     if (isOpen) {
       if (currentSource) {
@@ -75,36 +75,38 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
         </DrawerHeader>
         <div className="space-y-4 p-4">
           {Object.keys(uniqueSources).length > 0 && (
-          <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">{t('selectSource')}</label>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                {t('selectSource')}
+              </label>
               <Select onValueChange={handleSourceSelect} value={selectedSource}>
                 <SelectTrigger className="w-full">
-                <SelectValue placeholder={t('selectSource')} />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(uniqueSources).map(([fieldName, existingSource]) => {
-                  const [mainSource, additionalReferences] = existingSource.split(
-                    `${t('referencesLabel')}:`,
-                  );
-                  const displayText = `${mainSource.trim().substring(0, 50)}${
-                    mainSource.length > 50 ? '...' : ''
-                  }\n${
-                    additionalReferences
-                      ? `${t('referencesLabel')}: ${additionalReferences.trim().substring(0, 50)}${
-                          additionalReferences.length > 50 ? '...' : ''
-                        }`
-                      : ''
-                  }`;
-                  return (
-                    <SelectItem key={fieldName} value={existingSource}>
+                  <SelectValue placeholder={t('selectSource')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(uniqueSources).map(([fieldName, existingSource]) => {
+                    const [mainSource, additionalReferences] = existingSource.split(
+                      `${t('referencesLabel')}:`,
+                    );
+                    const displayText = `${mainSource.trim().substring(0, 50)}${
+                      mainSource.length > 50 ? '...' : ''
+                    }\n${
+                      additionalReferences
+                        ? `${t('referencesLabel')}: ${additionalReferences.trim().substring(0, 50)}${
+                            additionalReferences.length > 50 ? '...' : ''
+                          }`
+                        : ''
+                    }`;
+                    return (
+                      <SelectItem key={fieldName} value={existingSource}>
                         <div className="whitespace-pre-wrap">{displayText}</div>
                       </SelectItem>
                     );
                   })}
                 </SelectContent>
               </Select>
-          </div>
-            )}
+            </div>
+          )}
           <div>
             <label htmlFor="source" className="block text-sm font-medium text-gray-700">
               {t('sourceLabel')}

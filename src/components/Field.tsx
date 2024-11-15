@@ -33,7 +33,9 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const [previewSource, setPreviewSource] = useState<string>('');
   const tSourcePopup = useTranslations('SourcePopup');
   const { handleSourceSubmit, sources } = useSource();
-  const [copyrightFields, setCopyrightFields] = useState<string[]>(Array(inputFields.length).fill(''));
+  const [copyrightFields, setCopyrightFields] = useState<string[]>(
+    Array(inputFields.length).fill(''),
+  );
 
   const baseInputClasses =
     'w-full px-4 py-2 border border-gray-300 rounded-lg transition duration-300 ease-in-out focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none shadow-sm text-gray-700 focus:shadow-md';
@@ -44,7 +46,6 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     }
   }, [sources, wikidataprop]);
 
- 
   const addInputField = () => {
     setInputFields([...inputFields, '']);
     setCopyrightFields([...copyrightFields, '']);
@@ -59,7 +60,6 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     }
   };
 
-  
   const handleCopyrightChange = (index: number, value: string) => {
     const newCopyrightFields = [...copyrightFields];
     newCopyrightFields[index] = value;
@@ -100,17 +100,21 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const renderSourcePreview = () => {
     return (
       previewSource && (
-        <div className="my-2 sm:my-3 rounded-md bg-gray-200 p-1 sm:p-2 shadow-md">
-          <div className="flex max-h-36 sm:max-h-48 flex-col items-center justify-center overflow-y-auto rounded-md bg-white p-1 sm:p-2 text-gray-600">
-            <p className="mb-1 sm:mb-2 text-sm sm:text-base font-semibold text-gray-700">{tSourcePopup('sourceLabel')}:</p>
+        <div className="my-2 rounded-md bg-gray-200 p-1 shadow-md sm:my-3 sm:p-2">
+          <div className="flex max-h-36 flex-col items-center justify-center overflow-y-auto rounded-md bg-white p-1 text-gray-600 sm:max-h-48 sm:p-2">
+            <p className="mb-1 text-sm font-semibold text-gray-700 sm:mb-2 sm:text-base">
+              {tSourcePopup('sourceLabel')}:
+            </p>
             {previewSource.split(`${tSourcePopup('referencesLabel')}:`).map((part, index) => (
               <div key={index} className={index === 1 ? 'mt-2 sm:mt-3' : ''}>
                 {index === 1 && (
-                  <p className="mb-1 sm:mb-2 text-sm sm:text-base font-semibold text-gray-700">
+                  <p className="mb-1 text-sm font-semibold text-gray-700 sm:mb-2 sm:text-base">
                     {tSourcePopup('referencesLabel')}:
                   </p>
                 )}
-                <p className="whitespace-pre-wrap text-center text-sm sm:text-base">{part.trim()}</p>
+                <p className="whitespace-pre-wrap text-center text-sm sm:text-base">
+                  {part.trim()}
+                </p>
               </div>
             ))}
           </div>
@@ -133,11 +137,11 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
   return (
     <div className="mb-4 sm:mb-6" id={`${name}`}>
-      <div className="mb-1 sm:mb-2 flex items-center justify-between">
-        <label className="flex items-center text-xs sm:text-sm font-medium text-gray-700">
+      <div className="mb-1 flex items-center justify-between sm:mb-2">
+        <label className="flex items-center text-xs font-medium text-gray-700 sm:text-sm">
           {name}
           {wikidataprop && (
-            <span className="ml-1 sm:ml-2 text-xs text-gray-500">
+            <span className="ml-1 text-xs text-gray-500 sm:ml-2">
               (
               <a
                 href={`https://www.wikidata.org/wiki/Property:${wikidataprop}`}
@@ -154,15 +158,18 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
             <button
               type="button"
               onClick={addInputField}
-              className="ml-1 sm:ml-2 p-0.5 sm:p-1 text-green-600 transition-colors duration-200 hover:text-green-800"
+              className="ml-1 p-0.5 text-green-600 transition-colors duration-200 hover:text-green-800 sm:ml-2 sm:p-1"
               tabIndex={-1}
             >
-              <CiCirclePlus className="w-4 h-4 sm:w-5 sm:h-5" />
+              <CiCirclePlus className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
           )}
         </label>
         <div className="flex flex-col items-center">
-          <LucideInfo className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 text-blue-500" data-tooltip-id={tooltipId} />
+          <LucideInfo
+            className="mr-1 h-4 w-4 text-blue-500 sm:mr-2 sm:h-5 sm:w-5"
+            data-tooltip-id={tooltipId}
+          />
           <ReactTooltip id={tooltipId} place="left" content={infobox} />
         </div>
       </div>
@@ -171,10 +178,10 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
         inputFields.map((data, index) => (
           <div key={name + 'in' + index} className="mb-2 sm:mb-4">
             <div className="flex items-center">
-              <div className="mr-1 sm:mr-2 flex-grow">
+              <div className="mr-1 flex-grow sm:mr-2">
                 <input
                   key={name + 'in' + index}
-                  className={`${baseInputClasses} text-sm sm:text-base file:mr-2 sm:file:mr-4 file:rounded-lg file:border-0 file:bg-blue-50 file:px-2 sm:file:px-4 file:text-xs sm:file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100`}
+                  className={`${baseInputClasses} text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-blue-50 file:px-2 file:text-xs file:font-semibold file:text-blue-700 hover:file:bg-blue-100 sm:text-base sm:file:mr-4 sm:file:px-4 sm:file:text-sm`}
                   placeholder={placeholder}
                   type={type}
                   name={name + index}
@@ -192,22 +199,27 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                   }}
                 />
               </div>
-            
-                <button
-                  type="button"
-                  onClick={() => removeInputField(index)}
-                  className="p-0.5 sm:p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
-                  aria-label={`Delete ${name}`}
-                  tabIndex={-1}
-                >
-                  <MdDeleteOutline className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-            
+
+              <button
+                type="button"
+                onClick={() => removeInputField(index)}
+                className="p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:p-1"
+                aria-label={`Delete ${name}`}
+                tabIndex={-1}
+              >
+                <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+              </button>
             </div>
-            
+
             {data && (
               <div className="relative mt-1 sm:mt-2">
-                <Image alt={`Ausgewähltes ${name}`} src={data} width={500} height={300} className="w-full" />
+                <Image
+                  alt={`Ausgewähltes ${name}`}
+                  src={data}
+                  width={500}
+                  height={300}
+                  className="w-full"
+                />
                 <div className="mt-1 sm:mt-2">
                   <InputField
                     className={`${baseInputClasses} bg-white text-sm sm:text-base`}
@@ -225,7 +237,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
         ))
       ) : type === 'radio' ? (
         inputFields.map((d, index) => (
-          <div key={name + index} className="mb-1 sm:mb-2 flex items-center">
+          <div key={name + index} className="mb-1 flex items-center sm:mb-2">
             <div className="flex-grow">
               {choices?.map((choice, i) => (
                 <div key={name + d + index + choice + i} className="text-sm sm:text-base">
@@ -245,48 +257,48 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
             <button
               type="button"
               onClick={() => removeInputField(index)}
-              className="ml-1 sm:ml-2 p-0.5 sm:p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
+              className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-1"
               aria-label={`Delete ${name}`}
               tabIndex={-1}
             >
-              <MdDeleteOutline className="w-4 h-4 sm:w-5 sm:h-5" />
+              <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
           </div>
         ))
       ) : type === 'richtext' ? (
         <div className="flex items-center">
-        <div className="flex-grow">
-          <input
-            key={name}
-            className={`${baseInputClasses} bg-white text-sm sm:text-base`}
-            placeholder={placeholder}
-            type="text"
-            defaultValue={value || ''}
-            onChange={onChange}
-          />
-          {children}
+          <div className="flex-grow">
+            <input
+              key={name}
+              className={`${baseInputClasses} bg-white text-sm sm:text-base`}
+              placeholder={placeholder}
+              type="text"
+              defaultValue={value || ''}
+              onChange={onChange}
+            />
+            {children}
+          </div>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-1"
+              aria-label={`Delete ${name}`}
+              tabIndex={-1}
+            >
+              <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+          )}
         </div>
-        {onDelete && (
-          <button
-            type="button"
-            onClick={onDelete}
-            className="ml-1 sm:ml-2 p-0.5 sm:p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
-            aria-label={`Delete ${name}`}
-            tabIndex={-1}
-          >
-            <MdDeleteOutline className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
-        )}
-      </div>
       ) : (
         <>
           {inputFields.map((d, index) => (
-            <div key={name + 'in' + index} className="mb-2 sm:mb-4 flex flex-col">
-              <div className="mb-1 sm:mb-2 flex items-center">
+            <div key={name + 'in' + index} className="mb-2 flex flex-col sm:mb-4">
+              <div className="mb-1 flex items-center sm:mb-2">
                 <InputField
                   className={`${baseInputClasses} ${
                     error ? 'border-red-500' : 'bg-white'
-                  } mr-1 sm:mr-2 flex-grow text-sm sm:text-base`}
+                  } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
                   placeholder={placeholder}
                   type={type}
                   name={name + index}
@@ -294,22 +306,28 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   {...(type === 'number' ? { min: '0' } : {})}
                 />
-                {property.unit && <label className="ml-1 sm:ml-2 text-gray-600 text-sm sm:text-base">{property.unit}</label>}
+                {property.unit && (
+                  <label className="ml-1 text-sm text-gray-600 sm:ml-2 sm:text-base">
+                    {property.unit}
+                  </label>
+                )}
                 {name !== tForm('nameDetails.officialName.label') && (
                   <button
                     type="button"
                     onClick={() => removeInputField(index)}
-                    className="ml-1 sm:ml-2 p-0.5 sm:p-1 text-red-500 transition-colors duration-200 hover:text-red-700"
+                    className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-1"
                     aria-label={`Delete ${name}`}
                     tabIndex={-1}
                   >
-                    <MdDeleteOutline className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
                 )}
               </div>
             </div>
           ))}
-          {error && <p className="mb-1 sm:mb-2 mt-0.5 sm:mt-1 text-xs sm:text-sm text-red-500">{error}</p>}
+          {error && (
+            <p className="mb-1 mt-0.5 text-xs text-red-500 sm:mb-2 sm:mt-1 sm:text-sm">{error}</p>
+          )}
         </>
       )}
       {renderSourceButtons()}
@@ -344,19 +362,17 @@ const SourceButtons: React.FC<SourceButtonsProps> = ({
       <Button
         variant="default"
         size="icon"
-        className="w-full px-4 sm:px-8 text-xs sm:text-sm"
+        className="w-full px-4 text-xs sm:px-8 sm:text-sm"
         onClick={() => setShowSourcePopup(true)}
         type="button"
       >
-        <span>
-          {previewSource ? tSourcePopup('editSource') : tSourcePopup('addSource')}
-        </span>
+        <span>{previewSource ? tSourcePopup('editSource') : tSourcePopup('addSource')}</span>
       </Button>
       {previewSource && (
         <Button
           variant="default"
           size="icon"
-          className="w-full px-4 sm:px-8 text-xs sm:text-sm"
+          className="w-full px-4 text-xs sm:px-8 sm:text-sm"
           onClick={handleRemoveSource}
           type="button"
         >

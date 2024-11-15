@@ -159,7 +159,6 @@ async function uploadImageAndAddToJson(
     };
   }
 
-
   // Optimistically push to jsonOutput
   console.log('Optimistically pushing new entry to jsonOutput:');
   jsonOutput.push(newEntry);

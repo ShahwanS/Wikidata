@@ -130,7 +130,10 @@ export function setNormalDataInMap(
   // For copyright fields, get the original field name and category
   if (dataName.startsWith('copyright_')) {
     const originalFieldName = dataName.replace('copyright_', '').replace(/\d+$/, '');
-    const categoryAndWikiprop = getCategoryAndWikipropAsList(originalFieldName, CATEGORY_AND_PROPERTY_MAP);
+    const categoryAndWikiprop = getCategoryAndWikipropAsList(
+      originalFieldName,
+      CATEGORY_AND_PROPERTY_MAP,
+    );
     if (!categoryAndWikiprop) return;
 
     const [category] = categoryAndWikiprop;
@@ -160,7 +163,7 @@ export function setNormalDataInMap(
   }
   const categoryData = resultMap.get(category);
   const existingEntry = categoryData.find((entry: string[]) => entry[2] === wikiprop);
-  
+
   if (existingEntry) {
     categoryData.push([dataName, inputData, existingEntry[2], source]);
   } else {
