@@ -19,19 +19,27 @@ export const ResetFormPopup: React.FC<ResetFormPopupProps> = ({
 }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="w-full max-w-lg space-y-6 rounded-lg bg-white p-8 shadow-xl">
-        <h3 className="text-center text-xl font-semibold text-gray-800">{title}</h3>
-        <p className="text-center text-gray-600">{description}</p>
-        <div className="flex justify-around space-x-4">
+      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+          <button
+            onClick={() => setShowResetModal(false)}
+            className="text-gray-400 hover:text-gray-500"
+          >
+            <span className="text-xl">×</span>
+          </button>
+        </div>
+        <p className="text-base text-gray-600 mb-5">{description}</p>
+        <div className="flex justify-end space-x-3">
           <Button
             onClick={() => setShowResetModal(false)}
-            className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition duration-200 hover:bg-gray-300"
+            className="rounded-md px-5 py-2 text-sm font-medium bg-gray-100 text-gray-900 hover:bg-gray-200"
           >
             {cancel}
           </Button>
           <Button
             onClick={confirmReset}
-            className="rounded-md bg-red-500 px-4 py-2 text-white transition duration-200 hover:bg-red-600"
+            className="rounded-md bg-red-600 px-5 py-2 text-sm font-medium text-white hover:bg-red-700"
           >
             {confirm}
           </Button>

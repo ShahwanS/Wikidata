@@ -28,7 +28,10 @@ const FormFieldGroup: React.FC<FormFieldGroupProps> = ({
 
   return (
     <div className="space-y-8">
-      <h2 className="border-b-2 border-gray-200 pb-3 text-3xl font-bold text-gray-700">
+      <h2
+        id={category}
+        className="border-b-2 border-gray-200 pb-3 text-3xl font-bold text-gray-700"
+      >
         {category}
       </h2>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">

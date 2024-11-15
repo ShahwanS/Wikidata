@@ -466,7 +466,7 @@
     "categories": "Categories and properties",
     "addSelected": "Add {count} selected properties",
     "selectProperties": "Select properties to add",
-    "selectAll": "Select all properties for "
+   "selectAll": "Select all in "
   },
   "SourcePopup": {
     "title": "Add Source",

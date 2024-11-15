@@ -161,7 +161,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
               className="ml-1 p-0.5 text-green-600 transition-colors duration-200 hover:text-green-800 sm:ml-2 sm:p-1"
               tabIndex={-1}
             >
-              <CiCirclePlus className="h-4 w-4 sm:h-5 sm:w-5" />
+              <CiCirclePlus className="h-4 w-4 sm:h-5 sm:w-5 text-green-700" />
             </button>
           )}
         </label>
@@ -203,7 +203,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
               <button
                 type="button"
                 onClick={() => removeInputField(index)}
-                className="p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:p-1"
+                className="p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:p-2"
                 aria-label={`Delete ${name}`}
                 tabIndex={-1}
               >
@@ -257,7 +257,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
             <button
               type="button"
               onClick={() => removeInputField(index)}
-              className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-1"
+              className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-2"
               aria-label={`Delete ${name}`}
               tabIndex={-1}
             >
@@ -315,7 +315,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                   <button
                     type="button"
                     onClick={() => removeInputField(index)}
-                    className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-1"
+                    className="ml-1 p-0.5 text-red-500 transition-colors duration-200 hover:text-red-700 sm:ml-2 sm:p-[7px]"
                     aria-label={`Delete ${name}`}
                     tabIndex={-1}
                   >

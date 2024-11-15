@@ -1,14 +1,13 @@
 'use client';
 
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
@@ -63,17 +62,17 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className="sm:max-w-[425px]">
-        <DrawerHeader>
-          <DrawerTitle className="text-2xl font-bold">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="mx-auto max-w-[425px] p-6">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-2xl font-bold">
             {currentSource ? t('editSource') : t('addSource')}
-          </DrawerTitle>
-          <DrawerDescription>
+          </DialogTitle>
+          <DialogDescription className="mt-2">
             {currentSource ? t('editDescription') : t('addDescription')}
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="space-y-4 p-4">
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
           {Object.keys(uniqueSources).length > 0 && (
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -134,18 +133,18 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
             ></textarea>
           </div>
         </div>
-        <DrawerFooter>
-          <Button onClick={handleSubmit} className="w-full text-white">
-            {t('submit')}
-          </Button>
-          <DrawerClose asChild>
-            <Button variant="outline" onClick={onClose} className="mt-2 w-full">
+        <DialogFooter className="flex-col space-y-2 sm:space-x-2">
+          <div className="flex w-full justify-between gap-4">
+            <Button variant="outline" onClick={onClose} className="flex-1">
               {t('cancel')}
             </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+            <Button onClick={handleSubmit} className="flex-1 text-white">
+              {t('submit')}
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

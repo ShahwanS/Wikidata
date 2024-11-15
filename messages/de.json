@@ -467,7 +467,7 @@
     "categories": "Kategorien und Eigenschaften",
     "addSelected": "Füge {count} ausgewählte Eigenschaften hinzu",
     "selectProperties": "Eigenschaften auswählen, die hinzugefügt werden sollen",
-    "selectAll": "Alle Eigenschaften auswählen für "
+    "selectAll": "Alle in "
   },
   "SourcePopup": {
     "title": "Quellen hinzufügen",
