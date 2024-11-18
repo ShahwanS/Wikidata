@@ -496,5 +496,16 @@
     "invalidNumber": "Ungültiges Nummernformat",
     "invalidRadio": "Ungültige Option ausgewählt",
     "mustBeInteger": "Muss eine ganze Zahl sein"
+  },
+  "SignupForm": {
+    "title": "Anmelden",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "submitting": "Einreichen...",
+    "submit": "Einreichen",
+    "firstNameRequired": "Vorname ist erforderlich",
+    "lastNameRequired": "Nachname ist erforderlich",
+    "invalidEmail": "Ungültiges E-Mail-Format"
   }
 }

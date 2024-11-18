@@ -42,7 +42,7 @@ export const useFormFields = () => {
         placeholder: 'https://example.com',
         wikidataprop: 'P856',
         required: true,
-        infobox: t('media.image.infobox'),
+        infobox: t('links.website.infobox'),
       },
     ];
   }

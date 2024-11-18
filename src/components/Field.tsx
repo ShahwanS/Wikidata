@@ -138,10 +138,10 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   return (
     <div className="mb-4 sm:mb-6" id={`${name}`}>
       <div className="mb-1 flex items-center justify-between sm:mb-2">
-        <label className="text-primary-dark flex items-center text-xs font-medium sm:text-sm">
+        <label className="flex items-center text-xs font-medium text-primary-dark sm:text-sm">
           {name}
           {wikidataprop && (
-            <span className="text-primary-medium/70 ml-1 text-xs sm:ml-2">
+            <span className="ml-1 text-xs text-primary-medium/70 sm:ml-2">
               (
               <Link
                 href={`https://www.wikidata.org/wiki/Property:${wikidataprop}`}
@@ -153,6 +153,16 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
               )
             </span>
           )}
+          {!unique && (
+            <button
+              type="button"
+              onClick={addInputField}
+              className="ml-1 p-0.5 text-primary-medium transition-colors duration-200 hover:text-primary-dark sm:ml-2 sm:p-2"
+              aria-label={`Add ${name}`}
+            >
+              <CiCirclePlus className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+          )}
         </label>
         <div className="flex flex-col items-center">
           <LucideInfo
@@ -162,10 +172,12 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
           <ReactTooltip id={tooltipId} place="left" content={infobox} />
         </div>
       </div>
+      {error && <p className="mb-1 mt-0.5 text-xs text-destructive sm:text-sm">{error}</p>}
+
       {renderSourcePreview()}
       {type === 'file' ? (
         inputFields.map((data, index) => (
-          <div key={name + 'in' + index} className="mb-2 sm:mb-4">
+          <div key={name + 'in' + index} className="mb-2 sm:mt-[14px]">
             <div className="flex items-center">
               <div className="mr-1 flex-grow sm:mr-2">
                 <input
@@ -191,7 +203,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
               <button
                 type="button"
-                onClick={onDelete}
+                onClick={() => removeInputField(index)}
                 className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
                 aria-label={`Delete ${name}`}
                 tabIndex={-1}
@@ -211,7 +223,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                 />
                 <div className="mt-1 sm:mt-2">
                   <InputField
-                    className={`${baseInputClasses} bg-white text-sm sm:text-base`}
+                    className={`${baseInputClasses} bg-white text-sm placeholder:text-gray-400 sm:text-base`}
                     placeholder={tForm('copyright.placeholder')}
                     type="text"
                     name={`copyright_${name}${index}`}
@@ -229,7 +241,10 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
           <div key={name + index} className="mb-1 flex items-center sm:mb-2">
             <div className="flex-grow">
               {choices?.map((choice, i) => (
-                <div key={name + d + index + choice + i} className="text-sm sm:text-base">
+                <div
+                  key={name + d + index + choice + i}
+                  className="text-sm text-gray-800 sm:text-base"
+                >
                   <input
                     type="radio"
                     id={choice + index}
@@ -245,7 +260,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
             <button
               type="button"
-              onClick={onDelete}
+              onClick={() => removeInputField(index)}
               className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
               aria-label={`Delete ${name}`}
               tabIndex={-1}
@@ -256,61 +271,60 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
         ))
       ) : type === 'richtext' ? (
         <div className="flex items-center">
-        <div className="flex-grow">
-          <input
-            key={name}
-            className={`${baseInputClasses} ${
-              error 
-                ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-primary-medium/70' 
-                : 'bg-accent'
-            } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}            placeholder={placeholder}
-            type="text"
-            defaultValue={value || ''}
-            onChange={onChange}
-          />
-          <div className="mt-2 bg-accent text-primary-dark">
-            {children}
+          <div className="flex-grow">
+            <input
+              key={name}
+              className={`${baseInputClasses} ${
+                error
+                  ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-destructive/70'
+                  : 'bg-accent placeholder:text-gray-400'
+              } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
+              placeholder={placeholder}
+              type="text"
+              defaultValue={value || ''}
+              onChange={onChange}
+            />
+            <div className="mt-2 bg-accent text-primary-dark">{children}</div>
           </div>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => removeInputField(0)}
+              className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
+              aria-label={`Delete ${name}`}
+              tabIndex={-1}
+            >
+              <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+          )}
         </div>
-        {onDelete && (
-          <button
-            type="button"
-            onClick={onDelete}
-            className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
-            aria-label={`Delete ${name}`}
-            tabIndex={-1}
-          >
-            <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
-          </button>
-        )}
-      </div>
       ) : (
         <>
           {inputFields.map((d, index) => (
-        <div key={name + 'in' + index} className="mb-2 flex flex-col sm:mb-4">
-        <div className="mb-1 flex items-center sm:mb-2">
-          <InputField
-            className={`${baseInputClasses} ${
-              error 
-                ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-primary-medium/70' 
-                : 'bg-accent'
-            } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
-            placeholder={placeholder}
-            type={type}
-            name={name + index}
-            value={d}
-            onChange={(e) => handleInputChange(index, e.target.value)}
-            {...(type === 'number' ? { min: '0' } : {})}
-          />
+            <div key={name + 'in' + index} className="mb-2 flex flex-col sm:mb-4">
+              <div className="mb-1 flex items-center sm:mb-2">
+                <InputField
+                  className={`${baseInputClasses} ${
+                    error
+                      ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-destructive/70'
+                      : 'bg-accent placeholder:text-gray-400'
+                  } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
+                  placeholder={placeholder}
+                  type={type}
+                  name={name + index}
+                  value={d}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
+                  {...(type === 'number' ? { min: '0' } : {})}
+                />
                 {property.unit && (
-                  <label className="text-primary-medium ml-1 text-sm sm:ml-2 sm:text-base">
+                  <label className="ml-1 text-sm text-primary-medium sm:ml-2 sm:text-base">
                     {property.unit}
                   </label>
                 )}
                 {name !== tForm('nameDetails.officialName.label') && (
                   <button
                     type="button"
-                    onClick={onDelete}
+                    onClick={() => removeInputField(index)}
                     className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
                     aria-label={`Delete ${name}`}
                     tabIndex={-1}
@@ -321,11 +335,6 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
               </div>
             </div>
           ))}
-          {error && (
-            <p className="mb-1 mt-0.5 text-xs text-destructive sm:mb-2 sm:mt-1 sm:text-sm">
-              {error}
-            </p>
-          )}
         </>
       )}
       {renderSourceButtons()}

@@ -15,14 +15,7 @@ import {
 } from '@/components/ui/form';
 import { InputField } from '@/components/ui/input';
 import { v4 as uuidv4 } from 'uuid';
-
-const signupSchema = z.object({
-  firstname: z.string().min(1, 'First name is required'),
-  lastname: z.string().min(1, 'Last name is required'),
-  email: z.string().email('Invalid email address'),
-});
-
-type SignupFormValues = z.infer<typeof signupSchema>;
+import { useTranslations } from 'next-intl';
 
 export default function SignupForm({
   onClose,
@@ -30,7 +23,14 @@ export default function SignupForm({
   onClose: (userInfo: Record<string, string>) => void;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const tSignupForm = useTranslations('SignupForm');
 
+  const signupSchema = z.object({
+    firstname: z.string().min(1, tSignupForm('firstNameRequired')),
+    lastname: z.string().min(1, tSignupForm('lastNameRequired')),
+    email: z.string().email(tSignupForm('invalidEmail')),
+  });
+  type SignupFormValues = z.infer<typeof signupSchema>;
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -57,9 +57,11 @@ export default function SignupForm({
   };
 
   return (
-    <div className="bg-primary-dark/50 fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-dark/50">
       <div className="w-full max-w-md rounded-lg bg-accent p-8 shadow-xl">
-        <h2 className="text-primary-dark mb-6 text-center text-2xl font-bold">Sign Up</h2>
+        <h2 className="mb-6 text-center text-2xl font-bold text-primary-dark">
+          {tSignupForm('title')}
+        </h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -67,11 +69,11 @@ export default function SignupForm({
               name="firstname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-primary-dark">First Name</FormLabel>
+                  <FormLabel className="text-primary-dark">{tSignupForm('firstName')}</FormLabel>
                   <FormControl>
                     <InputField
                       {...field}
-                      className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium w-full bg-accent"
+                      className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
                     />
                   </FormControl>
                   <FormMessage className="text-destructive" />
@@ -83,11 +85,11 @@ export default function SignupForm({
               name="lastname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-primary-dark">Last Name</FormLabel>
+                  <FormLabel className="text-primary-dark">{tSignupForm('lastName')}</FormLabel>
                   <FormControl>
                     <InputField
                       {...field}
-                      className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium w-full bg-accent"
+                      className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
                     />
                   </FormControl>
                   <FormMessage className="text-destructive" />
@@ -99,36 +101,27 @@ export default function SignupForm({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-primary-dark">Email</FormLabel>
+                  <FormLabel className="text-primary-dark">{tSignupForm('email')}</FormLabel>
                   <FormControl>
                     <InputField
                       {...field}
                       type="email"
-                      className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium w-full bg-accent"
+                      className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
                     />
                   </FormControl>
                   <FormMessage className="text-destructive" />
                 </FormItem>
               )}
             />
-        <div className="flex gap-4">
-  <Button 
-    type="button" 
-    variant="outline"
-    onClick={() => onClose({})}
-    className="flex-1 border border-primary-light/30 bg-accent text-primary-dark transition-colors hover:bg-primary-light/10"
-    disabled={isSubmitting}
-  >
-    Cancel
-  </Button>
-  <Button 
-    type="submit" 
-    className="flex-1 bg-primary-medium text-accent transition-colors hover:bg-primary-dark" 
-    disabled={isSubmitting}
-  >
-    {isSubmitting ? 'Submitting...' : 'Sign Up'}
-  </Button>
-</div>
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                className="flex-1 bg-primary-medium text-accent transition-colors hover:bg-primary-dark"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? tSignupForm('submitting') : tSignupForm('submit')}
+              </Button>
+            </div>
           </form>
         </Form>
       </div>

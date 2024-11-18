@@ -466,7 +466,7 @@
     "categories": "Categories and properties",
     "addSelected": "Add {count} selected properties",
     "selectProperties": "Select properties to add",
-   "selectAll": "Select all in "
+    "selectAll": "Select all in "
   },
   "SourcePopup": {
     "title": "Add Source",
@@ -495,5 +495,16 @@
     "invalidNumber": "Invalid number format",
     "invalidRadio": "Invalid option selected",
     "mustBeInteger": "must be an integer"
+  },
+  "SignupForm": {
+    "title": "Sign Up",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "E-Mail",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "invalidEmail": "Invalid email format",
+    "submitting": "Submitting...",
+    "submit": "Submit"
   }
 }
