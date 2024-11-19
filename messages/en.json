@@ -213,7 +213,7 @@
     },
     "historicalData": {
       "title": "Historical Data",
-      "description": "Year built, founder, opening, closure, demolition, etc.",
+      "description": "Year built, opening, closure, demolition, etc.",
       "yearBuilt": {
         "label": "Year Built",
         "placeholder": "Enter date: MM/YY or year",
@@ -250,7 +250,7 @@
         "infobox": "The contractor of the building."
       },
       "founder": {
-        "label": "Founder",
+        "label": "Founded by",
         "placeholder": "Enter founder",
         "infobox": "The founder of the building."
       },
@@ -347,8 +347,8 @@
         "infobox": "An image of the building."
       },
       "backImage": {
-        "label": "Back Image",
-        "placeholder": "Upload back image",
+        "label": "image of backside",
+        "placeholder": "Upload image of backside",
         "infobox": "An image of the back of the building."
       },
       "entranceImage": {
@@ -380,7 +380,7 @@
   "initial": {
     "form": {
       "title": "Wikidata Form",
-      "mainCategory": "Core Data",
+      "mainCategory": "Building data",
       "addFields": "Add more fields",
       "closeSidebar": "Close sidebar",
       "loadExampleData": "Load example data",

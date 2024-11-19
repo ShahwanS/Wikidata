@@ -381,7 +381,7 @@
   "initial": {
     "form": {
       "title": "Wikidata Formular",
-      "mainCategory": "Kerndaten",
+      "mainCategory": "Daten des Gebäudes",
       "addFields": "Weitere Felder hinzufügen",
       "closeSidebar": "Sidebar schließen",
       "loadExampleData": "Lade Beispieldaten",
