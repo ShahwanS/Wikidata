@@ -13,6 +13,14 @@ import { useTranslations } from 'next-intl';
 import { Property } from '@/types/property';
 import { useSource } from '@/context/SourceContext';
 import Link from 'next/link';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 export interface FieldProps {
   property: Property;
   onDelete?: () => void;
@@ -34,12 +42,22 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const [previewSource, setPreviewSource] = useState<string>('');
   const tSourcePopup = useTranslations('SourcePopup');
   const { handleSourceSubmit, sources } = useSource();
-  const [copyrightFields, setCopyrightFields] = useState<string[]>(
-    Array(inputFields.length).fill(''),
+  //added license field for each copyright field
+  const [copyrightFields, setCopyrightFields] = useState<{ text: string; license: string }[]>(
+    Array(inputFields.length).fill({ text: '', license: 'CC BY 4.0' }),
   );
 
   const baseInputClasses =
     'w-full px-4 py-2 border border-primary-light/30 rounded-lg transition duration-300 ease-in-out focus:border-primary-medium focus:ring-1 focus:ring-primary-medium focus:outline-none shadow-sm text-primary-dark focus:shadow-md';
+
+  const ccLicenses = [
+    { value: 'CC BY 4.0', label: 'CC BY 4.0' },
+    { value: 'CC BY-SA 4.0', label: 'CC BY-SA 4.0' },
+    { value: 'CC BY-NC 4.0', label: 'CC BY-NC 4.0' },
+    { value: 'CC BY-ND 4.0', label: 'CC BY-ND 4.0' },
+    { value: 'CC BY-NC-SA 4.0', label: 'CC BY-NC-SA 4.0' },
+    { value: 'CC BY-NC-ND 4.0', label: 'CC BY-NC-ND 4.0' },
+  ];
 
   useEffect(() => {
     if (wikidataprop && sources[wikidataprop]) {
@@ -49,7 +67,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
   const addInputField = () => {
     setInputFields([...inputFields, '']);
-    setCopyrightFields([...copyrightFields, '']);
+    setCopyrightFields([...copyrightFields, { text: '', license: 'CC BY 4.0' }]);
   };
 
   const removeInputField = (index: number) => {
@@ -61,13 +79,23 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     }
   };
 
-  const handleCopyrightChange = (index: number, value: string) => {
+  const handleCopyrightChange = (index: number, field: 'text' | 'license', value: string) => {
     const newCopyrightFields = [...copyrightFields];
-    newCopyrightFields[index] = value;
+    newCopyrightFields[index] = {
+      ...newCopyrightFields[index],
+      [field]: value,
+    };
     setCopyrightFields(newCopyrightFields);
+    const combinedValue = JSON.stringify({
+      text: newCopyrightFields[index].text || '',
+      license: newCopyrightFields[index].license || '',
+    });
 
     onChange?.({
-      target: { name: `copyright_${name}${index}`, value },
+      target: {
+        name: `copyright_${name}${index}`,
+        value: combinedValue,
+      },
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
@@ -177,7 +205,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
       {renderSourcePreview()}
       {type === 'file' ? (
         inputFields.map((data, index) => (
-          <div key={name + 'in' + index} className="mb-2 sm:mt-[14px]">
+          <div key={name + 'in' + index} className="mb-2 sm:mb-4">
             <div className="flex items-center">
               <div className="mr-1 flex-grow sm:mr-2">
                 <input
@@ -221,16 +249,39 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
                   height={300}
                   className="w-full"
                 />
-                <div className="mt-1 sm:mt-2">
+                <div className="mt-1 space-y-2 sm:mt-2">
                   <InputField
                     className={`${baseInputClasses} bg-white text-sm placeholder:text-gray-400 sm:text-base`}
                     placeholder={tForm('copyright.placeholder')}
                     type="text"
-                    name={`copyright_${name}${index}`}
-                    value={copyrightFields[index]}
-                    onChange={(e) => handleCopyrightChange(index, e.target.value)}
+                    value={copyrightFields[index].text}
+                    onChange={(e) => handleCopyrightChange(index, 'text', e.target.value)}
                     required
                   />
+                  <input
+                    type="hidden"
+                    name={`copyright_${name}${index}`}
+                    value={JSON.stringify({
+                      text: copyrightFields[index].text || '',
+                      license: copyrightFields[index].license || '',
+                    })}
+                  />
+
+                  <Select
+                    value={copyrightFields[index].license}
+                    onValueChange={(value) => handleCopyrightChange(index, 'license', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a license" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ccLicenses.map((license) => (
+                        <SelectItem key={license.value} value={license.value}>
+                          {license.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             )}

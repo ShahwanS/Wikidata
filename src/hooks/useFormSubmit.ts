@@ -75,7 +75,8 @@ export function useFormSubmit(
 
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
-      const fileName = fieldsData['Offizieller Name0'] || fieldsData['Official Name0'] || 'output';
+      const fileName =
+        fieldsData['Offizieller Name/Adresse0'] || fieldsData['Official Name/Address0'] || 'output';
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);

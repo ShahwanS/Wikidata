@@ -3,63 +3,77 @@ import { Property } from '@/types/property';
 import { z } from 'zod';
 import { Category } from '@/types/category';
 
+/**
+ * Extracts the title from a data list by looking for specific name fields
+ * @param dataList Array of data entries to search through
+ * @returns The title string found or 'Default Title' if none found
+ */
 export function getTitle(dataList: any[]): string {
-  if (!dataList) {
-    return 'Default Title';
-  }
-  for (let i = 0; i < dataList.length; i++) {
-    const data = dataList[i];
-    if (data[0] === 'Offizieller Name' || data[0] === 'Official Name') {
-      return data[1];
-    }
-  }
-  return 'Default Title';
+  if (!dataList) return 'Default Title';
+
+  const titleField = dataList.find(
+    (data) => data[0] === 'Offizieller Name/Adresse' || data[0] === 'Official Name/Address',
+  );
+
+  return titleField ? titleField[1] : 'Default Title';
 }
 
+/**
+ * Checks if the input data is an image file with a valid wiki property
+ * @param inputData Data to check
+ * @param wikiprop Wiki property to validate
+ * @returns Boolean indicating if input is valid image data
+ */
 export function checkImage(inputData: any, wikiprop: string): boolean {
   const IMAGEWIKIPROPS = ['P18', 'P7417', 'P9721', 'P8592', 'P5775', 'P3311'];
-  const isImageFile = inputData instanceof File;
-  const wikipropExists = IMAGEWIKIPROPS.includes(wikiprop);
-  return isImageFile && wikipropExists;
+  return inputData instanceof File && IMAGEWIKIPROPS.includes(wikiprop);
 }
 
 /**
- * Simple function to translate html-tags to markdown-tags
+ * Converts HTML formatted text to Markdown format
+ * @param html HTML string to convert
+ * @returns Markdown formatted string
  */
 export function simpleHtmlToMarkdown(html: string) {
-  let markdown = html
-    .replace(/<b>(.*?)<\/b>/g, '**$1**') // Bald texts
-    .replace(/<i>(.*?)<\/i>/g, '_$1_') // Italic texts
-    .replace(/<ul>(.*?)<\/ul>/g, (match, p1) => {
-      // Unordered lists
-      return p1.replace(/<li>(.*?)<\/li>/g, '- $1\n').trim();
-    })
-    .replace(/<ol>(.*?)<\/ol>/g, (match, p1) => {
-      // Ordered lists
-      let counter = 1;
-      return p1
-        .replace(
-          /<li>(.*?)<\/li>/g,
-          (match: any) => `${counter++}. ${match.replace(/<li>(.*?)<\/li>/, '$1')}\n`,
-        )
-        .trim();
-    })
-    .replace(/<a href="(.*?)"[^>]*>(.*?)<\/a>/g, '[$2]($1)') // Links
-    .replace(/<p>(.*?)<\/p>/g, '$1\n') // Convert paragraphs to text followed by a newline
-    .replace(/<br\s*\/?>/g, '\n') // Convert <br> tags to newlines
-    .replace(/<b><i>(.*?)<\/i><\/b>/g, '**_$1_**')
-    .replace(/<h1>(.*?)<\/h1>/g, '# $1\n') // convert h1
-    .replace(/<h2>(.*?)<\/h2>/g, '## $1\n') // convert h2
-    .replace(/<h3>(.*?)<\/h3>/g, '### $1\n') // convert h3
-    // there is no underline in markdown: delete <u>-tags because otherwise they become _..._ and this is not correct
-    .replace(/<u>/g, '')
-    .replace(/<\/u>/g, '');
-  return markdown.trim(); // Trim the final string to remove any leading/trailing whitespace
+  return (
+    html
+      // Basic text formatting
+      .replace(/<b>(.*?)<\/b>/g, '**$1**')
+      .replace(/<i>(.*?)<\/i>/g, '_$1_')
+      .replace(/<b><i>(.*?)<\/i><\/b>/g, '**_$1_**')
+
+      // Lists
+      .replace(/<ul>(.*?)<\/ul>/g, (_, p1) => p1.replace(/<li>(.*?)<\/li>/g, '- $1\n').trim())
+      .replace(/<ol>(.*?)<\/ol>/g, (_, p1) => {
+        let counter = 1;
+        return p1
+          .replace(
+            /<li>(.*?)<\/li>/g,
+            (match: string) => `${counter++}. ${match.replace(/<li>(.*?)<\/li>/, '$1')}\n`,
+          )
+          .trim();
+      })
+
+      // Links and structure
+      .replace(/<a href="(.*?)"[^>]*>(.*?)<\/a>/g, '[$2]($1)')
+      .replace(/<p>(.*?)<\/p>/g, '$1\n')
+      .replace(/<br\s*\/?>/g, '\n')
+
+      // Headers
+      .replace(/<h1>(.*?)<\/h1>/g, '# $1\n')
+      .replace(/<h2>(.*?)<\/h2>/g, '## $1\n')
+      .replace(/<h3>(.*?)<\/h3>/g, '### $1\n')
+
+      // Remove underline tags (no markdown equivalent)
+      .replace(/<\/?u>/g, '')
+      .trim()
+  );
 }
 
 /**
- * This method returns a map, which contains all data with category and wikiproperty and dataName as key
- * @returns map (Key : DataName, Value: [Category,Wikiprop] )
+ * Creates a mapping between data names and their categories/wiki properties
+ * @param translatedPropgliederung Structured property data
+ * @returns Map with data name as key and [category, wikiprop] as value
  */
 export function getAllCategoryAndWikiprop(translatedPropgliederung: any) {
   const categoryAndPropertyMap = new Map();
@@ -67,88 +81,60 @@ export function getAllCategoryAndWikiprop(translatedPropgliederung: any) {
   translatedPropgliederung.forEach((category: { subcategories: any[]; title: any }) => {
     category.subcategories.forEach((subcategory) => {
       subcategory.properties.forEach((property: { name: any; wikidataprop: any }) => {
-        const key = property.name;
-        const value = [category.title, property.wikidataprop];
-        categoryAndPropertyMap.set(key, value);
+        categoryAndPropertyMap.set(property.name, [category.title, property.wikidataprop]);
       });
     });
   });
+
   return categoryAndPropertyMap;
 }
 
 /**
- * This method is for data, which comes from "Weitere Felder",
- * because dataName of this data contains trailing digits
- * Removes trailing numbers from a given string.
- * If no trailing numbers are present, the input string is returned unchanged.
- * @param input The input string from which to remove trailing numbers.
- * @returns The input string with trailing numbers removed.
+ * Removes trailing numbers from a string
+ * @param input Input string or value that can be converted to string
+ * @returns String with trailing numbers removed
  */
 export function removeTrailingNumber(input: any): string {
-  const strInput = typeof input === 'string' ? input : input.toString(); // convert to string
-  return strInput.replace(/\d+$/, ''); // Remove trailing digits
+  return (typeof input === 'string' ? input : input.toString()).replace(/\d+$/, '');
 }
 
 /**
- * Add rich text data to the map
- * @param dataName The name of the data
- * @param inputData The data itself
- * @param resultMap The map to store the data
+ * Adds rich text data to the result map under a specific category
  */
 export function setRichttextInMap(
   dataName: String,
   inputData: String,
-  resultMap: any,
+  resultMap: Map<string, any[]>,
   sources: Record<string, string>,
 ) {
   const category = 'Weitere Angaben als Freitext';
   const wikiprop = 'richtext';
-  const source = sources[wikiprop];
-  const dataEntry = [dataName, inputData, wikiprop, source];
-  // Check if the category already exists in the map and add the data accordingly else create a new category
+  const dataEntry = [dataName, inputData, wikiprop, sources[wikiprop]];
+
   if (resultMap.has(category)) {
-    resultMap.get(category).push(dataEntry);
+    resultMap.get(category)?.push(dataEntry);
   } else {
     resultMap.set(category, [dataEntry]);
   }
 }
 
 /**
- * Add normal data (non-rich text) to the map
- * @param dataName The name of the data
- * @param inputData The data itself
- * @param resultMap The map to store the data
- * @param allCategoryAndPropertyMap Map containing all categories and wiki properties
+ * Processes and adds normal (non-rich text) data to the result map
  */
 export function setNormalDataInMap(
   dataName: string,
   inputData: String,
   sources: Record<string, string>,
-  resultMap: any,
-  CATEGORY_AND_PROPERTY_MAP: any,
+  resultMap: Map<string, any[]>,
+  CATEGORY_AND_PROPERTY_MAP: Map<string, [string, string]>,
 ) {
-  // For copyright fields, get the original field name and category
+  // Handle copyright fields
   if (dataName.startsWith('copyright_')) {
-    const originalFieldName = dataName.replace('copyright_', '').replace(/\d+$/, '');
-    const categoryAndWikiprop = getCategoryAndWikipropAsList(
-      originalFieldName,
-      CATEGORY_AND_PROPERTY_MAP,
-    );
-    if (!categoryAndWikiprop) return;
-
-    const [category] = categoryAndWikiprop;
-    if (!resultMap.has(category)) return;
-
-    const categoryData = resultMap.get(category);
-    // Find the corresponding image entry and add copyright
-    const imageEntry = categoryData.find((entry: any[]) => entry[0] === originalFieldName);
-    if (imageEntry) {
-      imageEntry[4] = inputData; // Add copyright as the 5th element
-    }
+    handleCopyrightField(dataName, inputData as string, resultMap, CATEGORY_AND_PROPERTY_MAP);
     return;
   }
 
-  // Regular field handling
+  // Handle regular fields
   const categoryAndWikiprop = getCategoryAndWikipropAsList(dataName, CATEGORY_AND_PROPERTY_MAP);
   if (!categoryAndWikiprop) {
     console.error('No category and WikiProp found for:', dataName);
@@ -161,20 +147,44 @@ export function setNormalDataInMap(
   if (!resultMap.has(category)) {
     resultMap.set(category, []);
   }
-  const categoryData = resultMap.get(category);
-  const existingEntry = categoryData.find((entry: string[]) => entry[2] === wikiprop);
 
-  if (existingEntry) {
-    categoryData.push([dataName, inputData, existingEntry[2], source]);
-  } else {
-    categoryData.push([dataName, inputData, wikiprop, source]);
+  const categoryData = resultMap.get(category)!;
+  const existingEntry = categoryData.find((entry) => entry[2] === wikiprop);
+
+  categoryData.push([dataName, inputData, existingEntry?.[2] || wikiprop, source]);
+}
+
+/**
+ * Helper function to handle copyright fields
+ */
+function handleCopyrightField(
+  dataName: string,
+  inputData: string,
+  resultMap: Map<string, any[]>,
+  CATEGORY_AND_PROPERTY_MAP: Map<string, [string, string]>,
+) {
+  const originalFieldName = dataName.replace('copyright_', '').replace(/\d+$/, '');
+  const categoryAndWikiprop = getCategoryAndWikipropAsList(
+    originalFieldName,
+    CATEGORY_AND_PROPERTY_MAP,
+  );
+
+  if (!categoryAndWikiprop) return;
+
+  const [category] = categoryAndWikiprop;
+  if (!resultMap.has(category)) return;
+
+  const categoryData = resultMap.get(category)!;
+  const imageEntry = categoryData.find((entry) => entry[0] === originalFieldName);
+
+  if (imageEntry) {
+    const { text, license } = JSON.parse(inputData);
+    imageEntry[4] = `${text} ${license}`;
   }
 }
+
 /**
- * Get the category and wiki property as a list for the given dataName
- * @param dataName The name of the data
- * @param allCategoryAndPropertyMap Map containing all categories and wiki properties
- * @returns [Category, Wiki property]
+ * Retrieves category and wiki property for a given data name
  */
 export function getCategoryAndWikipropAsList(
   dataName: string,
@@ -183,12 +193,16 @@ export function getCategoryAndWikipropAsList(
   return allCategoryAndPropertyMap.get(dataName);
 }
 
-// Helper function to convert File to base64
+/**
+ * Converts an ArrayBuffer to base64 string
+ */
 export async function serverFileToBase64(arrayBuffer: ArrayBuffer): Promise<string> {
   return Buffer.from(arrayBuffer).toString('base64');
 }
 
-//helper function to format date for filename
+/**
+ * Generates a timestamp-based filename
+ */
 export const formatDateForFilename = (): string => {
   const date = new Date();
   return `${date.getUTCFullYear()}-${
@@ -197,25 +211,23 @@ export const formatDateForFilename = (): string => {
 };
 
 /**
- * Formats the RichText content including the title
- * This function formats the RichText content including the title.
+ * Formats rich text content with optional title
  */
 export const formatRichTextContent = (
   fieldName: string,
-  richTextTitle: any,
-  richTextState: any,
+  richTextTitle: Record<string, string>,
+  richTextState: Record<string, string>,
 ): string => {
   const title = richTextTitle[fieldName] ? `# ${richTextTitle[fieldName]}\n` : '';
   return title + richTextState[fieldName];
 };
 
 /**
- * Groups fields by their category
- * This function groups the fields by their category for rendering.
+ * Groups fields by their category for organization
  */
 export function groupFieldsByCategory(
   fields: Property[],
-  tInitial: any,
+  tInitial: (key: string) => string,
 ): Record<string, Property[]> {
   return fields.reduce<Record<string, Property[]>>((acc, field) => {
     const category = field.category || tInitial('form.mainCategory');
@@ -225,50 +237,81 @@ export function groupFieldsByCategory(
   }, {});
 }
 
-export function generateFormSchema(formData: Record<string, any>, tErrors: any) {
+/**
+ * Generates a Zod validation schema based on form data
+ */
+export function generateFormSchema(
+  formData: Record<string, any>,
+  tErrors: (key: string) => string,
+) {
   const schemaFields: Record<string, z.ZodTypeAny> = {};
 
   for (const [key, value] of Object.entries(formData)) {
-    let fieldSchema: z.ZodTypeAny;
     const fieldName = removeTrailingNumber(key);
-    if (typeof value === 'number') {
-      fieldSchema = z
-        .number()
-        .int(fieldName + ': ' + tErrors('mustBeInteger'))
-        .min(1, fieldName + ': ' + tErrors('min'))
-        .max(1000000, fieldName + ': ' + tErrors('max'));
-    } else if (typeof value === 'string') {
-      if (value.startsWith('http://') || value.startsWith('https://')) {
-        fieldSchema = z
-          .string()
-          .url(fieldName + ': ' + tErrors('invalidURL'))
-          .max(2000, fieldName + ': ' + tErrors('maxLength'))
-          .refine(
-            (url) => {
-              try {
-                new URL(url);
-                return true;
-              } catch {
-                return false;
-              }
-            },
-            fieldName + ': ' + tErrors('invalidURL'),
-          );
-      } else {
-        fieldSchema = z
-          .string()
-          .min(1, fieldName + ': ' + tErrors('required'))
-          .max(1000, fieldName + ': ' + tErrors('maxLength'))
-          .refine((text) => !/^\s*$/.test(text), fieldName + ': ' + tErrors('emptyField'));
-      }
-    } else if (typeof value === 'boolean') {
-      fieldSchema = z.boolean();
-    } else {
-      fieldSchema = z.unknown();
-    }
-
-    schemaFields[key] = fieldSchema;
+    schemaFields[key] = generateFieldSchema(value, fieldName, tErrors);
   }
 
   return z.object(schemaFields).strict();
+}
+
+/**
+ * Helper function to generate schema for individual fields
+ */
+function generateFieldSchema(
+  value: any,
+  fieldName: string,
+  tErrors: (key: string) => string,
+): z.ZodTypeAny {
+  if (typeof value === 'number') {
+    return z
+      .number()
+      .int(fieldName + ': ' + tErrors('mustBeInteger'))
+      .min(1, fieldName + ': ' + tErrors('min'))
+      .max(1000000, fieldName + ': ' + tErrors('max'));
+  }
+
+  if (typeof value === 'string') {
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return generateUrlSchema(fieldName, tErrors);
+    }
+    return generateStringSchema(fieldName, tErrors);
+  }
+
+  if (typeof value === 'boolean') {
+    return z.boolean();
+  }
+
+  return z.unknown();
+}
+
+/**
+ * Helper function to generate URL validation schema
+ */
+function generateUrlSchema(fieldName: string, tErrors: (key: string) => string) {
+  return z
+    .string()
+    .url(fieldName + ': ' + tErrors('invalidURL'))
+    .max(2000, fieldName + ': ' + tErrors('maxLength'))
+    .refine(
+      (url) => {
+        try {
+          new URL(url);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      fieldName + ': ' + tErrors('invalidURL'),
+    );
+}
+
+/**
+ * Helper function to generate string validation schema
+ */
+function generateStringSchema(fieldName: string, tErrors: (key: string) => string) {
+  return z
+    .string()
+    .min(1, fieldName + ': ' + tErrors('required'))
+    .max(1000, fieldName + ': ' + tErrors('maxLength'))
+    .refine((text) => !/^\s*$/.test(text), fieldName + ': ' + tErrors('emptyField'));
 }

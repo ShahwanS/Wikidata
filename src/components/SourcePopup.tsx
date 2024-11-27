@@ -65,31 +65,48 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="mx-auto max-w-[425px] bg-accent p-6">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-primary-dark text-2xl font-bold">
+          <DialogTitle className="text-2xl font-bold text-primary-dark">
             {currentSource ? t('editSource') : t('addSource')}
           </DialogTitle>
-          <DialogDescription className="text-primary-medium mt-2">
+          <DialogDescription className="mt-2 text-primary-medium">
             {currentSource ? t('editDescription') : t('addDescription')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           {Object.keys(uniqueSources).length > 0 && (
             <div>
-              <label className="text-primary-dark mb-2 block text-sm font-medium">
+              <label className="mb-2 block text-sm font-medium text-primary-dark">
                 {t('selectSource')}
               </label>
               <Select onValueChange={handleSourceSelect} value={selectedSource}>
-                <SelectTrigger className="border-primary-light/30 text-primary-dark w-full bg-accent">
+                <SelectTrigger className="w-full border-primary-light/30 bg-accent text-primary-dark">
                   <SelectValue placeholder={t('selectSource')} />
                 </SelectTrigger>
                 <SelectContent className="bg-accent">
-                  {/* ... (SelectContent remains the same) ... */}
+                  {uniqueSources.map((source) => {
+                    // Split source into main source and references for preview
+                    const [mainSource, refs] = source.split(t('referencesLabel') + ':');
+                    const previewText = refs
+                      ? `${mainSource.trim()}\n${t('referencesLabel')}: ${refs.trim()}`
+                      : mainSource.trim();
+
+                    return (
+                      <SelectItem
+                        key={source}
+                        value={source}
+                        className="text-primary-dark hover:bg-primary-light/10"
+                        title={previewText} // Shows full text on hover
+                      >
+                        {mainSource.trim()} {/* Show just main source in dropdown */}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
           )}
           <div>
-            <label htmlFor="source" className="text-primary-dark block text-sm font-medium">
+            <label htmlFor="source" className="block text-sm font-medium text-primary-dark">
               {t('sourceLabel')}
             </label>
             <input
@@ -98,11 +115,11 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
               value={source}
               onChange={(e) => setSource(e.target.value)}
               placeholder={t('sourcePlaceholder')}
-              className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium mt-1 block w-full rounded-md border bg-accent px-3 py-2 shadow-sm focus:outline-none focus:ring-1"
+              className="mt-1 block w-full rounded-md border border-primary-light/30 bg-accent px-3 py-2 text-primary-dark shadow-sm placeholder:text-primary-medium/70 focus:border-primary-medium focus:outline-none focus:ring-1 focus:ring-primary-medium"
             />
           </div>
           <div>
-            <label htmlFor="references" className="text-primary-dark block text-sm font-medium">
+            <label htmlFor="references" className="block text-sm font-medium text-primary-dark">
               {t('referencesLabel')}
             </label>
             <textarea
@@ -111,7 +128,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
               value={references}
               onChange={(e) => setReferences(e.target.value)}
               placeholder={t('referencesPlaceholder')}
-              className="border-primary-light/30 text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium mt-1 block w-full rounded-md border bg-accent px-3 py-2 shadow-sm focus:outline-none focus:ring-1"
+              className="mt-1 block w-full rounded-md border border-primary-light/30 bg-accent px-3 py-2 text-primary-dark shadow-sm placeholder:text-primary-medium/70 focus:border-primary-medium focus:outline-none focus:ring-1 focus:ring-primary-medium"
             ></textarea>
           </div>
         </div>
@@ -120,13 +137,13 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
             <Button
               variant="outline"
               onClick={onClose}
-              className="border-primary-dark/30 text-primary-dark hover:bg-primary-light/10 flex-1 border bg-accent"
+              className="flex-1 border border-primary-dark/30 bg-accent text-primary-dark hover:bg-primary-light/10"
             >
               {t('cancel')}
             </Button>
             <Button
               onClick={handleSubmit}
-              className="bg-primary-medium hover:bg-primary-dark flex-1 text-accent transition-colors"
+              className="flex-1 bg-primary-medium text-accent transition-colors hover:bg-primary-dark"
             >
               {t('submit')}
             </Button>

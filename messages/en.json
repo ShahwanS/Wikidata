@@ -88,7 +88,7 @@
       "title": "Name Information",
       "description": "Different names of the building and the namesake",
       "officialName": {
-        "label": "Official Name",
+        "label": "Official Name/Address",
         "placeholder": "Enter the official name",
         "required": true,
         "infobox": "The official name of the building."
@@ -146,11 +146,7 @@
         "placeholder": "Enter construction company",
         "infobox": "The construction company of the building."
       },
-      "developer": {
-        "label": "Real Estate Developer",
-        "placeholder": "Enter real estate developer",
-        "infobox": "The real estate developer of the building."
-      },
+
       "engineer": {
         "label": "Structural Engineer",
         "placeholder": "Enter engineer",
@@ -249,11 +245,7 @@
         "placeholder": "Enter contractor",
         "infobox": "The contractor of the building."
       },
-      "founder": {
-        "label": "Founded by",
-        "placeholder": "Enter founder",
-        "infobox": "The founder of the building."
-      },
+
       "predecessor": {
         "label": "Predecessor",
         "placeholder": "Enter predecessor building",
@@ -379,7 +371,7 @@
   },
   "initial": {
     "form": {
-      "title": "Wikidata Form",
+      "title": "Marburg Knowledge Spaces Web Form",
       "mainCategory": "Building data",
       "addFields": "Add more fields",
       "closeSidebar": "Close sidebar",
@@ -505,6 +497,9 @@
     "lastNameRequired": "Last name is required",
     "invalidEmail": "Invalid email format",
     "submitting": "Submitting...",
-    "submit": "Submit"
+    "submit": "Submit",
+    "privacyPolicyLabel": "I agree to the privacy policy",
+    "privacyPolicyLink": "Privacy Policy",
+    "privacyPolicyRequired": "You must agree to the privacy policy"
   }
 }

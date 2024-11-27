@@ -20,29 +20,13 @@ export const useFormFields = () => {
         required: true,
         infobox: t('nameDetails.officialName.infobox'),
       },
-      {
-        name: t('historicalData.openingDate.label'),
-        type: 'text',
-        placeholder: t('historicalData.openingDate.placeholder'),
-        wikidataprop: 'P1619',
-        unique: true,
-        required: true,
-        infobox: t('historicalData.openingDate.infobox'),
-      },
+
       {
         name: t('media.image.label'),
         type: 'file',
         wikidataprop: 'P18',
         required: true,
         infobox: t('media.image.infobox'),
-      },
-      {
-        name: t('links.website.label'),
-        type: 'text',
-        placeholder: 'https://example.com',
-        wikidataprop: 'P856',
-        required: true,
-        infobox: t('links.website.infobox'),
       },
     ];
   }

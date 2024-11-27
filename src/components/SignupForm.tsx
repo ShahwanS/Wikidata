@@ -12,10 +12,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form';
 import { InputField } from '@/components/ui/input';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslations } from 'next-intl';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function SignupForm({
   onClose,
@@ -29,6 +31,9 @@ export default function SignupForm({
     firstname: z.string().min(1, tSignupForm('firstNameRequired')),
     lastname: z.string().min(1, tSignupForm('lastNameRequired')),
     email: z.string().email(tSignupForm('invalidEmail')),
+    privacyPolicy: z.boolean().refine((val) => val === true, {
+      message: tSignupForm('privacyPolicyRequired'),
+    }),
   });
   type SignupFormValues = z.infer<typeof signupSchema>;
   const form = useForm<SignupFormValues>({
@@ -37,6 +42,7 @@ export default function SignupForm({
       firstname: '',
       lastname: '',
       email: '',
+      privacyPolicy: false,
     },
   });
 
@@ -110,6 +116,31 @@ export default function SignupForm({
                     />
                   </FormControl>
                   <FormMessage className="text-destructive" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="privacyPolicy"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel className="text-sm text-primary-dark">
+                      {tSignupForm('privacyPolicyLabel')}{' '}
+                      <a
+                        href="/privacy-policy"
+                        className="text-primary-medium underline hover:text-primary-dark"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {tSignupForm('privacyPolicyLink')}
+                      </a>
+                    </FormLabel>
+                    <FormMessage className="text-destructive" />
+                  </div>
                 </FormItem>
               )}
             />

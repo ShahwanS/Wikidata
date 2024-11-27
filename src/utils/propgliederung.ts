@@ -240,13 +240,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t('constructionDetails.company.placeholder'),
             infobox: t('constructionDetails.company.infobox'),
           },
-          {
-            name: t('constructionDetails.developer.label'),
-            type: 'text',
-            wikidataprop: 'P6237',
-            placeholder: t('constructionDetails.developer.placeholder'),
-            infobox: t('constructionDetails.developer.infobox'),
-          },
+
           {
             name: t('constructionDetails.engineer.label'),
             type: 'text',
@@ -402,13 +396,7 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t('historicalData.contractor.placeholder'),
             infobox: t('historicalData.contractor.infobox'),
           },
-          {
-            name: t('historicalData.founder.label'),
-            type: 'text',
-            wikidataprop: 'P112',
-            placeholder: t('historicalData.founder.placeholder'),
-            infobox: t('historicalData.founder.infobox'),
-          },
+
           {
             name: t('historicalData.predecessor.label'),
             type: 'text',

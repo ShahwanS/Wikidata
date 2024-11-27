@@ -108,12 +108,12 @@ export default function Home() {
     <>
       <Navigation onLoadExamples={handleLoadExamples} />
 
-      <div className="from-primary-dark to-primary-medium min-h-screen bg-gradient-to-r p-2 sm:p-4 md:p-6 lg:p-8">
+      <div className="min-h-screen bg-gradient-to-r from-primary-dark to-primary-medium p-2 sm:p-4 md:p-6 lg:p-8">
         {/* Scroll to top button */}
         {showScrollButton && (
           <button
             onClick={scrollToTop}
-            className="text-primary-dark hover:bg-primary-light fixed bottom-4 right-4 z-50 rounded-full bg-accent p-2 shadow-lg transition-all hover:text-accent sm:bottom-6 sm:right-6 sm:p-3 md:bottom-8 md:right-8"
+            className="fixed bottom-4 right-4 z-50 rounded-full bg-accent p-2 text-primary-dark shadow-lg transition-all hover:bg-primary-light hover:text-accent sm:bottom-6 sm:right-6 sm:p-3 md:bottom-8 md:right-8"
             aria-label="Scroll to top"
           >
             <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
@@ -123,12 +123,12 @@ export default function Home() {
         <div className="group">
           <button
             onClick={() => setShowPopup(!showPopup)}
-            className={`hover:bg-primary-light fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-2 rounded-r-xl bg-accent px-2 py-4 shadow-lg transition-all duration-300 ease-in-out hover:text-accent group-hover:translate-x-1 sm:gap-3 sm:rounded-r-2xl sm:px-3 sm:py-6 ${
+            className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-2 rounded-r-xl bg-accent px-2 py-4 shadow-lg transition-all duration-300 ease-in-out hover:bg-primary-light hover:text-accent group-hover:translate-x-1 sm:gap-3 sm:rounded-r-2xl sm:px-3 sm:py-6 ${
               showPopup ? 'translate-x-[-100%] opacity-0' : 'translate-x-0 opacity-100'
             }`}
           >
-            <ChevronRight className="text-primary-dark h-4 w-4 group-hover:text-accent sm:h-5 sm:w-5 md:h-6 md:w-6" />
-            <span className="text-primary-dark rotate-180 text-sm font-medium tracking-wider [writing-mode:vertical-lr] group-hover:text-accent">
+            <ChevronRight className="h-4 w-4 text-primary-dark group-hover:text-accent sm:h-5 sm:w-5 md:h-6 md:w-6" />
+            <span className="rotate-180 text-sm font-medium tracking-wider text-primary-dark [writing-mode:vertical-lr] group-hover:text-accent">
               {tInitial('form.addFields')}
             </span>
           </button>
@@ -169,8 +169,8 @@ export default function Home() {
                 className="relative overflow-hidden rounded-2xl bg-accent shadow-xl sm:rounded-3xl sm:shadow-2xl"
               >
                 {isLoading && (
-                  <div className="bg-primary-dark/20 fixed inset-0 z-50 m-auto flex items-center justify-center">
-                    <Loader2 className="text-primary-medium h-4 w-4 animate-spin sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                  <div className="fixed inset-0 z-50 m-auto flex items-center justify-center bg-primary-dark/20">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary-medium sm:h-5 sm:w-5 md:h-6 md:w-6" />
                   </div>
                 )}
                 {/* Form fields */}
@@ -190,7 +190,7 @@ export default function Home() {
                   {/* Render RichText fields */}
                   {Object.keys(richTextState).length > 0 && (
                     <div className="space-y-4 sm:space-y-6">
-                      <h2 className="border-primary-light/20 text-primary-dark border-b-2 pb-2 text-xl font-bold sm:pb-3 sm:text-2xl md:text-3xl">
+                      <h2 className="border-b-2 border-primary-light/20 pb-2 text-xl font-bold text-primary-dark sm:pb-3 sm:text-2xl md:text-3xl">
                         {tInitial('form.additionalText')}
                       </h2>
                       {Object.keys(richTextState).map((richtextName, index) => (
@@ -212,12 +212,12 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={addRichTextField}
-                    className="bg-primary-medium hover:bg-primary-medium/80 focus:ring-primary-light/50 w-full rounded-lg py-2 text-sm font-semibold text-accent shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 sm:py-3 sm:text-base"
+                    className="w-full rounded-lg bg-primary-medium py-2 text-sm font-semibold text-accent shadow-md transition duration-300 ease-in-out hover:bg-primary-medium/80 focus:outline-none focus:ring-2 focus:ring-primary-light/50 sm:py-3 sm:text-base"
                   >
                     {tInitial('form.addRichText')}
                   </button>
                 </div>
-                <div className="bg-primary-light/10 space-y-6 px-4 py-4 sm:space-y-7 sm:px-6 sm:py-6 md:space-y-8 md:px-8 md:py-8">
+                <div className="space-y-6 bg-primary-light/10 px-4 py-4 sm:space-y-7 sm:px-6 sm:py-6 md:space-y-8 md:px-8 md:py-8">
                   <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5 md:gap-6">
                     <button
                       type="button"

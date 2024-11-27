@@ -86,9 +86,9 @@
     },
     "nameDetails": {
       "title": "Namensangaben",
-      "description": "Verschiedene Namen des Gebäudes sowie Namensgeber",
+      "description": "Verschiedene Namen des Gebäudes sowie Namensgeber*in",
       "officialName": {
-        "label": "Offizieller Name",
+        "label": "Offizieller Name/Adresse",
         "placeholder": "Offiziellen Namen eingeben",
         "required": true,
         "infobox": "Der offizielle Name des Gebäudes."
@@ -104,14 +104,14 @@
         "infobox": "Ein Spitzname des Gebäudes."
       },
       "namesake": {
-        "label": "Namensgeber",
-        "placeholder": "Namensgeber eingeben",
-        "infobox": "Ein Namensgeber des Gebäudes."
+        "label": "Namensgeber*in",
+        "placeholder": "Namensgeber*in eingeben",
+        "infobox": "Ein*e Namensgeber*in des Gebäudes."
       }
     },
     "architectureDetails": {
       "title": "Architektonische Angaben",
-      "description": "Stil, Inspiration, Architekt",
+      "description": "Stil, Inspiration, Architekt*in",
       "style": {
         "label": "Architekturstil",
         "placeholder": "Architektonischen Stil eingeben",
@@ -120,12 +120,12 @@
       "inspiredBy": {
         "label": "Inspiriert von",
         "placeholder": "Inspiriert von eingeben",
-        "infobox": "Ein Architekt, der das Gebäude inspiriert hat."
+        "infobox": "Ein*e Architekt*in, der*die das Gebäude inspiriert hat."
       },
       "architect": {
-        "label": "Architekt",
-        "placeholder": "Architekt eingeben",
-        "infobox": "Der Architekt des Gebäudes."
+        "label": "Architekt*in",
+        "placeholder": "Architekt*in eingeben",
+        "infobox": "Der*Die Architekt*in des Gebäudes."
       }
     },
     "constructionDetails": {
@@ -146,15 +146,11 @@
         "placeholder": "Bauunternehmen eingeben",
         "infobox": "Das Bauunternehmen, das das Gebäude gebaut hat."
       },
-      "developer": {
-        "label": "Immobilienentwickler",
-        "placeholder": "Immobilienentwickler eingeben",
-        "infobox": "Der Immobilienentwickler, der das Gebäude entwickelt hat."
-      },
+
       "engineer": {
-        "label": "Statiker / Ingenieur",
-        "placeholder": "Ingenieur eingeben",
-        "infobox": "Der Statiker oder Ingenieur, der das Gebäude konstruiert hat."
+        "label": "Statiker*in / Ingenieur*in",
+        "placeholder": "Ingenieur*in eingeben",
+        "infobox": "Der*Die Statiker*in oder Ingenieur*in des Gebäudes."
       },
       "cost": {
         "label": "Baukosten",
@@ -213,7 +209,7 @@
     },
     "historicalData": {
       "title": "Historische Daten",
-      "description": "Baujahr, Begründer, Eröffnung, Schließung, Abriss u.a.",
+      "description": "Baujahr, Eröffnung, Schließung, Abriss u.a.",
       "yearBuilt": {
         "label": "Baujahr",
         "placeholder": "Datum: MM/JJ oder Jahr",
@@ -245,15 +241,11 @@
         "infobox": "Eine Schlüsselperson im Zusammenhang mit dem Gebäude."
       },
       "contractor": {
-        "label": "Auftraggeber",
-        "placeholder": "Auftraggeber eingeben",
-        "infobox": "Der Auftraggeber des Gebäudes."
+        "label": "Auftraggeber*in",
+        "placeholder": "Auftraggeber*in eingeben",
+        "infobox": "Der*Die Auftraggeber*in des Gebäudes."
       },
-      "founder": {
-        "label": "Begründer",
-        "placeholder": "Begründer eingeben",
-        "infobox": "Der Begründer des Gebäudes."
-      },
+
       "predecessor": {
         "label": "Vorgängerbauwerk",
         "placeholder": "Vorgängerbauwerk eingeben",
@@ -279,9 +271,9 @@
         "infobox": "Der Erhaltungszustand des Gebäudes."
       },
       "user": {
-        "label": "Nutzer",
-        "placeholder": "Nutzer eingeben",
-        "infobox": "Der Nutzer des Gebäudes."
+        "label": "Nutzer*in",
+        "placeholder": "Nutzer*in eingeben",
+        "infobox": "Der*Die Nutzer*in des Gebäudes."
       },
       "purpose": {
         "label": "Verwendungszweck",
@@ -289,19 +281,19 @@
         "infobox": "Der Verwendungszweck des Gebäudes."
       },
       "operator": {
-        "label": "Betreiber",
-        "placeholder": "Betreiber eingeben",
-        "infobox": "Der Betreiber des Gebäudes."
+        "label": "Betreiber*in",
+        "placeholder": "Betreiber*in eingeben",
+        "infobox": "Der*Die Betreiber*in des Gebäudes."
       },
       "maintainedBy": {
         "label": "Unterhalten durch",
         "placeholder": "Wer unterhält das Gebäude?",
-        "infobox": "Der Unterhalter des Gebäudes."
+        "infobox": "Der*Die Unterhalter*in des Gebäudes."
       },
       "owner": {
-        "label": "Eigentümer",
-        "placeholder": "Eigentümer des Gebäudes eingeben",
-        "infobox": "Der Eigentümer des Gebäudes."
+        "label": "Eigentümer*in",
+        "placeholder": "Eigentümer*in des Gebäudes eingeben",
+        "infobox": "Der*Die Eigentümer*in des Gebäudes."
       }
     },
     "classification": {
@@ -380,7 +372,7 @@
 
   "initial": {
     "form": {
-      "title": "Wikidata Formular",
+      "title": "Marburger Wissensräume Webformular",
       "mainCategory": "Daten des Gebäudes",
       "addFields": "Weitere Felder hinzufügen",
       "closeSidebar": "Sidebar schließen",
@@ -506,6 +498,9 @@
     "submit": "Einreichen",
     "firstNameRequired": "Vorname ist erforderlich",
     "lastNameRequired": "Nachname ist erforderlich",
-    "invalidEmail": "Ungültiges E-Mail-Format"
+    "invalidEmail": "Ungültiges E-Mail-Format",
+    "privacyPolicyLabel": "Ich stimme der Datenschutzerklärung zu",
+    "privacyPolicyLink": "Datenschutzerklärung",
+    "privacyPolicyRequired": "Sie müssen der Datenschutzerklärung zustimmen"
   }
 }
