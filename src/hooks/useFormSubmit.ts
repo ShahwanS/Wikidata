@@ -28,6 +28,13 @@ export function useFormSubmit(
 
     const formData = new FormData(event.target as HTMLFormElement);
     fieldsData = Object.fromEntries(formData.entries());
+    // Extract unit data from JSON strings
+    Object.keys(fieldsData).forEach((key) => {
+      if (key.includes('_unit')) {
+        const parsedData = JSON.parse(fieldsData[key] as string);
+        fieldsData[key] = parsedData;
+      }
+    });
 
     const dynamicFormSchema = generateFormSchema(fieldsData, tErrors);
 
@@ -76,7 +83,9 @@ export function useFormSubmit(
     if (markupOutput !== undefined) {
       // Name the file based on a form field, or default to "output"
       const fileName =
-        fieldsData['Offizieller Name/Adresse0'] || fieldsData['Official Name/Address0'] || 'output';
+        fieldsData['Name des Gebäudes/Adresse0'] ||
+        fieldsData['Name of the building/Address0'] ||
+        'output';
       // Send the generated Markdown file to GitLab
       try {
         setIsLoading(true);

@@ -12,7 +12,7 @@ export function getTitle(dataList: any[]): string {
   if (!dataList) return 'Default Title';
 
   const titleField = dataList.find(
-    (data) => data[0] === 'Offizieller Name/Adresse' || data[0] === 'Official Name/Address',
+    (data) => data[0] === 'Name des Gebäudes/Adresse' || data[0] === 'Name of the building/Address',
   );
 
   return titleField ? titleField[1] : 'Default Title';
@@ -134,6 +134,12 @@ export function setNormalDataInMap(
     return;
   }
 
+  // Handle fields with units
+  if (dataName.includes('unit')) {
+    handleUnitField(dataName, inputData as string, resultMap, CATEGORY_AND_PROPERTY_MAP);
+    return;
+  }
+
   // Handle regular fields
   const categoryAndWikiprop = getCategoryAndWikipropAsList(dataName, CATEGORY_AND_PROPERTY_MAP);
   if (!categoryAndWikiprop) {
@@ -154,6 +160,44 @@ export function setNormalDataInMap(
   categoryData.push([dataName, inputData, existingEntry?.[2] || wikiprop, source]);
 }
 
+/**
+ * Helper function to handle fields with units
+ */
+function handleUnitField(
+  dataName: string,
+  inputData: any, // Accept any type
+  resultMap: Map<string, any[]>,
+  CATEGORY_AND_PROPERTY_MAP: Map<string, [string, string]>,
+) {
+  const originalFieldName = dataName.replace('_unit', '').replace(/\d+$/, '');
+  const categoryAndWikiprop = getCategoryAndWikipropAsList(
+    originalFieldName,
+    CATEGORY_AND_PROPERTY_MAP,
+  );
+
+  if (!categoryAndWikiprop) {
+    console.error('No category and WikiProp found for:', dataName);
+    return;
+  }
+
+  const [category, wikiprop] = categoryAndWikiprop;
+  if (!resultMap.has(category)) {
+    resultMap.set(category, []);
+  }
+
+  // Check if inputData is a string and parse it, otherwise assume it's already an object
+  const { value, selectedUnit } = typeof inputData === 'string' ? JSON.parse(inputData) : inputData;
+
+  // Find existing entry or create new one
+  const categoryData = resultMap.get(category)!;
+  const existingEntryIndex = categoryData.findIndex((entry) => entry[0] === originalFieldName);
+  if (existingEntryIndex !== -1) {
+    categoryData[existingEntryIndex][1] = value;
+    categoryData[existingEntryIndex][3] = selectedUnit;
+  } else {
+    categoryData.push([originalFieldName, value, wikiprop, '', selectedUnit]);
+  }
+}
 /**
  * Helper function to handle copyright fields
  */
@@ -229,7 +273,6 @@ export function groupFieldsByCategory(
   fields: Property[],
   tInitial: (key: string) => string,
 ): Record<string, Property[]> {
-
   return fields.reduce<Record<string, Property[]>>((acc, field) => {
     const category = field.category || tInitial('form.mainCategory');
     if (!acc[category]) acc[category] = [];

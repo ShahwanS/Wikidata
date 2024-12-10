@@ -20,7 +20,6 @@ export const SourceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const allSources = Object.values(sources);
     const uniqueSet = new Set(allSources);
     setUniqueSources(Array.from(uniqueSet));
-    console.log(uniqueSources);
   }, [sources]);
 
   const handleSourceSubmit = (fieldName: string, source: string) => {

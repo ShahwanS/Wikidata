@@ -69,13 +69,13 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const [inputFields, setInputFields] = useState<string[]>(value || ['']);
   const [showSourcePopup, setShowSourcePopup] = useState(false);
   const [previewSource, setPreviewSource] = useState<string>('');
-  const [selectedUnits, setSelectedUnits] = useState<string[]>(() => {
-    const defaultUnit = Array.isArray(unit) ? unit[0] : (unit || '');
-    return Array(inputFields.length).fill(defaultUnit);
-  });
   const [copyrightFields, setCopyrightFields] = useState<{ text: string; license: string }[]>(
     Array(inputFields.length).fill({ text: '', license: 'CC BY 4.0' }),
   );
+  const [selectedUnits, setSelectedUnits] = useState<string[]>(() => {
+    const defaultUnit = Array.isArray(unit) ? unit[0] : unit || '';
+    return Array(inputFields.length).fill(defaultUnit);
+  });
 
   // Load source from context when wikidataprop changes
   useEffect(() => {
@@ -87,7 +87,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const addInputField = () => {
     setInputFields([...inputFields, '']);
     setCopyrightFields([...copyrightFields, { text: '', license: 'CC BY 4.0' }]);
-    const defaultUnit = Array.isArray(unit) ? unit[0] : (unit || '');
+    const defaultUnit = Array.isArray(unit) ? unit[0] : unit || '';
     setSelectedUnits([...selectedUnits, defaultUnit]);
   };
 
@@ -106,10 +106,18 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     newUnits[index] = newUnit;
     setSelectedUnits(newUnits);
 
-    // Trigger onChange with the unit change
-    onChange?.({
-      target: { name: `${name}_unit${index}`, value: newUnit },
-    } as React.ChangeEvent<HTMLInputElement>);
+    // Ensure the unit is sent with the value for fields with units
+    if (Array.isArray(unit)) {
+      onChange?.({
+        target: {
+          name: name + index,
+          value: {
+            value: inputFields[index],
+            selectedUnit: newUnit,
+          },
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+    }
   };
 
   const handleCopyrightChange = (index: number, field: 'text' | 'license', value: string) => {
@@ -138,9 +146,25 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     newFields[index] = value;
     setInputFields(newFields);
 
-    onChange?.({
-      target: { name: name + index, value },
-    } as React.ChangeEvent<HTMLInputElement>);
+    if (Array.isArray(unit)) {
+      onChange?.({
+        target: {
+          name: name + index,
+          value: JSON.stringify({
+            // We're stringifying here
+            value: value,
+            selectedUnit: selectedUnits[index],
+          }),
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+    } else {
+      onChange?.({
+        target: {
+          name: name + index,
+          value: value,
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+    }
   };
 
   const handleSubmit = (source: string) => {
@@ -337,26 +361,34 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
           onChange={(e) => handleInputChange(index, e.target.value)}
           {...(type === 'number' ? { min: '0' } : {})}
         />
-        {unit && Array.isArray(unit) ? (
-          <Select
-            value={selectedUnits[index]}
-            onValueChange={(value) => handleUnitChange(index, value)}
-          >
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Select unit" />
-            </SelectTrigger>
-            <SelectContent>
-              {unit.map((u) => (
-                <SelectItem key={u} value={u}>
-                  {u}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        {Array.isArray(unit) ? (
+          <div className="w-[200px]">
+            <input
+              type="hidden"
+              name={`${name}${index}_unit`}
+              value={JSON.stringify({
+                value: d,
+                selectedUnit: selectedUnits[index],
+              })}
+            />
+            <Select
+              value={selectedUnits[index]}
+              onValueChange={(value) => handleUnitChange(index, value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {unit.map((u) => (
+                  <SelectItem key={u} value={u}>
+                    {u}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         ) : unit ? (
-          <label className="ml-1 text-sm text-primary-medium sm:ml-2 sm:text-base">
-            {unit}
-          </label>
+          <label className="ml-1 text-sm text-primary-medium sm:ml-2 sm:text-base">{unit}</label>
         ) : null}
         {name !== tForm('nameDetails.officialName.label') && (
           <button

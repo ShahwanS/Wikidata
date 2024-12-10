@@ -154,9 +154,9 @@
       },
       "cost": {
         "label": "Construction Cost",
-        "description": "in EUR",
-        "placeholder": "Enter cost in EUR",
-        "infobox": "The construction cost of the building."
+        "description": "in EUR, D-Mark, or Thaler",
+        "placeholder": "Enter cost",
+        "infobox": "The construction cost of the building in EUR, D-Mark, or Thaler."
       }
     },
     "geographicDetails": {

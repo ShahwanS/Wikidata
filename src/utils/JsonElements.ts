@@ -36,7 +36,7 @@ export async function addDataFromCategoryToJson(
   let currentSources: string[] = [];
   let pendingPromises: Promise<void>[] = [];
 
-  for (const [dataName, inputData, wikiprop, source, copyright] of dataList) {
+  for (const [dataName, inputData, wikiprop, selectedUnit, source, copyright] of dataList) {
     const isUrl = wikiprop === 'P856';
     const isRichtext = wikiprop === 'richtext';
     const isImage = checkImage(inputData, wikiprop);
@@ -52,9 +52,9 @@ export async function addDataFromCategoryToJson(
         console.warn(`No image data provided for ${dataName}. Skipping.`);
         return;
       } else {
-        // Pass the copyright information with the input data
         const imageData = inputData;
         imageData[4] = copyright; // Add copyright as the fifth element
+
         const imagePromise = uploadImageAndAddToJson(
           imageData,
           dataName,
@@ -75,25 +75,11 @@ export async function addDataFromCategoryToJson(
           wikiprop,
           dataName,
           inputData,
-          unit: getPropertyByName(dataName).unit,
+          selectedUnit: selectedUnit,
           values: [],
         };
       }
-
-      // Handle input data with selected units
-      if (typeof inputData === 'object' && 'value' in inputData && 'selectedUnit' in inputData) {
-        currentEntry.values.push({
-          value: inputData.value,
-          selectedUnit: inputData.selectedUnit
-        });
-      } else {
-        // Handle regular input without units
-        currentEntry.values.push(inputData);
-      }
-
-      if (source && !currentSources.includes(source)) {
-        currentSources.push(source);
-      }
+      currentEntry.values.push(inputData);
     }
   }
 
@@ -111,25 +97,15 @@ export async function addDataFromCategoryToJson(
  */
 function addEntryToJson(entry: any, jsonOutput: any, sources: string[]) {
   const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : '';
-  const unit = entry.values.map((value: any, index: number) => {
-    // If the value is an object with a selectedUnit property, use that
-    if (value && typeof value === 'object' && 'selectedUnit' in value) {
-      return ` ${value.selectedUnit}`;
-    }
-    // If entry.unit exists and is a string, use it as before
-    return entry.unit ? ` ${entry.unit}` : '';
-  });
+
+  // Handle unit based on whether it's an array or single value
+  const unit = entry.selectedUnit;
+
   const sourceText = sources.length > 0 ? `\nsource:\t${sources.join(', ')}` : '';
 
-  const valuesWithUnits = entry.values.map((value: any, index: number) => {
-    if (value && typeof value === 'object' && 'value' in value) {
-      return `${value.value}${unit[index]}`;
-    }
-    return `${value}${unit[index]}`;
-  }).join('\n');
-
+  const values = entry.values.join('\n');
   jsonOutput.push({
-    p: `### \t${wikipropText}${entry.dataName}\n${valuesWithUnits}${sourceText}`,
+    p: `### \t${wikipropText}${entry.dataName}\n${values}${unit}${sourceText}`,
   });
 }
 

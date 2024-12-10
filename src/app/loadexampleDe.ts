@@ -13,7 +13,7 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
 
   example.push(
     {
-      ...getPropertyByName('Offizieller Name/Adresse'),
+      ...getPropertyByName('Name des Gebäudes/Adresse'),
       value: ['Marburger Landgrafenschloss'],
       category: '',
       required: true,
