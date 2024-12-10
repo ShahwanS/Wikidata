@@ -229,6 +229,7 @@ export function groupFieldsByCategory(
   fields: Property[],
   tInitial: (key: string) => string,
 ): Record<string, Property[]> {
+
   return fields.reduce<Record<string, Property[]>>((acc, field) => {
     const category = field.category || tInitial('form.mainCategory');
     if (!acc[category]) acc[category] = [];

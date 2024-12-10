@@ -60,7 +60,7 @@ const BASE_INPUT_CLASSES =
  * Supports text, number, file uploads, radio buttons, and rich text with source attribution.
  */
 const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, error }) => {
-  const { name, type, placeholder, wikidataprop, value, choices, unique, infobox } = property;
+  const { name, type, placeholder, wikidataprop, value, choices, unique, infobox, unit } = property;
   const tForm = useTranslations('form');
   const tSourcePopup = useTranslations('SourcePopup');
   const { handleSourceSubmit, sources } = useSource();
@@ -69,6 +69,10 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const [inputFields, setInputFields] = useState<string[]>(value || ['']);
   const [showSourcePopup, setShowSourcePopup] = useState(false);
   const [previewSource, setPreviewSource] = useState<string>('');
+  const [selectedUnits, setSelectedUnits] = useState<string[]>(() => {
+    const defaultUnit = Array.isArray(unit) ? unit[0] : (unit || '');
+    return Array(inputFields.length).fill(defaultUnit);
+  });
   const [copyrightFields, setCopyrightFields] = useState<{ text: string; license: string }[]>(
     Array(inputFields.length).fill({ text: '', license: 'CC BY 4.0' }),
   );
@@ -83,15 +87,29 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const addInputField = () => {
     setInputFields([...inputFields, '']);
     setCopyrightFields([...copyrightFields, { text: '', license: 'CC BY 4.0' }]);
+    const defaultUnit = Array.isArray(unit) ? unit[0] : (unit || '');
+    setSelectedUnits([...selectedUnits, defaultUnit]);
   };
 
   const removeInputField = (index: number) => {
     if (inputFields.length > 1) {
       setInputFields(inputFields.filter((_, i) => i !== index));
       setCopyrightFields(copyrightFields.filter((_, i) => i !== index));
+      setSelectedUnits(selectedUnits.filter((_, i) => i !== index));
     } else {
       onDelete?.();
     }
+  };
+
+  const handleUnitChange = (index: number, newUnit: string) => {
+    const newUnits = [...selectedUnits];
+    newUnits[index] = newUnit;
+    setSelectedUnits(newUnits);
+
+    // Trigger onChange with the unit change
+    onChange?.({
+      target: { name: `${name}_unit${index}`, value: newUnit },
+    } as React.ChangeEvent<HTMLInputElement>);
   };
 
   const handleCopyrightChange = (index: number, field: 'text' | 'license', value: string) => {
@@ -319,11 +337,27 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
           onChange={(e) => handleInputChange(index, e.target.value)}
           {...(type === 'number' ? { min: '0' } : {})}
         />
-        {property.unit && (
+        {unit && Array.isArray(unit) ? (
+          <Select
+            value={selectedUnits[index]}
+            onValueChange={(value) => handleUnitChange(index, value)}
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Select unit" />
+            </SelectTrigger>
+            <SelectContent>
+              {unit.map((u) => (
+                <SelectItem key={u} value={u}>
+                  {u}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : unit ? (
           <label className="ml-1 text-sm text-primary-medium sm:ml-2 sm:text-base">
-            {property.unit}
+            {unit}
           </label>
-        )}
+        ) : null}
         {name !== tForm('nameDetails.officialName.label') && (
           <button
             type="button"

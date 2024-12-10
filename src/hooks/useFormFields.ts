@@ -19,6 +19,7 @@ export const useFormFields = () => {
         unique: true,
         required: true,
         infobox: t('nameDetails.officialName.infobox'),
+        category: t('nameDetails.title'), 
       },
 
       {
@@ -27,6 +28,7 @@ export const useFormFields = () => {
         wikidataprop: 'P18',
         required: true,
         infobox: t('media.image.infobox'),
+        category: t('media.title'),
       },
     ];
   }

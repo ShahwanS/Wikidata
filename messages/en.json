@@ -88,15 +88,15 @@
       "title": "Name Information",
       "description": "Different names of the building and the namesake",
       "officialName": {
-        "label": "Official Name/Address",
-        "placeholder": "Enter the official name",
+        "label": "Name of the building/Address",
+        "placeholder": "Enter the name of the building/Address",
         "required": true,
-        "infobox": "The official name of the building."
+        "infobox": "The name of the building or the address."
       },
       "shortName": {
         "label": "Short Name",
         "placeholder": "Enter short name",
-        "infobox": "The short name of the building."
+        "infobox": "The short name of the building if it has one."
       },
       "nickname": {
         "label": "Nickname",
@@ -106,7 +106,7 @@
       "namesake": {
         "label": "Namesake",
         "placeholder": "Enter namesake",
-        "infobox": "The namesake of the building."
+        "infobox": "Name of the person if the building name is a nickname or a name of a person."
       }
     },
     "architectureDetails": {

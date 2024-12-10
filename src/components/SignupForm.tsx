@@ -56,7 +56,7 @@ export default function SignupForm({
       userEmail: data.email,
     };
     Object.entries(userInfo).forEach(([key, value]) => {
-      document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Strict; Secure`;
+      document.cookie = `${key}=${value}; path=/; max-age=604800; SameSite=Strict; Secure`;
     });
     onClose(userInfo);
     setIsSubmitting(false);

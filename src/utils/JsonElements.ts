@@ -79,7 +79,18 @@ export async function addDataFromCategoryToJson(
           values: [],
         };
       }
-      currentEntry.values.push(inputData);
+
+      // Handle input data with selected units
+      if (typeof inputData === 'object' && 'value' in inputData && 'selectedUnit' in inputData) {
+        currentEntry.values.push({
+          value: inputData.value,
+          selectedUnit: inputData.selectedUnit
+        });
+      } else {
+        // Handle regular input without units
+        currentEntry.values.push(inputData);
+      }
+
       if (source && !currentSources.includes(source)) {
         currentSources.push(source);
       }
@@ -100,13 +111,25 @@ export async function addDataFromCategoryToJson(
  */
 function addEntryToJson(entry: any, jsonOutput: any, sources: string[]) {
   const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : '';
-  const unit = entry.unit ? ' ' + entry.unit : '';
+  const unit = entry.values.map((value: any, index: number) => {
+    // If the value is an object with a selectedUnit property, use that
+    if (value && typeof value === 'object' && 'selectedUnit' in value) {
+      return ` ${value.selectedUnit}`;
+    }
+    // If entry.unit exists and is a string, use it as before
+    return entry.unit ? ` ${entry.unit}` : '';
+  });
   const sourceText = sources.length > 0 ? `\nsource:\t${sources.join(', ')}` : '';
 
-  const values = entry.values.join('\n');
+  const valuesWithUnits = entry.values.map((value: any, index: number) => {
+    if (value && typeof value === 'object' && 'value' in value) {
+      return `${value.value}${unit[index]}`;
+    }
+    return `${value}${unit[index]}`;
+  }).join('\n');
 
   jsonOutput.push({
-    p: `### \t${wikipropText}${entry.dataName}\n${values}${unit}${sourceText}`,
+    p: `### \t${wikipropText}${entry.dataName}\n${valuesWithUnits}${sourceText}`,
   });
 }
 

@@ -11,6 +11,6 @@ export type Property = {
   wikidataprop?: string; // Associated Wikidata property ID, if exists
   choices?: string[]; // List of predefined values
   category?: string; // Category of the Property
-  unit?: string; // Unit of measurement
+  unit?: string[]; // Unit of measurement
   infobox?: string; // information to help the user know what to write
 };

@@ -37,12 +37,12 @@
         "aboveGround": {
           "label": "Oberirdische Stockwerke",
           "placeholder": "Anzahl der Etagen über Grund eingeben",
-          "infobox": "Die Anzahl der Etagen über Grund des Gebäudes."
+          "infobox": "Anzahl der Etagen über der Erde"
         },
         "belowGround": {
           "label": "Unterirdische Stockwerke",
           "placeholder": "Anzahl der Etagen unter Grund eingeben",
-          "infobox": "Die Anzahl der Etagen unter Grund des Gebäudes."
+          "infobox": "Anzahl der Etagen unter der Erde"
         },
         "elevators": {
           "label": "Anzahl an Fahrstühlen",
@@ -60,13 +60,13 @@
         },
         "partOf": {
           "label": "Ist Teil von",
-          "placeholder": "z.B. ein größerer Gebäudekomplex?",
-          "infobox": "Das größere Gebäude, zu dem das Gebäude gehört."
+          "placeholder": "z.B. gehört zu einem größerer Gebäudekomplex?",
+          "infobox": "größerer Komplex zu dem das Gebäude gehört"
         },
         "contains": {
           "label": "Enthält",
-          "placeholder": "z.B. wichtige Räume oder ähnliches",
-          "infobox": "Das kleinere Gebäude, das in das Gebäude integriert ist."
+          "placeholder": "kleinere Baueinheiten, die in dem Gebäude enthalten sind",
+          "infobox": "kleinere Baueinheiten, die in dem Gebäude enthalten sind "
         }
       },
       "accessibility": {
@@ -88,15 +88,15 @@
       "title": "Namensangaben",
       "description": "Verschiedene Namen des Gebäudes sowie Namensgeber*in",
       "officialName": {
-        "label": "Offizieller Name/Adresse",
-        "placeholder": "Offiziellen Namen eingeben",
+        "label": "Name des Gebäudes/Adresse",
+        "placeholder": "Name des Gebäudes/Adresse eingeben",
         "required": true,
-        "infobox": "Der offizielle Name des Gebäudes."
+        "infobox": "Name oder Adresse des Gebäudes eingeben"
       },
       "shortName": {
         "label": "Kurzname",
         "placeholder": "Kurzname eingeben",
-        "infobox": "Ein kürzerer Name des Gebäudes."
+        "infobox": "Kurzname, falls ein solcher für das Gebäude bekannt ist"
       },
       "nickname": {
         "label": "Spitzname",
@@ -106,7 +106,7 @@
       "namesake": {
         "label": "Namensgeber*in",
         "placeholder": "Namensgeber*in eingeben",
-        "infobox": "Ein*e Namensgeber*in des Gebäudes."
+        "infobox": "Name der Person, wenn der Gebäudename auf eine Person Bezug nimmt"
       }
     },
     "architectureDetails": {
@@ -154,9 +154,9 @@
       },
       "cost": {
         "label": "Baukosten",
-        "description": "in EUR",
-        "placeholder": "Baukosten in EUR eingeben",
-        "infobox": "Die Baukosten des Gebäudes."
+        "description": "in EUR, D-Mark, Mark oder Thalern",
+        "placeholder": "Baukosten mit Währung eingeben",
+        "infobox": "Die Baukosten des Gebäudes. Kann in Euro (EUR), D-Mark, Mark oder Thalern angegeben werden."
       }
     },
     "geographicDetails": {
