@@ -37,17 +37,17 @@
         "aboveGround": {
           "label": "Above Ground Floors",
           "placeholder": "Enter number of above ground floors",
-          "infobox": "The number of above ground floors of the building."
+          "infobox": "The number of floors above ground."
         },
         "belowGround": {
           "label": "Below Ground Floors",
           "placeholder": "Enter number of below ground floors",
-          "infobox": "The number of below ground floors of the building."
+          "infobox": "The number of floors below ground."
         },
         "elevators": {
           "label": "Number of Elevators",
           "placeholder": "Enter number of elevators",
-          "infobox": "The number of elevators of the building."
+          "infobox": "The number of elevators in the building."
         }
       },
       "rooms": {
@@ -56,17 +56,17 @@
         "roomCount": {
           "label": "Number of Rooms",
           "placeholder": "Enter number of rooms",
-          "infobox": "The number of rooms of the building."
+          "infobox": "The number of rooms in the building."
         },
         "partOf": {
           "label": "Part of",
           "placeholder": "e.g., a larger building complex?",
-          "infobox": "The part of a larger building complex of the building."
+          "infobox": "If the building is part of a larger complex."
         },
         "contains": {
           "label": "Contains",
-          "placeholder": "e.g., significant rooms or similar",
-          "infobox": "The rooms or parts of the building that are contained in the building."
+          "placeholder": "e.g., smaller building units contained in the building",
+          "infobox": "Smaller units or significant parts contained within the building."
         }
       },
       "accessibility": {
@@ -80,7 +80,7 @@
             "notAccessible": "Not accessible with wheelchair"
           },
           "placeholder": "Yes/No",
-          "infobox": "The wheelchair accessibility of the building."
+          "infobox": "Indicates whether the building is wheelchair-accessible."
         }
       }
     },
@@ -91,22 +91,22 @@
         "label": "Name of the building/Address",
         "placeholder": "Enter the name of the building/Address",
         "required": true,
-        "infobox": "The name of the building or the address."
+        "infobox": "The official name or address of the building."
       },
       "shortName": {
         "label": "Short Name",
         "placeholder": "Enter short name",
-        "infobox": "The short name of the building if it has one."
+        "infobox": "A short name for the building, if it exists."
       },
       "nickname": {
         "label": "Nickname",
         "placeholder": "Enter nickname",
-        "infobox": "The nickname of the building."
+        "infobox": "A nickname of the building."
       },
       "namesake": {
         "label": "Namesake",
         "placeholder": "Enter namesake",
-        "infobox": "Name of the person if the building name is a nickname or a name of a person."
+        "infobox": "Name of the person if the building name refers to a person."
       }
     },
     "architectureDetails": {
@@ -120,7 +120,7 @@
       "inspiredBy": {
         "label": "Inspired By",
         "placeholder": "Enter what inspired the architecture",
-        "infobox": "The inspiration for the architectural style of the building."
+        "infobox": "The inspiration for the building’s architectural style."
       },
       "architect": {
         "label": "Architect",
@@ -144,47 +144,25 @@
       "company": {
         "label": "Construction Company",
         "placeholder": "Enter construction company",
-        "infobox": "The construction company of the building."
-      },
-
-      "engineer": {
-        "label": "Structural Engineer",
-        "placeholder": "Enter engineer",
-        "infobox": "The structural engineer of the building."
+        "infobox": "The construction company responsible for the building."
       },
       "cost": {
         "label": "Construction Cost",
-        "description": "in EUR, D-Mark, or Thaler",
+        "description": "in EUR, D-Mark, Mark or Thaler",
         "placeholder": "Enter cost",
-        "infobox": "The construction cost of the building in EUR, D-Mark, or Thaler."
+        "infobox": "The construction cost of the building. Can be in EUR, D-Mark, Mark or Thaler."
       }
     },
     "geographicDetails": {
       "title": "Geographic Information",
-      "description": "Location, orientation, neighbors",
+      "description": "Location, neighbors",
       "location": {
         "label": "Location",
         "description": "Neighborhood, coordinates, direction",
         "adjacentBuildings": {
           "label": "Adjacent Buildings",
           "placeholder": "Enter adjacent buildings",
-          "infobox": "The adjacent buildings of the building."
-        },
-        "connectedTo": {
-          "label": "Connected to",
-          "placeholder": "e.g., part of a larger building complex?",
-          "infobox": "The connected buildings of the building."
-        },
-        "coordinates": {
-          "label": "Coordinates",
-          "placeholder": "Enter latitude and longitude",
-          "infobox": "The coordinates of the building."
-        },
-
-        "orientation": {
-          "label": "Orientation",
-          "placeholder": "Enter orientation",
-          "infobox": "The orientation of the building."
+          "infobox": "Buildings in the immediate vicinity."
         }
       },
       "address": {
@@ -193,12 +171,12 @@
         "street": {
           "label": "Street",
           "placeholder": "Enter street name",
-          "infobox": "The street of the building."
+          "infobox": "The street where the building is located."
         },
         "fullAddress": {
           "label": "Full Address",
           "placeholder": "Enter full street address",
-          "infobox": "The full street address of the building."
+          "infobox": "The complete address of the building."
         },
         "postalCode": {
           "label": "Postal Code",
@@ -213,7 +191,7 @@
       "yearBuilt": {
         "label": "Year Built",
         "placeholder": "Enter date: MM/YY or year",
-        "infobox": "The year the building was built."
+        "infobox": "The year the building was constructed."
       },
       "openingDate": {
         "label": "Official Opening Date",
@@ -223,12 +201,12 @@
       "closingDate": {
         "label": "Closing Date",
         "placeholder": "Enter date: MM/YY or year",
-        "infobox": "The closing date of the building."
+        "infobox": "The date when the building was closed."
       },
       "demolitionDate": {
         "label": "Demolition Date",
         "placeholder": "Enter date: MM/YY or year",
-        "infobox": "The demolition date of the building."
+        "infobox": "The date when the building was demolished."
       },
       "keyEvent": {
         "label": "Key Event",
@@ -238,23 +216,22 @@
       "keyPerson": {
         "label": "Key Person",
         "placeholder": "e.g., enter a key historical figure",
-        "infobox": "A key historical figure related to the building."
+        "infobox": "A key historical figure associated with the building."
       },
       "contractor": {
         "label": "Contractor",
         "placeholder": "Enter contractor",
-        "infobox": "The contractor of the building."
+        "infobox": "The contractor commissioned for the building."
       },
-
       "predecessor": {
         "label": "Predecessor",
         "placeholder": "Enter predecessor building",
-        "infobox": "The predecessor of the building."
+        "infobox": "A previous building that stood on this site."
       },
       "successor": {
         "label": "Successor",
         "placeholder": "Enter successor building",
-        "infobox": "The successor of the building."
+        "infobox": "A building that replaced this one."
       }
     },
     "usage": {
@@ -262,23 +239,23 @@
       "description": "Who uses the building and for what purpose? Building condition",
       "state": {
         "label": "Usage State",
-        "placeholder": "Very poor/poor/normal/good/very good",
-        "infobox": "The usage state of the building."
+        "placeholder": "Used/Vacant",
+        "infobox": "Is the building in use or is it vacant?"
       },
       "condition": {
         "label": "Condition",
-        "placeholder": "Very poor/poor/normal/good/very good",
-        "infobox": "The condition of the building."
+        "placeholder": "very poor/poor/normal/good/very good",
+        "infobox": "The preservation condition of the building."
       },
       "user": {
         "label": "User",
         "placeholder": "Enter user",
-        "infobox": "The user of the building."
+        "infobox": "The person(s) or organization(s) using the building."
       },
       "purpose": {
         "label": "Purpose",
-        "placeholder": "Enter purpose",
-        "infobox": "The purpose of the building."
+        "placeholder": "e.g. seminar building/laboratory",
+        "infobox": "The purpose or function of the building."
       },
       "operator": {
         "label": "Operator",
@@ -287,8 +264,8 @@
       },
       "maintainedBy": {
         "label": "Maintained by",
-        "placeholder": "Enter who maintains the building",
-        "infobox": "The person or organization that maintains the building."
+        "placeholder": "Who maintains the building?",
+        "infobox": "The person or organization responsible for maintenance."
       },
       "owner": {
         "label": "Owner",
@@ -299,26 +276,15 @@
     "classification": {
       "title": "Classification",
       "description": "Information about classification, protection category, monument list",
-      "instanceOf": {
-        "label": "Instance of",
-        "value": "Building",
-        "placeholder": "Enter instance of",
-        "infobox": "The instance of the building."
-      },
-      "commonsCategory": {
-        "label": "Commons Category",
-        "placeholder": "Enter commons category",
-        "infobox": "The commons category of the building."
-      },
       "protectionCategory": {
         "label": "Protection Category",
-        "placeholder": "Enter protection category",
-        "infobox": "The protection category of the building."
+        "placeholder": "e.g. protected monument/no protection",
+        "infobox": "Is the building under some form of heritage or monument protection?"
       },
       "monumentList": {
         "label": "Listed in Monument List",
         "placeholder": "Enter monument list",
-        "infobox": "The monument list of the building."
+        "infobox": "The monument list in which the building is recorded."
       }
     },
     "links": {
@@ -327,7 +293,7 @@
       "website": {
         "label": "Website",
         "placeholder": "Enter URL",
-        "infobox": "The official website of the building."
+        "infobox": "Official websites related to this building."
       }
     },
     "media": {
@@ -336,17 +302,17 @@
       "image": {
         "label": "Image",
         "placeholder": "Upload image",
-        "infobox": "An image of the building."
+        "infobox": "An image of the building or related situations."
       },
       "backImage": {
-        "label": "image of backside",
+        "label": "Image of Backside",
         "placeholder": "Upload image of backside",
-        "infobox": "An image of the back of the building."
+        "infobox": "An image of the rear side of the building."
       },
       "entranceImage": {
         "label": "Entrance Image",
         "placeholder": "Upload entrance image",
-        "infobox": "An image of the entrance of the building."
+        "infobox": "An image of the building’s entrance."
       },
       "aerialView": {
         "label": "Aerial View",
@@ -356,7 +322,7 @@
       "interiorView": {
         "label": "Interior View",
         "placeholder": "Upload interior view",
-        "infobox": "An interior view of the building."
+        "infobox": "An image showing the interior of the building."
       },
       "floorPlan": {
         "label": "Floor Plan",
@@ -366,7 +332,14 @@
     },
     "copyright": {
       "label": "Copyright",
-      "placeholder": "Enter copyright"
+      "placeholder": "Enter copyright",
+      "infobox0": "The work is dedicated by the authors to the public domain, thereby relinquishing their copyright. The work may be reused, distributed, remixed, adapted, and built upon in any medium or format, without any conditions.",
+      "infobox1": "The work may be reused (including commercially), distributed, remixed, adapted, and built upon in any medium or format, as long as the authors of the work are credited.",
+      "infobox2": "The work may be reused (including commercially), distributed, remixed, adapted, and built upon in any medium or format, as long as the authors are credited. If the work is modified, the modified work must be licensed under the same terms.",
+      "infobox3": "The work may be reused (including commercially) only in unchanged form, copied and redistributed, as long as the authors of the work are credited.",
+      "infobox4": "The work may be reused (including commercially) only in unchanged form, copied and redistributed, as long as the authors of the work are credited.",
+      "infobox5": "The work may be reused (including commercially), distributed, remixed, adapted, and built upon in any medium or format, as long as the authors are credited. If the work is modified, the modified work must be licensed under the same conditions.",
+      "infobox6": "The work may be reused (including commercially) only in unchanged form, copied and redistributed, as long as the authors of the work are credited."
     }
   },
   "initial": {
@@ -378,12 +351,13 @@
       "loadExampleData": "Load example data",
       "additionalText": "Additional text",
       "addRichText": "Add rich text",
-      "richTextPlaceholder": "Enter rich text",
-      "infobox": "Useful Information about the place that is not covered by other fields.",
+      "richTextPlaceholder": "Enter text",
+      "richTextBoxPlaceholder": "In this free text field, you can share anything about the building that you would like to tell us. For example (but certainly not exclusively), you could write about questions like: How did research and teaching take place in the building? Who worked or works there? What did you experience in this building? Which groups or working groups met there? Did life in the building reflect the ongoing transformation that characterizes the University of Marburg? Did everyday life in the building reflect the diversity of the University of Marburg, or were diversity and respect lacking? Was new knowledge created with curiosity and responsibility?",
+      "infobox": "Useful information about the building that is not covered by other fields.",
+      "success": "Information successfully saved",
       "resetAllFields": "Reset all fields",
       "submit": "Save",
       "formSaved": "Form saved",
-      "succes:": "Information submitted successfully.",
       "errorSending": "Error sending the markup file to GitLab.",
       "resetFormTitle": "Reset form",
       "resetFormDescription": "Are you sure you want to reset the form? All entered data will be deleted.",
@@ -399,7 +373,7 @@
         "title": "Form reset",
         "description": "Are you sure you want to reset the form? All entered data will be deleted.",
         "cancel": "Cancel",
-        "confirm": "Start new entry"
+        "confirm": "Reset"
       },
       "fieldNavigator": "Field Navigator",
       "preview": {
@@ -418,35 +392,35 @@
       "title": "Frequently Asked Questions",
       "dataSubmission": {
         "question": "What happens when I submit my data?",
-        "answer": "When you submit your data, it gets transformed into a structured markdown file. This file is then uploaded to our database for moderation review before being integrated into the system."
+        "answer": "When you submit your data, it will be transformed into a structured Markdown file. This file is then uploaded to our database for moderation before being integrated into the system."
       },
       "sourceManagement": {
         "question": "How do I add sources to my entries?",
-        "answer": "Each field has an option to add sources. Click the 'Add Source' button next to a field to add source information and additional references that support your entry."
+        "answer": "Each field can have sources added. Click 'Add Source' next to a field to provide source information and additional references."
       },
       "fieldNavigation": {
         "question": "How can I navigate through many fields?",
-        "answer": "Use the Field Navigator on the right side of the screen. It provides a quick overview of all your fields and allows you to jump directly to any section by clicking on it."
+        "answer": "Use the Field Navigator on the right side of the screen. It provides a quick overview of all your fields and lets you jump directly to any section."
       },
       "imageUpload": {
         "question": "What should I know about uploading images?",
-        "answer": "When uploading images, you must provide copyright information for each image. The system accepts common image formats, and you can add multiple images for different views of the building."
+        "answer": "You must provide copyright information for each image. Common image formats are accepted, and you can upload multiple images for various views of the building."
       },
       "addFields": {
         "question": "How do I add new fields?",
-        "answer": "Click the 'Add Fields' button on the left side of the screen to open the property selector. Select the fields you want to add and click 'Add Selected Properties'."
+        "answer": "Click 'Add more fields' to open the property selector. Choose the fields you want to add and click 'Add selected properties'."
       },
       "saveChanges": {
         "question": "How do I save my changes?",
-        "answer": "Click the green 'Save' button at the bottom of the form. Your data will be saved and you can continue editing or start a new entry."
+        "answer": "Click the green 'Save' button at the bottom of the form. Your data will be saved, and you can continue editing or start a new entry."
       },
       "resetForm": {
         "question": "Can I reset the form?",
-        "answer": "Yes, you can click the 'Reset All Fields' button at the bottom of the form. This will clear all entered data after confirmation."
+        "answer": "Yes, click 'Reset all fields' at the bottom of the form. After confirmation, all entered data will be cleared."
       },
       "richText": {
         "question": "What are rich text fields?",
-        "answer": "Rich text fields allow you to enter formatted text with additional details that don't fit into the standard fields. You can add them using the 'Add Rich Text' button."
+        "answer": "Rich text fields allow formatted text with additional details that don't fit into standard fields. Add them using the 'Add rich text' button."
       }
     }
   },
@@ -462,8 +436,8 @@
   },
   "SourcePopup": {
     "title": "Add Source",
-    "editDescription": "Edit the source information and any additional references.",
-    "addDescription": "Add new source information and any additional references.",
+    "addDescription": "Add source information and additional references",
+    "editDescription": "Edit the source information and any additional references",
     "addSource": "Add Source",
     "editSource": "Edit Source",
     "removeSource": "Remove Source",
@@ -500,6 +474,8 @@
     "submit": "Submit",
     "privacyPolicyLabel": "I agree to the privacy policy",
     "privacyPolicyLink": "Privacy Policy",
-    "privacyPolicyRequired": "You must agree to the privacy policy"
+    "privacyPolicyRequired": "You must agree to the privacy policy",
+    "welcomeMessage": "The University of Marburg celebrates its 500th anniversary in 2027. These celebrations are accompanied by the Knowledge Spaces research project. The goal is to explore the history of science through university architecture.\n\nWhile much has been written about individual professors, others and especially research and teaching practices as well as everyday life in the city and at the university often remain in the dark. We need you to help add these missing puzzle pieces to the overall picture! Help us bring university history to life with your knowledge and memories by sharing your stories about one or more buildings. What took place in which building? Who taught where and how? What research projects were being worked on during your time? How has the cityscape changed? Where did you discuss with your people? What do you know about the history of science and university buildings? These and many other aspects help complete the picture. Use the preset fields, add more, or share your knowledge in the free text field. We look forward to your contribution.\n\nWhile entering your information, the data is stored in cookies before being converted into a markdown file and stored in the university's internal Gitlab after submission. The Knowledge Spaces team will then evaluate the data and incorporate the information, as much as possible, into Wikimedia family formats (Wikipedia, Wikidata, Wikicommons etc.) to keep the data sustainably accessible and updatable for the public even after the anniversary year and the end of the Knowledge Spaces project. At the same time, an app will be designed with the knowledge that goes beyond just hard facts and data, bringing the history of science and everyday life at Philipps University to life. We would therefore be very pleased if we could engage in an exchange with you about the alma mater and if you would contribute to the anniversary. After the anniversary year or when you inform us beforehand, we will of course delete all personal data and information from the web form. Until then, only members of the Knowledge Spaces project team have access to your data and information.\n\nWe need your email address so that we can contact you if we have questions about your entries, especially in the free text field.\n\nIf you have any further questions, feel free to take a look at the FAQ on the next page or contact the Knowledge Spaces team directly. You can reach us by email at andreas.schuebeler@staff.uni-marburg.de.",
+    "getStarted": "Get Started"
   }
 }

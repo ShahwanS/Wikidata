@@ -147,11 +147,6 @@
         "infobox": "Das Bauunternehmen, das das Gebäude gebaut hat."
       },
 
-      "engineer": {
-        "label": "Statiker*in / Ingenieur*in",
-        "placeholder": "Ingenieur*in eingeben",
-        "infobox": "Der*Die Statiker*in oder Ingenieur*in des Gebäudes."
-      },
       "cost": {
         "label": "Baukosten",
         "description": "in EUR, D-Mark, Mark oder Thalern",
@@ -167,24 +162,8 @@
         "description": "Nachbarschaft, Koordinaten, Blickrichtung",
         "adjacentBuildings": {
           "label": "Angrenzende Gebäude",
-          "placeholder": "Physisch verbunden mit",
-          "infobox": "Das Gebäude, das physisch mit dem Gebäude verbunden ist."
-        },
-        "connectedTo": {
-          "label": "Physisch verbunden mit",
-          "placeholder": "z.B. einem größeren Gebäudekomplex?",
-          "infobox": "Das Gebäude, das physisch mit dem Gebäude verbunden ist."
-        },
-        "coordinates": {
-          "label": "Koordinaten",
-          "placeholder": "Längen- / Breitengrad eingeben",
-          "infobox": "Die geografischen Koordinaten des Gebäudes."
-        },
-
-        "orientation": {
-          "label": "Blickrichtung",
-          "placeholder": "Blickrichtung eingeben",
-          "infobox": "Die Blickrichtung des Gebäudes."
+          "placeholder": "Angrenzende Gebäude eingeben",
+          "infobox": "Die Gebäude, die sich in unmittelbarer Nachbarschaft befinden."
         }
       },
       "address": {
@@ -198,7 +177,7 @@
         "fullAddress": {
           "label": "Komplette Adresse",
           "placeholder": "Straße und Hausnummer eingeben",
-          "infobox": "Die komplette Adresse des Gebäudes."
+          "infobox": "Vollständige Adresse des Gebäudes angeben"
         },
         "postalCode": {
           "label": "Postleitzahl",
@@ -249,12 +228,12 @@
       "predecessor": {
         "label": "Vorgängerbauwerk",
         "placeholder": "Vorgängerbauwerk eingeben",
-        "infobox": "Das Vorgängerbauwerk des Gebäudes."
+        "infobox": "Welches Bauwerk stand hier gegebenenfalls vorher?"
       },
       "successor": {
         "label": "Nachfolgebauwerk",
         "placeholder": "Nachfolgebauwerk eingeben",
-        "infobox": "Das Nachfolgebauwerk des Gebäudes."
+        "infobox": "Durch welches Gebäude an dieser Stelle wurde das Gebäude ersetzt"
       }
     },
     "usage": {
@@ -262,8 +241,8 @@
       "description": "Wer nutzt das Gebäude für was? Zustand des Gebäudes",
       "state": {
         "label": "Nutzungszustand",
-        "placeholder": "sehr schlecht/schlecht/normal/gut/sehr gut",
-        "infobox": "Der Zustand des Gebäudes."
+        "placeholder": "Benutzung/leerstehend",
+        "infobox": "Ist das Gebäude in Benutzung oder steht es leer?"
       },
       "condition": {
         "label": "Erhaltungszustand",
@@ -272,12 +251,12 @@
       },
       "user": {
         "label": "Nutzer*in",
-        "placeholder": "Nutzer*in eingeben",
+        "placeholder": "Nutzer*in/Fach/Fachbereich",
         "infobox": "Der*Die Nutzer*in des Gebäudes."
       },
       "purpose": {
         "label": "Verwendungszweck",
-        "placeholder": "Verwendungszweck eingeben",
+        "placeholder": "z.B. Seminargebäude/Labor",
         "infobox": "Der Verwendungszweck des Gebäudes."
       },
       "operator": {
@@ -299,21 +278,11 @@
     "classification": {
       "title": "Klassifizierung",
       "description": "Angaben zur Klassifizierung, Schutzkategorie, Denkmalliste",
-      "instanceOf": {
-        "label": "Ist Instanz von",
-        "value": "Gebäude",
-        "placeholder": "Instanz von eingeben",
-        "infobox": "Die Instanz des Gebäudes."
-      },
-      "commonsCategory": {
-        "label": "Commons-Kategorie",
-        "placeholder": "Commons-Kategorie eingeben",
-        "infobox": "Die Commons-Kategorie des Gebäudes."
-      },
+
       "protectionCategory": {
         "label": "Schutzkategorie",
-        "placeholder": "Schutzkategorie eingeben",
-        "infobox": "Die Schutzkategorie des Gebäudes."
+        "placeholder": "z.B. Denkmalschutz/kein Denkmalschutz",
+        "infobox": "Steht das Gebäude unter Denkmalschutz?"
       },
       "monumentList": {
         "label": "Steht in der Denkmalliste",
@@ -325,9 +294,9 @@
       "title": "Links",
       "description": "Links zur offiziellen Website",
       "website": {
-        "label": "Webseite",
+        "label": "Website",
         "placeholder": "URL eingeben",
-        "infobox": "Die offizielle Website des Gebäudes."
+        "infobox": "Websites zu diesem Gebäude"
       }
     },
     "media": {
@@ -336,7 +305,7 @@
       "image": {
         "label": "Bild",
         "placeholder": "Bild hochladen",
-        "infobox": "Ein Bild des Gebäudes."
+        "infobox": "Ein Bild vom Gebäude oder von Situationen im/am Gebäude"
       },
       "backImage": {
         "label": "Bild der Rückseite",
@@ -366,7 +335,14 @@
     },
     "copyright": {
       "label": "Copyright",
-      "placeholder": "Copyright eingeben"
+      "placeholder": "Copyright eingeben",
+      "infobox0": "Das Werk wird von den Urheber*innen der Allgemeinheit gewidmet, sodass sie ihr Copyright aufgeben. Das Werk darf ohne Bedingungen wiederverwertet, in allen Medien und Formaten verbreitet, neu zusammengesetzt, angepasst und weiterverarbeitet werden.",
+      "infobox1": "Das Werk darf (auch kommerziell) wiederverwertet, in allen Medien und Formaten verbreitet, neu zusammengesetzt, angepasst und weiterverarbeitet werden, solange die Urheber*innen des Werkes genannt werden.",
+      "infobox2": "Das Werk darf (auch kommerziell) wiederverwertet, in allen Medien und Formaten verbreitet, neu zusammengesetzt, angepasst und weiterverarbeitet werden, solange die Urheber*innen des Werkes genannt werden. Wenn das Werk verändert wird, besteht die Verpflichtung, das veränderte Werk unter den gleichen Bedingungen zu lizenzieren.",
+      "infobox3": "Das Werk darf (auch kommerziell) nur in unveränderter Form wiederverwertet, verfielfältigt und weiterverbreitet werden, solange die Urheber*innen des Werks genannt werden.",
+      "infobox4": "Das Werk darf (auch kommerziell) nur in unveränderter Form wiederverwertet, verfielfältigt und weiterverbreitet werden, solange die Urheber*innen des Werks genannt werden.",
+      "infobox5": "Das Werk darf (auch kommerziell) wiederverwertet, in allen Medien und Formaten verbreitet, neu zusammengesetzt, angepasst und weiterverarbeitet werden, solange die Urheber*innen des Werkes genannt werden. Wenn das Werk verändert wird, besteht die Verpflichtung, das veränderte Werk unter den gleichen Bedingungen zu lizenzieren.",
+      "infobox6": "Das Werk darf (auch kommerziell) nur in unveränderter Form wiederverwertet, verfielfältigt und weiterverbreitet werden, solange die Urheber*innen des Werks genannt werden."
     }
   },
 
@@ -379,6 +355,7 @@
       "loadExampleData": "Lade Beispieldaten",
       "additionalText": "Zusätzlicher Text",
       "richTextPlaceholder": "Text eingeben",
+      "richTextBoxPlaceholder": "In diesem Freitextfeld können Sie uns alles zu dem Gebäude mitteilen, was Sie mit uns teilen möchten. Beispielsweise (aber selbstverständlich nicht nur) können Sie etwas zu diesen Fragen schreiben: Wie sahen Forschung und Lehre in dem Gebäude aus? Wer arbeitete bzw. arbeitet dort? Was haben Sie in dem Gebäude erlebt? Welche Gruppen oder Arbeitskreise trafen sich dort? Zeigte sich im Leben in dem Gebäude der stetige Wandel, der die Universität Marburg ausmacht? Spiegelte sich im Alltag im Gebäude die Vielfalt der Universität Marburg oder fehlten Vielfalt und Respekt dort? Wurde mit Neugier und Verantwortung neues Wissen geschaffen?",
       "infobox": "Nützliche Informationen über das Gebäude, die nicht durch andere Felder abgedeckt werden.",
       "success": "Informationen erfolgreich gespeichert",
       "addRichText": "Freitext hinzufügen",
@@ -501,6 +478,8 @@
     "invalidEmail": "Ungültiges E-Mail-Format",
     "privacyPolicyLabel": "Ich stimme der Datenschutzerklärung zu",
     "privacyPolicyLink": "Datenschutzerklärung",
-    "privacyPolicyRequired": "Sie müssen der Datenschutzerklärung zustimmen"
+    "privacyPolicyRequired": "Sie müssen der Datenschutzerklärung zustimmen",
+    "welcomeMessage": "Die Universität Marburg feiert 2027 ihr 500-jähriges Jubiläum. Diese Feierlichkeiten werden von den Wissensräumen als Forschungsprojekt begleitet. Das Ziel ist es, die Wissenschaftsgeschichte anhand der Universitätsarchitektur aufzubereiten.\n\nWurde über einzelne Dozierende viel geschrieben, bleiben andere und vor allem auch die Forschungs- und Lehrpraxis sowie das Alltagsleben in der Stadt und an der Universität oftmals im Dunkeln. Damit diese fehlenden Puzzleteile auch in das Gesamtbild eingefügt werden können, brauchen wir Sie! Helfen Sie uns mit Ihrem Wissen und Ihren Erinnerungen, die Universitätsgeschichte lebendig werden zu lassen, indem Sie zu einem oder mehreren Gebäuden Ihr Wissen und Ihre Geschichten mit uns teilen. Was fand in welchem Gebäude statt? Wer lehrte wo und wie? An welchen Forschungsprojekten wurde zu Ihrer Zeit gearbeitet? Wie hat sich das Stadtbild verändert? Wo diskutierten Sie mit Ihren Leuten? Was wissen Sie über die Wissenschaftsgeschichte und Universitätsgebäude? Diese und viele andere Aspekte helfen, das Bild zu vervollständigen. Nutzen Sie die voreingestellten Felder, fügen Sie weitere hinzu oder geben Sie Ihr wissen in dem Freitextfeld weiter. Wir freuen uns über Ihren Beitrag.\n\nWährend der Eingabe Ihrer Angaben werden die Daten auf Cookies gespeichert, bevor Sie nach dem Senden in eine Markdowndatei umgewandelt im universitätsinternen Gitlab gespeichert werden. Das Team der Wissensräume wird die Daten dann auswerten und die Informationen, soweit wie möglich, in die Formate der Wikimedia-Familie (Wikipedia, Wikidata, Wikicommons etc.) einbringen um die Daten nachhaltig auf für die Zeit nach dem Jubiläumsjahr und dem Ende des Projekts der Wissensräume für die Öffentlichkeit zugänglich und auch aktualisierbar zu halten. Gleichzeitig soll mit dem Wissen, dass sich nicht nur um harte Fakten und Daten dreht, eine App gestaltet werden, in der die Wissenschaftsgeschichte und auch das alltägliche Leben an der Philipps-Universität lebendig werden. Es würde uns deshalb sehr freuen, wenn wir mit Ihnen in einen Austausch über die alma mater kommen dürfen und Sie ihren Beitrag zum Jubiläum beisteuern. Nach dem Jubiläumsjahr oder wenn Sie uns dies vorher mitteilen, werden wir alle personenbezogenen Daten und Informationen aus dem Webformular selbstverständlich löschen. Bis dahin haben nur die Mitglieder des Projektteams der Wissensräume Zugang zu Ihren Daten und Angaben.\n\nDie Angabe Ihrer E-Mailadresse benötigen wir, um gegebenenfalls auf Sie zukommen zu können, wenn wir Fragen zu Ihren Eingaben vor allem im Freitextfeld haben.\n\nSollten Sie weitere Fragen haben, können Sie gerne einen Blick in die FAQ auf der nächsten Seite werfen oder das Team der Wissensräume direkt kontaktieren. Sie erreichen uns per E-Mail an andreas.schuebeler@staff.uni-marburg.de.",
+    "getStarted": "Los geht's"
   }
 }

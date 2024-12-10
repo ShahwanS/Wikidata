@@ -43,15 +43,6 @@ export interface FieldProps {
   error?: any; // TODO: Add proper type
 }
 
-const CC_LICENSES = [
-  { value: 'CC BY 4.0', label: 'CC BY 4.0' },
-  { value: 'CC BY-SA 4.0', label: 'CC BY-SA 4.0' },
-  { value: 'CC BY-NC 4.0', label: 'CC BY-NC 4.0' },
-  { value: 'CC BY-ND 4.0', label: 'CC BY-ND 4.0' },
-  { value: 'CC BY-NC-SA 4.0', label: 'CC BY-NC-SA 4.0' },
-  { value: 'CC BY-NC-ND 4.0', label: 'CC BY-NC-ND 4.0' },
-] as const;
-
 const BASE_INPUT_CLASSES =
   'w-full px-4 py-2 border border-primary-light/30 rounded-lg transition duration-300 ease-in-out focus:border-primary-medium focus:ring-1 focus:ring-primary-medium focus:outline-none shadow-sm text-primary-dark focus:shadow-md';
 
@@ -64,6 +55,15 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
   const tForm = useTranslations('form');
   const tSourcePopup = useTranslations('SourcePopup');
   const { handleSourceSubmit, sources } = useSource();
+
+  const CC_LICENSES = [
+    { value: 'CC BY 4.0', label: 'CC BY 4.0', infobox: tForm('copyright.infobox1') },
+    { value: 'CC BY-SA 4.0', label: 'CC BY-SA 4.0', infobox: tForm('copyright.infobox2') },
+    { value: 'CC BY-NC 4.0', label: 'CC BY-NC 4.0', infobox: tForm('copyright.infobox3') },
+    { value: 'CC BY-ND 4.0', label: 'CC BY-ND 4.0', infobox: tForm('copyright.infobox4') },
+    { value: 'CC BY-NC-SA 4.0', label: 'CC BY-NC-SA 4.0', infobox: tForm('copyright.infobox5') },
+    { value: 'CC BY-NC-ND 4.0', label: 'CC BY-NC-ND 4.0', infobox: tForm('copyright.infobox6') },
+  ] as const;
 
   // State management
   const [inputFields, setInputFields] = useState<string[]>(value || ['']);
@@ -264,21 +264,36 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
               })}
             />
 
-            <Select
-              value={copyrightFields[index].license}
-              onValueChange={(value) => handleCopyrightChange(index, 'license', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a license" />
-              </SelectTrigger>
-              <SelectContent>
-                {CC_LICENSES.map((license) => (
-                  <SelectItem key={license.value} value={license.value}>
-                    {license.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Select
+                value={copyrightFields[index].license}
+                onValueChange={(value) => handleCopyrightChange(index, 'license', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a license" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CC_LICENSES.map((license) => (
+                    <SelectItem
+                      key={license.value}
+                      value={license.value}
+                      data-tooltip-id={`license-tooltip-${license.value}`}
+                      data-tooltip-content={license.infobox}
+                    >
+                      {license.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {CC_LICENSES.map((license) => (
+                <ReactTooltip
+                  key={`tooltip-${license.value}`}
+                  id={`license-tooltip-${license.value}`}
+                  place="right"
+                  className="max-w-xs text-sm"
+                />
+              ))}
+            </div>
           </div>
         </div>
       )}

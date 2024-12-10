@@ -1,8 +1,6 @@
 import { Category } from '@/types/category';
 
-/** Porperties-Gliederung
- *  (orientiert sich an der Pdf-Datei)
- */
+/** Properties-Gliederung (structure) */
 /** Main function that defines the structure of categories and properties with i18n */
 export const propgliederung = (t: (key: string) => string): Category[] => [
   {
@@ -240,14 +238,6 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t('constructionDetails.company.placeholder'),
             infobox: t('constructionDetails.company.infobox'),
           },
-
-          {
-            name: t('constructionDetails.engineer.label'),
-            type: 'text',
-            wikidataprop: 'P631',
-            placeholder: t('constructionDetails.engineer.placeholder'),
-            infobox: t('constructionDetails.engineer.infobox'),
-          },
           {
             name: t('constructionDetails.cost.label'),
             type: 'number',
@@ -276,30 +266,6 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             wikidataprop: 'P3032',
             placeholder: t('geographicDetails.location.adjacentBuildings.placeholder'),
             infobox: t('geographicDetails.location.adjacentBuildings.infobox'),
-          },
-          {
-            name: t('geographicDetails.location.connectedTo.label'),
-            type: 'text',
-            wikidataprop: 'P2789',
-            placeholder: t('geographicDetails.location.connectedTo.placeholder'),
-            infobox: t('geographicDetails.location.connectedTo.infobox'),
-          },
-          {
-            name: t('geographicDetails.location.coordinates.label'),
-            type: 'text',
-            wikidataprop: 'P625',
-            unique: true,
-            placeholder: t('geographicDetails.location.coordinates.placeholder'),
-            infobox: t('geographicDetails.location.coordinates.infobox'),
-          },
-
-          {
-            name: t('geographicDetails.location.orientation.label'),
-            type: 'text',
-            wikidataprop: 'P7787',
-            unique: true,
-            placeholder: t('geographicDetails.location.orientation.placeholder'),
-            infobox: t('geographicDetails.location.orientation.infobox'),
           },
         ],
       },
@@ -396,7 +362,6 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
             placeholder: t('historicalData.contractor.placeholder'),
             infobox: t('historicalData.contractor.infobox'),
           },
-
           {
             name: t('historicalData.predecessor.label'),
             type: 'text',
@@ -486,21 +451,6 @@ export const propgliederung = (t: (key: string) => string): Category[] => [
         name: t('classification.title'),
         description: t('classification.description'),
         properties: [
-          {
-            name: t('classification.instanceOf.label'),
-            value: [t('classification.instanceOf.value')],
-            type: 'text',
-            wikidataprop: 'P31',
-            placeholder: t('classification.instanceOf.placeholder'),
-            infobox: t('classification.instanceOf.infobox'),
-          },
-          {
-            name: t('classification.commonsCategory.label'),
-            type: 'text',
-            wikidataprop: 'P373',
-            placeholder: t('classification.commonsCategory.placeholder'),
-            infobox: t('classification.commonsCategory.infobox'),
-          },
           {
             name: t('classification.protectionCategory.label'),
             type: 'text',

@@ -54,14 +54,12 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
       ["Witch's Tower", "Bücking's Garden"],
       getPropertyByName,
     ),
-    createExampleField('Orientation', ['South'], getPropertyByName),
-    createExampleField('Coordinates', ['50°48\'36.7"N, 8°46\'1.2"E'], getPropertyByName),
+
     createExampleField('Full Address', ['Castle 1'], getPropertyByName),
     createExampleField('Postal Code', ['35037'], getPropertyByName),
     createExampleField('Architectural Style', ['Gothic Halls'], getPropertyByName),
     createExampleField('Purpose', ['Festive and Cultural Events', 'Museum'], getPropertyByName),
     createExampleField('Number of Elevators', ['0'], getPropertyByName),
-    createExampleField('Instance of', ['Building', 'Castle', 'Fortress'], getPropertyByName),
   );
 
   return example;

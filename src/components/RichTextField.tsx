@@ -66,6 +66,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
           theme="snow"
           value={content}
           onChange={handleChange}
+          placeholder={t('form.richTextBoxPlaceholder')}
           style={{ height: '400px', marginBottom: '80px', marginTop: '20px' }}
         />
       </Field>

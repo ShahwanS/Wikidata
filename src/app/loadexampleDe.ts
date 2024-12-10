@@ -50,8 +50,6 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
       getPropertyByName,
     ),
     createExampleField('Angrenzende Gebäude', ['Hexenturm', 'Bückingsgarten'], getPropertyByName),
-    createExampleField('Blickrichtung', ['Süden'], getPropertyByName),
-    createExampleField('Koordinaten', ['50°48\'36.7"N, 8°46\'1.2"E'], getPropertyByName),
 
     createExampleField('Komplette Adresse', ['Schloss 1'], getPropertyByName),
     createExampleField('Postleitzahl', ['35037'], getPropertyByName),
@@ -62,7 +60,7 @@ export function exampleFields(getPropertyByName: (propName: string) => Property)
       getPropertyByName,
     ),
     createExampleField('Anzahl an Fahrstühlen', ['0'], getPropertyByName),
-    createExampleField('Ist Instanz von', ['Gebäude', 'Schloss', 'Burg'], getPropertyByName),
+
     createExampleField('Erhaltungszustand', ['sehr gut'], getPropertyByName),
   );
 

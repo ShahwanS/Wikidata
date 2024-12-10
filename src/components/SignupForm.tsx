@@ -25,6 +25,8 @@ export default function SignupForm({
   onClose: (userInfo: Record<string, string>) => void;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showIntroduction, setShowIntroduction] = useState(false);
+  const [userInfo, setUserInfo] = useState<Record<string, string> | null>(null);
   const tSignupForm = useTranslations('SignupForm');
 
   const signupSchema = z.object({
@@ -49,113 +51,139 @@ export default function SignupForm({
   const onSubmit = async (data: SignupFormValues) => {
     setIsSubmitting(true);
     const userId = uuidv4();
-    const userInfo = {
+    const userData = {
       userId,
       userFirstName: data.firstname,
       userLastName: data.lastname,
       userEmail: data.email,
     };
-    Object.entries(userInfo).forEach(([key, value]) => {
+    Object.entries(userData).forEach(([key, value]) => {
       document.cookie = `${key}=${value}; path=/; max-age=604800; SameSite=Strict; Secure`;
     });
-    onClose(userInfo);
+    setUserInfo(userData);
     setIsSubmitting(false);
+    setShowIntroduction(true);
   };
 
+  const handleGetStarted = () => {
+    if (userInfo) {
+      onClose(userInfo);
+    }
+    setShowIntroduction(false);
+  };
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-dark/50">
-      <div className="w-full max-w-md rounded-lg bg-accent p-8 shadow-xl">
-        <h2 className="mb-6 text-center text-2xl font-bold text-primary-dark">
-          {tSignupForm('title')}
-        </h2>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="firstname"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-primary-dark">{tSignupForm('firstName')}</FormLabel>
-                  <FormControl>
-                    <InputField
-                      {...field}
-                      className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-destructive" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastname"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-primary-dark">{tSignupForm('lastName')}</FormLabel>
-                  <FormControl>
-                    <InputField
-                      {...field}
-                      className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-destructive" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-primary-dark">{tSignupForm('email')}</FormLabel>
-                  <FormControl>
-                    <InputField
-                      {...field}
-                      type="email"
-                      className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-destructive" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="privacyPolicy"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-sm text-primary-dark">
-                      {tSignupForm('privacyPolicyLabel')}{' '}
-                      <a
-                        href="/privacy-policy"
-                        className="text-primary-medium underline hover:text-primary-dark"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {tSignupForm('privacyPolicyLink')}
-                      </a>
-                    </FormLabel>
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-primary-dark/50">
+        <div className="w-full max-w-md rounded-lg bg-accent p-8 shadow-xl">
+          <h2 className="mb-6 text-center text-2xl font-bold text-primary-dark">
+            {tSignupForm('title')}
+          </h2>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="firstname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary-dark">{tSignupForm('firstName')}</FormLabel>
+                    <FormControl>
+                      <InputField
+                        {...field}
+                        className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
+                      />
+                    </FormControl>
                     <FormMessage className="text-destructive" />
-                  </div>
-                </FormItem>
-              )}
-            />
-            <div className="flex gap-4">
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary-dark">{tSignupForm('lastName')}</FormLabel>
+                    <FormControl>
+                      <InputField
+                        {...field}
+                        className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-destructive" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-primary-dark">{tSignupForm('email')}</FormLabel>
+                    <FormControl>
+                      <InputField
+                        {...field}
+                        type="email"
+                        className="w-full border-primary-light/30 bg-accent text-primary-dark placeholder:text-primary-medium/70 focus:border-primary-medium focus:ring-primary-medium"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-destructive" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="privacyPolicy"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-sm text-primary-dark">
+                        {tSignupForm('privacyPolicyLabel')}{' '}
+                        <a
+                          href="/privacy-policy"
+                          className="text-primary-medium underline hover:text-primary-dark"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {tSignupForm('privacyPolicyLink')}
+                        </a>
+                      </FormLabel>
+                      <FormMessage className="text-destructive" />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-4">
+                <Button
+                  type="submit"
+                  className="flex-1 bg-primary-medium text-accent transition-colors hover:bg-primary-dark"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? tSignupForm('submitting') : tSignupForm('submit')}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </div>
+      </div>
+      {showIntroduction && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-primary-dark/50 p-4">
+          <div className="my-8 w-full max-w-2xl rounded-lg bg-accent p-8 shadow-xl">
+            <div className="max-h-[70vh] overflow-y-auto text-primary-dark">
+              <div className="space-y-4 whitespace-pre-wrap">{tSignupForm('welcomeMessage')}</div>
+            </div>
+            <div className="mt-6 flex justify-center">
               <Button
-                type="submit"
-                className="flex-1 bg-primary-medium text-accent transition-colors hover:bg-primary-dark"
-                disabled={isSubmitting}
+                onClick={handleGetStarted}
+                className="bg-primary-medium text-accent transition-colors hover:bg-primary-dark"
               >
-                {isSubmitting ? tSignupForm('submitting') : tSignupForm('submit')}
+                {tSignupForm('getStarted')}
               </Button>
             </div>
-          </form>
-        </Form>
-      </div>
-    </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
