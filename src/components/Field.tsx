@@ -21,6 +21,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+// Suggested improvements:
+// 1. Split into smaller components (FileInput, RadioInput, etc)
+// 2. Move styles to separate constants/CSS files
+// 3. Add proper type safety instead of 'any' for error prop
+// 4. Add proper validation handling
+// 5. Consider using React Hook Form for form management
+// 6. Add loading states for async operations
+// 7. Add proper error boundaries
+// 8. Consider using a design system for consistent styling
+// 9. Add accessibility improvements (ARIA labels, keyboard navigation)
+// 10. Add proper test coverage
+
 export interface FieldProps {
   property: Property;
   onDelete?: () => void;
@@ -28,37 +40,40 @@ export interface FieldProps {
   options?: Array<{ label: string; value: string }>;
   children?: ReactNode;
   showWikiProp?: boolean;
-  error?: any;
+  error?: any; // TODO: Add proper type
 }
 
+const CC_LICENSES = [
+  { value: 'CC BY 4.0', label: 'CC BY 4.0' },
+  { value: 'CC BY-SA 4.0', label: 'CC BY-SA 4.0' },
+  { value: 'CC BY-NC 4.0', label: 'CC BY-NC 4.0' },
+  { value: 'CC BY-ND 4.0', label: 'CC BY-ND 4.0' },
+  { value: 'CC BY-NC-SA 4.0', label: 'CC BY-NC-SA 4.0' },
+  { value: 'CC BY-NC-ND 4.0', label: 'CC BY-NC-ND 4.0' },
+] as const;
+
+const BASE_INPUT_CLASSES =
+  'w-full px-4 py-2 border border-primary-light/30 rounded-lg transition duration-300 ease-in-out focus:border-primary-medium focus:ring-1 focus:ring-primary-medium focus:outline-none shadow-sm text-primary-dark focus:shadow-md';
+
 /**
- * Field component to render different types of input fields based on the property type.
+ * Field component that renders different types of input fields based on property type.
+ * Supports text, number, file uploads, radio buttons, and rich text with source attribution.
  */
 const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, error }) => {
   const { name, type, placeholder, wikidataprop, value, choices, unique, infobox } = property;
   const tForm = useTranslations('form');
+  const tSourcePopup = useTranslations('SourcePopup');
+  const { handleSourceSubmit, sources } = useSource();
+
+  // State management
   const [inputFields, setInputFields] = useState<string[]>(value || ['']);
   const [showSourcePopup, setShowSourcePopup] = useState(false);
   const [previewSource, setPreviewSource] = useState<string>('');
-  const tSourcePopup = useTranslations('SourcePopup');
-  const { handleSourceSubmit, sources } = useSource();
-  //added license field for each copyright field
   const [copyrightFields, setCopyrightFields] = useState<{ text: string; license: string }[]>(
     Array(inputFields.length).fill({ text: '', license: 'CC BY 4.0' }),
   );
 
-  const baseInputClasses =
-    'w-full px-4 py-2 border border-primary-light/30 rounded-lg transition duration-300 ease-in-out focus:border-primary-medium focus:ring-1 focus:ring-primary-medium focus:outline-none shadow-sm text-primary-dark focus:shadow-md';
-
-  const ccLicenses = [
-    { value: 'CC BY 4.0', label: 'CC BY 4.0' },
-    { value: 'CC BY-SA 4.0', label: 'CC BY-SA 4.0' },
-    { value: 'CC BY-NC 4.0', label: 'CC BY-NC 4.0' },
-    { value: 'CC BY-ND 4.0', label: 'CC BY-ND 4.0' },
-    { value: 'CC BY-NC-SA 4.0', label: 'CC BY-NC-SA 4.0' },
-    { value: 'CC BY-NC-ND 4.0', label: 'CC BY-NC-ND 4.0' },
-  ];
-
+  // Load source from context when wikidataprop changes
   useEffect(() => {
     if (wikidataprop && sources[wikidataprop]) {
       setPreviewSource(sources[wikidataprop]);
@@ -86,6 +101,7 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
       [field]: value,
     };
     setCopyrightFields(newCopyrightFields);
+
     const combinedValue = JSON.stringify({
       text: newCopyrightFields[index].text || '',
       license: newCopyrightFields[index].license || '',
@@ -124,47 +140,206 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
     }
   };
 
-  const tooltipId = `tooltip-${name}`;
+  const handleFileChange = (index: number, file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const updatedData = [...inputFields];
+      updatedData[index] = reader.result?.toString() || '';
+      setInputFields(updatedData);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const renderSourcePreview = () => {
+    if (!previewSource) return null;
+
     return (
-      previewSource && (
-        <div className="my-2 rounded-md bg-primary-light/10 p-1 shadow-md sm:my-3 sm:p-2">
-          <div className="flex max-h-36 flex-col items-center justify-center overflow-y-auto rounded-md bg-accent p-1 text-primary-medium sm:max-h-48 sm:p-2">
-            <p className="mb-1 text-sm font-semibold text-primary-dark sm:mb-2 sm:text-base">
-              {tSourcePopup('sourceLabel')}:
-            </p>
-            {previewSource.split(`${tSourcePopup('referencesLabel')}:`).map((part, index) => (
-              <div key={index} className={index === 1 ? 'mt-2 sm:mt-3' : ''}>
-                {index === 1 && (
-                  <p className="mb-1 text-sm font-semibold text-primary-dark sm:mb-2 sm:text-base">
-                    {tSourcePopup('referencesLabel')}:
-                  </p>
-                )}
-                <p className="whitespace-pre-wrap text-center text-sm text-primary-medium sm:text-base">
-                  {part.trim()}
+      <div className="my-2 rounded-md bg-primary-light/10 p-1 shadow-md sm:my-3 sm:p-2">
+        <div className="flex max-h-36 flex-col items-center justify-center overflow-y-auto rounded-md bg-accent p-1 text-primary-medium sm:max-h-48 sm:p-2">
+          <p className="mb-1 text-sm font-semibold text-primary-dark sm:mb-2 sm:text-base">
+            {tSourcePopup('sourceLabel')}:
+          </p>
+          {previewSource.split(`${tSourcePopup('referencesLabel')}:`).map((part, index) => (
+            <div key={index} className={index === 1 ? 'mt-2 sm:mt-3' : ''}>
+              {index === 1 && (
+                <p className="mb-1 text-sm font-semibold text-primary-dark sm:mb-2 sm:text-base">
+                  {tSourcePopup('referencesLabel')}:
                 </p>
-              </div>
-            ))}
-          </div>
+              )}
+              <p className="whitespace-pre-wrap text-center text-sm text-primary-medium sm:text-base">
+                {part.trim()}
+              </p>
+            </div>
+          ))}
         </div>
-      )
+      </div>
     );
   };
-  const renderSourceButtons = () => (
-    <div className="mt-2 sm:mt-4">
-      {type !== 'richtext' && (
-        <SourceButtons
-          setShowSourcePopup={setShowSourcePopup}
-          previewSource={previewSource}
-          handleRemoveSource={handleRemoveSource}
-        />
+
+  const renderFileInput = (data: string, index: number) => (
+    <div key={`${name}-in-${index}`} className="mb-2 sm:mb-4">
+      <div className="flex items-center">
+        <div className="mr-1 flex-grow sm:mr-2">
+          <input
+            className={`${BASE_INPUT_CLASSES} text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-blue-50 file:px-2 file:text-xs file:font-semibold file:text-blue-700 hover:file:bg-blue-100 sm:text-base sm:file:mr-4 sm:file:px-4 sm:file:text-sm`}
+            placeholder={placeholder}
+            type="file"
+            name={name + index}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFileChange(index, file);
+            }}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => removeInputField(index)}
+          className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
+          aria-label={`Delete ${name}`}
+        >
+          <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+        </button>
+      </div>
+
+      {data && (
+        <div className="relative mt-1 sm:mt-2">
+          <Image alt={`Selected ${name}`} src={data} width={500} height={300} className="w-full" />
+          <div className="mt-1 space-y-2 sm:mt-2">
+            <InputField
+              className={`${BASE_INPUT_CLASSES} bg-white text-sm placeholder:text-gray-400 sm:text-base`}
+              placeholder={tForm('copyright.placeholder')}
+              type="text"
+              value={copyrightFields[index].text}
+              onChange={(e) => handleCopyrightChange(index, 'text', e.target.value)}
+              required
+            />
+            <input
+              type="hidden"
+              name={`copyright_${name}${index}`}
+              value={JSON.stringify({
+                text: copyrightFields[index].text || '',
+                license: copyrightFields[index].license || '',
+              })}
+            />
+
+            <Select
+              value={copyrightFields[index].license}
+              onValueChange={(value) => handleCopyrightChange(index, 'license', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a license" />
+              </SelectTrigger>
+              <SelectContent>
+                {CC_LICENSES.map((license) => (
+                  <SelectItem key={license.value} value={license.value}>
+                    {license.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       )}
     </div>
   );
 
+  const renderRadioInput = (d: string, index: number) => (
+    <div key={name + index} className="mb-1 flex items-center sm:mb-2">
+      <div className="flex-grow">
+        {choices?.map((choice, i) => (
+          <div key={name + d + index + choice + i} className="text-sm text-gray-800 sm:text-base">
+            <input
+              type="radio"
+              id={choice + index}
+              name={tForm('building.accessibility.wheelchairAccessible.label') + index}
+              value={choice}
+            />
+            <label htmlFor={choice + index} className="ml-1 sm:ml-2">
+              {choice}
+            </label>
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        onClick={() => removeInputField(index)}
+        className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
+        aria-label={`Delete ${name}`}
+        tabIndex={-1}
+      >
+        <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+      </button>
+    </div>
+  );
+
+  const renderRichTextInput = () => (
+    <div className="flex items-center">
+      <div className="flex-grow">
+        <input
+          key={name}
+          className={`${BASE_INPUT_CLASSES} ${
+            error
+              ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-destructive/70'
+              : 'bg-accent placeholder:text-gray-400'
+          } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
+          placeholder={placeholder}
+          type="text"
+          defaultValue={value || ''}
+          onChange={onChange}
+        />
+        <div className="mt-2 bg-accent text-primary-dark">{children}</div>
+      </div>
+      {onDelete && (
+        <button
+          type="button"
+          onClick={onDelete}
+          className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
+          aria-label={`Delete ${name}`}
+          tabIndex={-1}
+        >
+          <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+        </button>
+      )}
+    </div>
+  );
+
+  const renderDefaultInput = (d: string, index: number) => (
+    <div key={`${name}-in-${index}`} className="mb-2 flex flex-col sm:mb-4">
+      <div className="mb-1 flex items-center sm:mb-2">
+        <InputField
+          className={`${BASE_INPUT_CLASSES} ${
+            error
+              ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-destructive/70'
+              : 'bg-accent placeholder:text-gray-400'
+          } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
+          placeholder={placeholder}
+          type={type}
+          name={name + index}
+          value={d}
+          onChange={(e) => handleInputChange(index, e.target.value)}
+          {...(type === 'number' ? { min: '0' } : {})}
+        />
+        {property.unit && (
+          <label className="ml-1 text-sm text-primary-medium sm:ml-2 sm:text-base">
+            {property.unit}
+          </label>
+        )}
+        {name !== tForm('nameDetails.officialName.label') && (
+          <button
+            type="button"
+            onClick={() => removeInputField(index)}
+            className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
+            aria-label={`Delete ${name}`}
+          >
+            <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="mb-4 sm:mb-6" id={`${name}`}>
+    <div className="mb-4 sm:mb-6" id={name}>
       <div className="mb-1 flex items-center justify-between sm:mb-2">
         <label className="flex items-center text-xs font-medium text-primary-dark sm:text-sm">
           {name}
@@ -195,200 +370,32 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
         <div className="flex flex-col items-center">
           <LucideInfo
             className="mr-1 h-4 w-4 text-blue-500 sm:mr-2 sm:h-5 sm:w-5"
-            data-tooltip-id={tooltipId}
+            data-tooltip-id={`tooltip-${name}`}
           />
-          <ReactTooltip id={tooltipId} place="left" content={infobox} />
+          <ReactTooltip id={`tooltip-${name}`} place="left" content={infobox} />
         </div>
       </div>
+
       {error && <p className="mb-1 mt-0.5 text-xs text-destructive sm:text-sm">{error}</p>}
 
       {renderSourcePreview()}
-      {type === 'file' ? (
-        inputFields.map((data, index) => (
-          <div key={name + 'in' + index} className="mb-2 sm:mb-4">
-            <div className="flex items-center">
-              <div className="mr-1 flex-grow sm:mr-2">
-                <input
-                  key={name + 'in' + index}
-                  className={`${baseInputClasses} text-sm file:mr-2 file:rounded-lg file:border-0 file:bg-blue-50 file:px-2 file:text-xs file:font-semibold file:text-blue-700 hover:file:bg-blue-100 sm:text-base sm:file:mr-4 sm:file:px-4 sm:file:text-sm`}
-                  placeholder={placeholder}
-                  type={type}
-                  name={name + index}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onload = () => {
-                        const updatedData = [...inputFields];
-                        updatedData[index] = reader.result?.toString() || '';
-                        setInputFields(updatedData);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                />
-              </div>
 
-              <button
-                type="button"
-                onClick={() => removeInputField(index)}
-                className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
-                aria-label={`Delete ${name}`}
-                tabIndex={-1}
-              >
-                <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
-              </button>
-            </div>
+      {type === 'file' && inputFields.map((data, index) => renderFileInput(data, index))}
+      {type === 'radio' && inputFields.map((d, index) => renderRadioInput(d, index))}
+      {type === 'richtext' && renderRichTextInput()}
+      {!['file', 'radio', 'richtext'].includes(type) &&
+        inputFields.map((d, index) => renderDefaultInput(d, index))}
 
-            {data && (
-              <div className="relative mt-1 sm:mt-2">
-                <Image
-                  alt={`Ausgewähltes ${name}`}
-                  src={data}
-                  width={500}
-                  height={300}
-                  className="w-full"
-                />
-                <div className="mt-1 space-y-2 sm:mt-2">
-                  <InputField
-                    className={`${baseInputClasses} bg-white text-sm placeholder:text-gray-400 sm:text-base`}
-                    placeholder={tForm('copyright.placeholder')}
-                    type="text"
-                    value={copyrightFields[index].text}
-                    onChange={(e) => handleCopyrightChange(index, 'text', e.target.value)}
-                    required
-                  />
-                  <input
-                    type="hidden"
-                    name={`copyright_${name}${index}`}
-                    value={JSON.stringify({
-                      text: copyrightFields[index].text || '',
-                      license: copyrightFields[index].license || '',
-                    })}
-                  />
-
-                  <Select
-                    value={copyrightFields[index].license}
-                    onValueChange={(value) => handleCopyrightChange(index, 'license', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a license" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ccLicenses.map((license) => (
-                        <SelectItem key={license.value} value={license.value}>
-                          {license.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-          </div>
-        ))
-      ) : type === 'radio' ? (
-        inputFields.map((d, index) => (
-          <div key={name + index} className="mb-1 flex items-center sm:mb-2">
-            <div className="flex-grow">
-              {choices?.map((choice, i) => (
-                <div
-                  key={name + d + index + choice + i}
-                  className="text-sm text-gray-800 sm:text-base"
-                >
-                  <input
-                    type="radio"
-                    id={choice + index}
-                    name={tForm('building.accessibility.wheelchairAccessible.label') + index}
-                    value={choice}
-                  />
-                  <label htmlFor={choice + index} className="ml-1 sm:ml-2">
-                    {choice}
-                  </label>
-                </div>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => removeInputField(index)}
-              className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
-              aria-label={`Delete ${name}`}
-              tabIndex={-1}
-            >
-              <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
-            </button>
-          </div>
-        ))
-      ) : type === 'richtext' ? (
-        <div className="flex items-center">
-          <div className="flex-grow">
-            <input
-              key={name}
-              className={`${baseInputClasses} ${
-                error
-                  ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-destructive/70'
-                  : 'bg-accent placeholder:text-gray-400'
-              } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
-              placeholder={placeholder}
-              type="text"
-              defaultValue={value || ''}
-              onChange={onChange}
-            />
-            <div className="mt-2 bg-accent text-primary-dark">{children}</div>
-          </div>
-          {onDelete && (
-            <button
-              type="button"
-              onClick={() => removeInputField(0)}
-              className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
-              aria-label={`Delete ${name}`}
-              tabIndex={-1}
-            >
-              <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
-            </button>
-          )}
+      {type !== 'richtext' && (
+        <div className="mt-2 sm:mt-4">
+          <SourceButtons
+            setShowSourcePopup={setShowSourcePopup}
+            previewSource={previewSource}
+            handleRemoveSource={handleRemoveSource}
+          />
         </div>
-      ) : (
-        <>
-          {inputFields.map((d, index) => (
-            <div key={name + 'in' + index} className="mb-2 flex flex-col sm:mb-4">
-              <div className="mb-1 flex items-center sm:mb-2">
-                <InputField
-                  className={`${baseInputClasses} ${
-                    error
-                      ? 'border-destructive bg-destructive/5 text-primary-dark placeholder-destructive/70'
-                      : 'bg-accent placeholder:text-gray-400'
-                  } mr-1 flex-grow text-sm sm:mr-2 sm:text-base`}
-                  placeholder={placeholder}
-                  type={type}
-                  name={name + index}
-                  value={d}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  {...(type === 'number' ? { min: '0' } : {})}
-                />
-                {property.unit && (
-                  <label className="ml-1 text-sm text-primary-medium sm:ml-2 sm:text-base">
-                    {property.unit}
-                  </label>
-                )}
-                {name !== tForm('nameDetails.officialName.label') && (
-                  <button
-                    type="button"
-                    onClick={() => removeInputField(index)}
-                    className="ml-1 p-0.5 text-destructive transition-colors duration-200 hover:text-destructive/80 sm:ml-2 sm:p-2"
-                    aria-label={`Delete ${name}`}
-                    tabIndex={-1}
-                  >
-                    <MdDeleteOutline className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </>
       )}
-      {renderSourceButtons()}
+
       {showSourcePopup && (
         <SourcePopup
           onSubmit={handleSubmit}
@@ -403,11 +410,11 @@ const Field: React.FC<FieldProps> = ({ property, onChange, onDelete, children, e
 
 export default Field;
 
-type SourceButtonsProps = {
+interface SourceButtonsProps {
   setShowSourcePopup: (value: boolean) => void;
   previewSource: string;
   handleRemoveSource: () => void;
-};
+}
 
 const SourceButtons: React.FC<SourceButtonsProps> = ({
   setShowSourcePopup,
@@ -415,6 +422,7 @@ const SourceButtons: React.FC<SourceButtonsProps> = ({
   handleRemoveSource,
 }) => {
   const tSourcePopup = useTranslations('SourcePopup');
+
   return (
     <div className="flex gap-1 sm:gap-2">
       <Button
