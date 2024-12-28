@@ -1,6 +1,6 @@
 'use client';
 
-import { getTitle, checkImage, simpleHtmlToMarkdown, formatDateForFilename } from './utils';
+import { checkImage, simpleHtmlToMarkdown, formatDateForFilename } from './utils';
 import { uploadImage } from '@/app/actions';
 /**
  * Adds the title from "Namensangaben" to the JSON output.
@@ -26,17 +26,24 @@ export function addCategoryAsSubtitleToJson(category: any, jsonOutput: any) {
  * @param jsonOutput JSON output array
  * @param title Title used for file naming
  */
-export async function addDataFromCategoryToJson(
-  dataList: any,
-  jsonOutput: any,
-  title: string,
-  getPropertyByName: any,
-) {
+
+interface DataItem {
+  dataName: string;
+  inputData: any;
+  wikiprop: string;
+  source?: string;
+  selectedUnit?: string;
+  copyright?: any;
+}
+
+export async function addDataFromCategoryToJson(dataList: any[], jsonOutput: any, title: string) {
   let currentEntry: any = null;
   let currentSources: string[] = [];
   let pendingPromises: Promise<void>[] = [];
 
-  for (const [dataName, inputData, wikiprop, selectedUnit, source, copyright] of dataList) {
+  for (const data of dataList) {
+    const [dataName, inputData, wikiprop, source, selectedUnit, copyright] = data;
+
     const isUrl = wikiprop === 'P856';
     const isRichtext = wikiprop === 'richtext';
     const isImage = checkImage(inputData, wikiprop);
@@ -54,7 +61,6 @@ export async function addDataFromCategoryToJson(
       } else {
         const imageData = inputData;
         imageData[4] = copyright; // Add copyright as the fifth element
-
         const imagePromise = uploadImageAndAddToJson(
           imageData,
           dataName,
@@ -70,16 +76,20 @@ export async function addDataFromCategoryToJson(
     } else if (isRichtext) {
       addRichTextToJson(wikiprop, dataName, inputData, jsonOutput, source);
     } else {
-      if (!currentEntry) {
+      if (!currentEntry || wikiprop !== currentEntry.wikiprop) {
         currentEntry = {
-          wikiprop,
           dataName,
           inputData,
+          wikiprop,
+          source,
           selectedUnit: selectedUnit,
           values: [],
         };
       }
       currentEntry.values.push(inputData);
+      if (source) {
+        currentSources.push(source);
+      }
     }
   }
 
@@ -89,25 +99,28 @@ export async function addDataFromCategoryToJson(
 
   await Promise.all(pendingPromises);
 }
-/**
- * Adds normal data (non-URL, non-rich text) to the JSON output.
- * @param entry Entry object containing wikiprop, dataName, unit, values, and sources
- * @param jsonOutput JSON output array
- *
- */
-function addEntryToJson(entry: any, jsonOutput: any, sources: string[]) {
-  const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : '';
 
-  // Handle unit based on whether it's an array or single value
-  const unit = entry.selectedUnit;
-
-  const sourceText = sources.length > 0 ? `\nsource:\t${sources.join(', ')}` : '';
-
-  const values = entry.values.join('\n');
-  jsonOutput.push({
-    p: `### \t${wikipropText}${entry.dataName}\n${values}${unit}${sourceText}`,
-  });
+interface Entry {
+  wikiprop?: string;
+  dataName: string;
+  values: any[];
+  selectedUnit?: string;
 }
+
+/**
+ * Adds a formatted entry to the JSON output.
+ * @param entry - Entry details (name, values, etc.).
+ * @param jsonOutput - JSON output array.
+ * @param sources - Array of sources.
+ */
+export const addEntryToJson = (entry: Entry, jsonOutput: any[], sources: string[]): void => {
+  const wikipropText = entry.wikiprop ? `  \t${entry.wikiprop} ` : '';
+  const unit = entry.selectedUnit || '';
+  const sourceText = sources.length ? `\nsource:\t${sources.join(', ')}` : '';
+  jsonOutput.push({
+    p: `### \t${wikipropText}${entry.dataName}\n${entry.values.join('\n')}${unit}${sourceText}`,
+  });
+};
 
 /**
  * Helper function to upload image and add its data to JSON output.

@@ -106,7 +106,11 @@ export default function Home() {
   // Render the component
   return (
     <>
-      <Navigation onLoadExamples={handleLoadExamples} />
+      <Navigation
+        onLoadExamples={handleLoadExamples}
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+      />
 
       <div className="min-h-screen bg-gradient-to-r from-primary-dark to-primary-medium p-2 sm:p-4 md:p-6 lg:p-8">
         {/* Scroll to top button */}
@@ -120,7 +124,7 @@ export default function Home() {
           </button>
         )}
 
-        <div className="group">
+        <div className="group hidden md:block">
           <button
             onClick={() => setShowPopup(!showPopup)}
             className={`fixed left-0 top-1/2 z-50 flex -translate-y-1/2 transform flex-col items-center gap-2 rounded-r-xl bg-accent px-2 py-4 shadow-lg transition-all duration-300 ease-in-out hover:bg-primary-light hover:text-accent group-hover:translate-x-1 sm:gap-3 sm:rounded-r-2xl sm:px-3 sm:py-6 ${

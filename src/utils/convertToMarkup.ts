@@ -10,16 +10,11 @@ import { convertDataToJson } from './JsonConversion';
 export const convert2Markup = (
   data: any,
   translatedPropgliederung: any,
-  getPropertyByName: any,
   locale: string,
   sources: Record<string, string>,
   userInfo: Record<string, string>,
-) => {
-  //creating a map between the categories and the properties
+): string => {
   const dataAsMap = dataToMap(data, translatedPropgliederung, sources);
-  //create a json structure and fill it up with the mapped data
-  const dataAsJson = convertDataToJson(dataAsMap, getPropertyByName, locale, userInfo);
-  //convert the json to markdown
-  const dataAsMd = json2md(dataAsJson);
-  return dataAsMd;
+  const dataAsJson = convertDataToJson(dataAsMap, locale, userInfo);
+  return json2md(dataAsJson);
 };

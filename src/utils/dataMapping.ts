@@ -1,4 +1,3 @@
-import { MdSwapVerticalCircle } from 'react-icons/md';
 import {
   getAllCategoryAndWikiprop,
   removeTrailingNumber,
@@ -6,26 +5,28 @@ import {
   setNormalDataInMap,
 } from './utils';
 
+type Sources = Record<string, string>;
+
 /**
- * Method to map data to categories based on wikiData-props
- * @param data The data to map
- * @returns Properties mapped to categories
+ * Maps data to categories based on wikiData properties and translates properties.
+ * @param data - Input data object.
+ * @param translatedPropgliederung - Translations for categories.
+ * @param sources - Mapping of sources for the data.
+ * @returns A Map with categorized data.
  */
 export const dataToMap = (
-  data: any,
-  translatedPropgliederung: any,
-  sources: Record<string, string>,
-) => {
-  const resultMap = new Map();
+  data: Record<string, any>,
+  translatedPropgliederung: Record<string, any>,
+  sources: Sources,
+): Map<string, any[]> => {
+  const resultMap = new Map<string, any[]>();
   const CATEGORY_AND_PROPERTY_MAP = getAllCategoryAndWikiprop(translatedPropgliederung);
 
   for (let dataName in data) {
-    const inputData = data[dataName]; // Fetch data from page.tsx/fieldsdata
+    const inputData = data[dataName];
+    dataName = removeTrailingNumber(dataName);
 
-    dataName = removeTrailingNumber(dataName); // Remove trailing numbers from dataName (e.g., spitzName1 -> spitzName)
-
-    if (inputData !== '') {
-      // Handle rich text fields differently
+    if (inputData) {
       const isRichtext =
         dataName.startsWith('Rich Text') || dataName.startsWith('Enter section title');
       if (isRichtext) {

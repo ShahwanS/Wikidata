@@ -16,9 +16,11 @@ import logo from '../public/logo.png';
 
 interface NavigationProps {
   onLoadExamples?: () => void;
+  setShowPopup: (value: boolean) => void;
+  showPopup: boolean;
 }
 
-export default function Navigation({ onLoadExamples }: NavigationProps) {
+export default function Navigation({ onLoadExamples, setShowPopup, showPopup }: NavigationProps) {
   const t = useTranslations('initial');
   const [showFAQ, setShowFAQ] = useState(false);
   const [showLoadExampleModal, setShowLoadExampleModal] = useState(false);
@@ -71,7 +73,7 @@ export default function Navigation({ onLoadExamples }: NavigationProps) {
                   alt="Logo"
                   width={48}
                   height={48}
-                  className="h-8 w-8 sm:h-12 sm:w-12"
+                  className="h-14 w-20 sm:h-12 sm:w-12"
                 />
               </div>
               <h1 className="text-xl font-extrabold tracking-wide text-accent sm:text-2xl md:text-3xl">
@@ -102,6 +104,12 @@ export default function Navigation({ onLoadExamples }: NavigationProps) {
               className="w-full rounded-lg bg-accent px-4 py-2 text-center font-semibold text-primary-dark transition-colors hover:bg-primary-light hover:text-accent md:w-auto"
             >
               FAQ
+            </button>
+            <button
+              onClick={() => setShowPopup(!showPopup)}
+              className="w-full rounded-lg bg-accent px-4 py-2 text-center font-semibold text-primary-dark transition-colors hover:bg-primary-light hover:text-accent md:w-auto"
+            >
+              {t('form.addFields')}
             </button>
             <div className="flex justify-center md:justify-start">
               <LocaleSwitcher />

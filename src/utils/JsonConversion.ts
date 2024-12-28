@@ -7,77 +7,51 @@ import { getTitle } from './utils';
 
 
 
-
-
-type JsonOutputElement = {
-  h1?: string;
-  h2?: string;
-  p?: string;
-};
-
-type UserInfo = {
-  userId: string;
-  userFirstName: string;
-  userLastName: string;
-  userEmail: string;
-};
-
-type DataMapValue = [string, any, string?, string?, string?][]; // [dataName, inputData, wikiprop?, source?, copyright?]
-
-
+type DataMap = [string, any, string?, string?, string?][]; // [dataName, inputData, wikiprop?, source?, copyright?]
 
 /**
- * Convert data to JSON
- * @param dataAsMap (map with category and data)
- * @return JSON (array of objects)
+ * Converts mapped data to JSON for Markdown conversion.
+ * @param dataAsMap - Mapped data categorized by name.
+ * @param locale - The locale of the output ('en' or 'de').
+ * @param userInfo - Information about the user.
+ * @returns JSON-ready array for Markdown conversion.
  */
 export const convertDataToJson = (
   dataAsMap: Map<any, any>,
-  getPropertyByName: any,
   locale: string,
   userInfo: Record<string, string>,
 ) => {
   const jsonOutput: { h1?: string; h2?: string; p?: string }[] = [];
- // Get title based on locale
+
+  // Get title based on locale
   const titleCategory = locale === 'de' ? 'Namensangaben' : 'Name Information';
   const title = getTitle(dataAsMap.get(titleCategory));
-
   addTitleToJson(title, jsonOutput);
-  // Create and add user info section
-  const userInfoSection: JsonOutputElement[] = locale === 'de' 
-    ? [
-        { h2: 'Benutzerinformationen' },
-        { p: `Benutzer-ID: ${userInfo.userId}` },
-        { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
-        { p: `E-Mail: ${userInfo.userEmail}` },
-      ]
-    : [
-        { h2: 'User Information' },
-        { p: `User ID: ${userInfo.userId}` },
-        { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
-        { p: `Email: ${userInfo.userEmail}` },
-      ];
+
+  // Add user information section
+  const userInfoSection =
+    locale === 'de'
+      ? [
+          { h2: 'Benutzerinformationen' },
+          { p: `Benutzer-ID: ${userInfo.userId}` },
+          { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
+          { p: `E-Mail: ${userInfo.userEmail}` },
+        ]
+      : [
+          { h2: 'User Information' },
+          { p: `User ID: ${userInfo.userId}` },
+          { p: `Name: ${userInfo.userFirstName} ${userInfo.userLastName}` },
+          { p: `Email: ${userInfo.userEmail}` },
+        ];
   jsonOutput.push(...userInfoSection);
+
   // Process each category in the data map
-  dataAsMap.forEach((dataList: DataMapValue, category: string) => {
-    const hasValidData = dataList.some(([_, inputData, , ,]: DataMapValue[number]) => {
-      if (Array.isArray(inputData)) {
-        return inputData.some((item: any) =>
-          item !== null &&
-          item !== undefined &&
-          item !== '' && 
-          !(item instanceof File && item.size === 0)
-        );
-      }
-      return inputData !== null && 
-             inputData !== undefined && 
-             inputData !== '' &&
-             !(inputData instanceof File && inputData.size === 0);
-    });
+  dataAsMap.forEach((dataList: DataMap, category: string) => {
+    const hasValidData = dataList.some(([_, inputData]) => inputData);
 
     if (hasValidData) {
       addCategoryAsSubtitleToJson(category, jsonOutput);
-      addDataFromCategoryToJson(dataList, jsonOutput, title, getPropertyByName);
+      addDataFromCategoryToJson(dataList, jsonOutput, title);
     }
   });
 

@@ -130,13 +130,19 @@ export function setNormalDataInMap(
 ) {
   // Handle copyright fields
   if (dataName.startsWith('copyright_')) {
-    handleCopyrightField(dataName, inputData as string, resultMap, CATEGORY_AND_PROPERTY_MAP);
+    handleCopyrightField(
+      dataName,
+      inputData as string,
+      resultMap,
+      CATEGORY_AND_PROPERTY_MAP,
+      sources,
+    );
     return;
   }
 
   // Handle fields with units
   if (dataName.includes('unit')) {
-    handleUnitField(dataName, inputData as string, resultMap, CATEGORY_AND_PROPERTY_MAP);
+    handleUnitField(dataName, inputData as string, resultMap, CATEGORY_AND_PROPERTY_MAP, sources);
     return;
   }
 
@@ -165,9 +171,10 @@ export function setNormalDataInMap(
  */
 function handleUnitField(
   dataName: string,
-  inputData: any, // Accept any type
+  inputData: any,
   resultMap: Map<string, any[]>,
   CATEGORY_AND_PROPERTY_MAP: Map<string, [string, string]>,
+  sources: Record<string, string>,
 ) {
   const originalFieldName = dataName.replace('_unit', '').replace(/\d+$/, '');
   const categoryAndWikiprop = getCategoryAndWikipropAsList(
@@ -184,8 +191,7 @@ function handleUnitField(
   if (!resultMap.has(category)) {
     resultMap.set(category, []);
   }
-
-  // Check if inputData is a string and parse it, otherwise assume it's already an object
+  const source = sources[wikiprop];
   const { value, selectedUnit } = typeof inputData === 'string' ? JSON.parse(inputData) : inputData;
 
   // Find existing entry or create new one
@@ -193,9 +199,10 @@ function handleUnitField(
   const existingEntryIndex = categoryData.findIndex((entry) => entry[0] === originalFieldName);
   if (existingEntryIndex !== -1) {
     categoryData[existingEntryIndex][1] = value;
-    categoryData[existingEntryIndex][3] = selectedUnit;
+    categoryData[existingEntryIndex][3] = source;
+    categoryData[existingEntryIndex][4] = selectedUnit;
   } else {
-    categoryData.push([originalFieldName, value, wikiprop, '', selectedUnit]);
+    categoryData.push([originalFieldName, value, wikiprop, source, selectedUnit]);
   }
 }
 /**
@@ -206,6 +213,7 @@ function handleCopyrightField(
   inputData: string,
   resultMap: Map<string, any[]>,
   CATEGORY_AND_PROPERTY_MAP: Map<string, [string, string]>,
+  sources: Record<string, string>,
 ) {
   const originalFieldName = dataName.replace('copyright_', '').replace(/\d+$/, '');
   const categoryAndWikiprop = getCategoryAndWikipropAsList(
@@ -213,17 +221,28 @@ function handleCopyrightField(
     CATEGORY_AND_PROPERTY_MAP,
   );
 
-  if (!categoryAndWikiprop) return;
+  if (!categoryAndWikiprop) {
+    console.error('No category and WikiProp found for:', originalFieldName);
+    return;
+  }
 
-  const [category] = categoryAndWikiprop;
-  if (!resultMap.has(category)) return;
+  const [category, wikiprop] = categoryAndWikiprop;
+  if (!resultMap.has(category)) {
+    resultMap.set(category, []);
+  }
+  const source = sources[wikiprop];
 
   const categoryData = resultMap.get(category)!;
-  const imageEntry = categoryData.find((entry) => entry[0] === originalFieldName);
+  const existingEntryIndex = categoryData.findIndex((entry) => entry[0] === originalFieldName);
 
-  if (imageEntry) {
-    const { text, license } = JSON.parse(inputData);
-    imageEntry[4] = `${text} ${license}`;
+  const { text, license } = typeof inputData === 'string' ? JSON.parse(inputData) : inputData;
+  const copyrightInfo = `${text} ${license}`;
+
+  if (existingEntryIndex !== -1) {
+    categoryData[existingEntryIndex][3] = source;
+    categoryData[existingEntryIndex][5] = copyrightInfo;
+  } else {
+    categoryData.push([originalFieldName, '', wikiprop, source, '', copyrightInfo]);
   }
 }
 

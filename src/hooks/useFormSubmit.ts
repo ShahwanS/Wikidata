@@ -20,8 +20,8 @@ export function useFormSubmit(
     fieldsData: any,
     richTextState: any,
     richTextTitle: any,
-    sources: any,
-    userInfo: any,
+    sources: Record<string, string>,
+    userInfo: Record<string, string>,
     handleReset: () => void,
   ) => {
     event.preventDefault();
@@ -74,7 +74,6 @@ export function useFormSubmit(
     const markupOutput = convert2Markup(
       fieldsData,
       translatedPropgliederung,
-      getPropertyByName,
       locale.toString(),
       sources,
       userInfo,

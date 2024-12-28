@@ -38,7 +38,7 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
       if (currentSource) {
         const [mainSource, additionalReferences] = currentSource.split(t('referencesLabel') + ':');
         setSource(mainSource.trim());
-        setReferences(additionalReferences ? additionalReferences.trim() : '');
+        setReferences(additionalReferences?.trim() || '');
       } else {
         setSource('');
         setReferences('');
@@ -48,7 +48,14 @@ const SourcePopup: React.FC<SourcePopupProps> = ({ onSubmit, isOpen, onClose, cu
   }, [currentSource, isOpen, t]);
 
   const handleSubmit = () => {
-    const combinedSource = `${source}\n\n${t('referencesLabel')}:\n${references}`.trim();
+    // Only include references if they have meaningful content
+    const hasMeaningfulReferences = references.trim().length > 0;
+    console.log("hasMeaningfulReferences" + references)
+
+    const combinedSource = hasMeaningfulReferences
+      ? `${source}\n\n${t('referencesLabel')}:\n${references}`.trim()
+      : source.trim();
+
     onSubmit(combinedSource);
     onClose();
   };
