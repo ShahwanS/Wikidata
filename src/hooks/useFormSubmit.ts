@@ -14,7 +14,7 @@ export function useFormSubmit(
 ) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { tErrors, translatedPropgliederung } = useTranslatedRecords();
+  const { tErrors, translatedPropertyStructure } = useTranslatedRecords();
   const handleSubmit = async (
     event: React.FormEvent,
     fieldsData: any,
@@ -73,7 +73,7 @@ export function useFormSubmit(
     // Convert form data to Markdown content
     const markupOutput = convert2Markup(
       fieldsData,
-      translatedPropgliederung,
+      translatedPropertyStructure,
       locale.toString(),
       sources,
       userInfo,

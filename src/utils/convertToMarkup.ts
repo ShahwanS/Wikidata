@@ -9,12 +9,12 @@ import { convertDataToJson } from './JsonConversion';
  */
 export const convert2Markup = (
   data: any,
-  translatedPropgliederung: any,
+  translatedPropertyStructure: any,
   locale: string,
   sources: Record<string, string>,
   userInfo: Record<string, string>,
 ): string => {
-  const dataAsMap = dataToMap(data, translatedPropgliederung, sources);
+  const dataAsMap = dataToMap(data, translatedPropertyStructure, sources);
   const dataAsJson = convertDataToJson(dataAsMap, locale, userInfo);
   return json2md(dataAsJson);
 };

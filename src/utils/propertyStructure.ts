@@ -2,7 +2,7 @@ import { Category } from '@/types/category';
 
 /** Properties-Gliederung (structure) */
 /** Main function that defines the structure of categories and properties with i18n */
-export const propgliederung = (t: (key: string) => string): Category[] => [
+export const propertyStructure = (t: (key: string) => string): Category[] => [
   {
     title: t('building.title'),
     description: t('building.description'),

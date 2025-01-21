@@ -72,13 +72,13 @@ export function simpleHtmlToMarkdown(html: string) {
 
 /**
  * Creates a mapping between data names and their categories/wiki properties
- * @param translatedPropgliederung Structured property data
+ * @param translatedPropertyStructure Structured property data
  * @returns Map with data name as key and [category, wikiprop] as value
  */
-export function getAllCategoryAndWikiprop(translatedPropgliederung: any) {
+export function getAllCategoryAndWikiprop(translatedPropertyStructure: any) {
   const categoryAndPropertyMap = new Map();
 
-  translatedPropgliederung.forEach((category: { subcategories: any[]; title: any }) => {
+  translatedPropertyStructure.forEach((category: { subcategories: any[]; title: any }) => {
     category.subcategories.forEach((subcategory) => {
       subcategory.properties.forEach((property: { name: any; wikidataprop: any }) => {
         categoryAndPropertyMap.set(property.name, [category.title, property.wikidataprop]);

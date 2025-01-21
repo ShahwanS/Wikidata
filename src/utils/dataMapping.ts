@@ -10,17 +10,17 @@ type Sources = Record<string, string>;
 /**
  * Maps data to categories based on wikiData properties and translates properties.
  * @param data - Input data object.
- * @param translatedPropgliederung - Translations for categories.
+ * @param translatedPropertyStructure - Translations for categories.
  * @param sources - Mapping of sources for the data.
  * @returns A Map with categorized data.
  */
 export const dataToMap = (
   data: Record<string, any>,
-  translatedPropgliederung: Record<string, any>,
+  translatedPropertyStructure: Record<string, any>,
   sources: Sources,
 ): Map<string, any[]> => {
   const resultMap = new Map<string, any[]>();
-  const CATEGORY_AND_PROPERTY_MAP = getAllCategoryAndWikiprop(translatedPropgliederung);
+  const CATEGORY_AND_PROPERTY_MAP = getAllCategoryAndWikiprop(translatedPropertyStructure);
 
   for (let dataName in data) {
     const inputData = data[dataName];
